@@ -400,7 +400,7 @@ if @isdefined(sentchoice) && sentchoice > 0
 	)
 
 	
-	htmltext_indented(newsent, verbalunits, levelselection, sov = sov, vucolor = vucolor, palette = palette, syntaxtips = tooltips )   |> HTML
+	htmltext_indented(newsent, verbalunits, levelselection, sov = sov, vucolor = vucolor, palette = palette, syntaxtip = tooltips )   |> HTML
 	
 end
 
@@ -501,7 +501,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 [compat]
 CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.1"
+GreekSyntax = "~0.10.5"
 Kroki = "~0.2.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -513,7 +513,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "dc94b5133438339f4bf953d84c6f24efdc079705"
+project_hash = "e75ad78df89ef1e41320d0234d324e3276cd992c"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -697,9 +697,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "b35434fd059f1ca27df359d63336b1235060d20c"
+git-tree-sha1 = "13fa21d3fbd72cdd40cf433220459b467fe6e0ee"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.1"
+version = "0.10.5"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -1149,7 +1149,7 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─6791a277-05ea-43d6-9710-c4044f0c178a
-# ╟─c91e9345-9a42-4418-861b-6cdda203a71e
+# ╠═c91e9345-9a42-4418-861b-6cdda203a71e
 # ╟─282716c0-e0e4-4433-beb4-4b988fddaa9c
 # ╟─a4946b0e-17c9-4f90-b820-2439047f2a6a
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
@@ -1165,7 +1165,7 @@ version = "17.4.0+0"
 # ╟─deb8fb9d-407f-4bc8-9690-92934e5751e1
 # ╟─1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
 # ╟─ecfb8e4c-63ac-4e90-8aad-44de200dc60a
-# ╟─c6ea9917-c597-4711-9fd4-66e33062b380
+# ╠═c6ea9917-c597-4711-9fd4-66e33062b380
 # ╟─2c692039-dd5b-4430-9f2e-d9eaa8851fbf
 # ╟─809e4588-4d79-4a6d-a0e7-625805fc73d7
 # ╟─73efb203-72ad-4c16-9836-140303f4e189

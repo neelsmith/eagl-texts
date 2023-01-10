@@ -23,18 +23,13 @@ begin
 	using PlutoTeachingTools
 	using Kroki
 	using CitableText
-	
 	using GreekSyntax
-	#using LatinSyntax
-	
 	using Downloads
-
-	using CitableText, CitableCorpus
 	md"""*Unhide this cell to see environment configuration.*"""
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.0";
+nbversion = "0.4.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -42,17 +37,20 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-- **0.3.0**: Support tooltips display
-- **0.2.2**: Support Greek or Latin texts
-- **0.2.1**: Update internal manifest to use version `0.9` of `GreekSyntax` package.
-- **0.2.0**: Update internal manifest to use updated version of `GreekSyntax` package; new user controls on diagramming and visual formatting.
-- **0.1.1**: Change default URL for source data
-- **0.1.0**: initial release	
+- **0.4.0*:	 add option to include tooltips in display
+- **0.3.3*: change default file and URL sources to new host on aegl-texts repository
+- **0.3.2**: use `passage` class on div wrapping text passages
+- **0.3.1**: updates internal manifest to use version `0.9` of `GreekSyntax`
+- **0.3.0**: use updated `GreekSyntax` package; add options to use default or customized CSS and color palette
+- **0.2.1**: change default URL for loading data
+- **0.2.0**: allows loading data from local file or URL
+- **0.1.0**: simplified reader using new `GreekSyntax` julia package
+- **0.0.1**: initial release	
 	"""
 end
 
 # ╔═╡ e7059fa0-82f2-11ed-3bfe-059070a00b1d
-md"""## Read Greek or Latin texts by level of subordination
+md"""## Read annotated texts by sentence
 
 """
 
@@ -105,7 +103,6 @@ begin
 
 <p>(See fuller <a href="https://neelsmith.github.io/GreekSyntax.jl/stable/html/">documentation</a>.)
 	</p>
-
 <h4>On <code>div</code></h4>
 
 	<ul>
@@ -137,7 +134,7 @@ Also on <code>span</code>: colors from a vector of colors are directly set in <c
 	Foldable("Summary of CSS usage", HTML("""$(cheatsheet)""")) |> aside
 end
 
-# ╔═╡ 7ecae17d-855e-4dd7-8404-4c3057470007
+# ╔═╡ fba8ea15-ea3f-430e-afbb-6140a3c372ca
 md"""*Use default CSS* $(@bind defaultcss CheckBox(true))"""
 
 # ╔═╡ 9ed6aaaf-fba8-4101-9a6c-48215f4ec3f9
@@ -152,6 +149,8 @@ md"""*Use default CSS* $(@bind defaultcss CheckBox(true))"""
  div.passage {
  	padding-top: 2em;
  	padding-bottom: 2em;
+ 	margin-top: 1em;
+ 	margin-bottom: 1em;
  
  }
   blockquote.subordination {
@@ -226,7 +225,7 @@ span.tooltip:before {
  """
  end
 
-# ╔═╡ 092fc2ea-cbc3-4f2b-90b4-da5d8980b97c
+# ╔═╡ c82f00a2-301c-4b5b-a034-c13d06554f09
 md"""*Use default color palette* $(@bind defaultcolors CheckBox(true))"""
 
 # ╔═╡ 87e46deb-aaad-4e78-81e9-410e3dda062d
@@ -328,9 +327,27 @@ end
 #*Add tooltips* $(@bind tippy CheckBox())if dsexists()
 begin
 	if dsexists()
-	md""" *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox()) *Include tooltips* $(@bind tooltips CheckBox())
+	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
+	]
+	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
 """
 end
+end
+
+# ╔═╡ c26d95cb-e681-43e0-acc7-e4af4bf5e0da
+# ╠═╡ show_logs = false
+if @isdefined(sentchoice) && sentchoice > 0
+	if txtdisplay == "continuous"
+		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+		HTML(rendered)
+		
+	else # indented
+		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], verbalunits, tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+
+		HTML(rendered)
+		
+	end
+	
 end
 
 # ╔═╡ 2c692039-dd5b-4430-9f2e-d9eaa8851fbf
@@ -339,19 +356,19 @@ if dsexists()
 """
 end
 
+# ╔═╡ 809e4588-4d79-4a6d-a0e7-625805fc73d7
+begin
+	if @isdefined(sentchoice) && sentchoice > 0 && diagram
+		graphstr  = mermaiddiagram(sentences[sentchoice], tokens)
+		mermaid"""$(graphstr)"""
+	end
+end
+
 # ╔═╡ 69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
 sentence = if dsexists() && sentchoice > 0
 	sentences[sentchoice]
 else
 	nothing
-end
-
-# ╔═╡ ecfb8e4c-63ac-4e90-8aad-44de200dc60a
-# ╠═╡ show_logs = false
-if @isdefined(sentchoice) && sentchoice > 0 
-	slidermax = GreekSyntax.maxdepthforsentence(sentence, verbalunits)
-	md"""*Show sentence up to level*: $(@bind threshhold NumberField(1:slidermax))
-"""
 end
 
 # ╔═╡ 1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
@@ -364,70 +381,15 @@ if @isdefined(sentchoice) && sentchoice > 0
 	<li><span class="object">object of unit verb</span></li>
 	</ul>
 	""" : ""
-
-	sentgroups = GreekSyntax.groupsforsentence(sentence, verbalunits)
-	levelgroups = filter(sentgroups) do gr
-		gr.depth <= threshhold
-	end
-
 	
-	colorkey = vucolor ? "<p><b>Color</b></p>" * htmlgrouplist(sentence, levelgroups) : ""
+	colorkey = vucolor ? "<p><b>Color</b></p>" * htmlgrouplist(sentence, verbalunits) : ""
 	
 	keytext = sovkey * colorkey
 
 	if ! isempty(keytext)
-		aside(Foldable("Key to highlighting",  HTML(keytext)))
+		aside(Foldable("Key to highlighting",  HTML(keytext))  )
 	end
 end
-
-# ╔═╡ 2439b90f-9082-4ab4-b37c-73215979d1d7
-"""True if data has been loaded and parsed."""
-function dataloaded()
-	! isnothing(sentence)
-end
-
-# ╔═╡ dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
-	if dataloaded()
-		(sentencetokens, connectorids, origin) = GreekSyntax.tokeninfoforsentence(sentence, tokens)
-	end
-
-# ╔═╡ c6ea9917-c597-4711-9fd4-66e33062b380
-# ╠═╡ show_logs = false
-if @isdefined(sentchoice) && sentchoice > 0  
-	local levelselection = GreekSyntax.filterbylevel(threshhold, verbalunits, sentencetokens)
-	local newsent = SentenceAnnotation(
-	    GreekSyntax.sentencerange(levelselection), sentence.sequence, sentence.connector
-	)
-
-	
-	htmltext_indented(newsent, verbalunits, levelselection, sov = sov, vucolor = vucolor, palette = palette, syntaxtips = tooltips )   |> HTML
-	
-end
-
-# ╔═╡ 809e4588-4d79-4a6d-a0e7-625805fc73d7
-# ╠═╡ show_logs = false
-
-if @isdefined(sentchoice) && sentchoice > 0 && diagram
-	#=
-	local levelselection = GreekSyntax.filterbylevel(threshhold, verbalunits, sentencetokens)
-	local newsent = SentenceAnnotation(
-	    GreekSyntax.sentencerange(levelselection), sentence.sequence, sentence.connector
-	)
-	=#
-	diagramwarning = md"""Diagramming is currently turned off when viewing only selected selected levels of subordination because you can end up with diagrammed words connected to words that are excluded from the diagram.
-
-A future version of this notebook might try to address this.
-	"""
-
-	
-	if threshhold < GreekSyntax.maxdepthforsentence(sentence, verbalunits)
-		warning_box(diagramwarning)
-	else
-		graphstr  = mermaiddiagram(sentence, sentencetokens)
-		mermaid"""$(graphstr)"""
-	end
-end
-
 
 # ╔═╡ 698f3062-02a4-48b5-955e-a8c3ee527872
 """Format user instructions with Markdown admonition."""
@@ -461,6 +423,7 @@ begin
 
 #### Text formatting
 	
+- Text may be displayed continuously, or broken out and indented by its level of syntactic subordination. 
 - The `Highlight SOV+ functions` highlights the subject, object and verb for each verbal expression, and the connecting word for each sentence with special formatting defined in CSS (below).
 - The 'Color verbal units` option colors words by the verbal expression they belong to.
 
@@ -490,7 +453,6 @@ end
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
@@ -499,9 +461,8 @@ PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.1"
+GreekSyntax = "~0.11.0"
 Kroki = "~0.2.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -513,7 +474,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "dc94b5133438339f4bf953d84c6f24efdc079705"
+project_hash = "203c4020b0bb6184ea1ed5d6450a6ce363c5d9c1"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -697,9 +658,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "b35434fd059f1ca27df359d63336b1235060d20c"
+git-tree-sha1 = "b1f46a1f58731d836ad330e3ae89cb22a393ce87"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.1"
+version = "0.11.0"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -1149,7 +1110,7 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─6791a277-05ea-43d6-9710-c4044f0c178a
-# ╟─c91e9345-9a42-4418-861b-6cdda203a71e
+# ╠═c91e9345-9a42-4418-861b-6cdda203a71e
 # ╟─282716c0-e0e4-4433-beb4-4b988fddaa9c
 # ╟─a4946b0e-17c9-4f90-b820-2439047f2a6a
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
@@ -1163,26 +1124,23 @@ version = "17.4.0+0"
 # ╟─32048e21-b1eb-49f1-94e6-c5347331f727
 # ╟─f0ca233e-2113-451a-ac90-3ecb1f44d329
 # ╟─deb8fb9d-407f-4bc8-9690-92934e5751e1
-# ╟─1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
-# ╟─ecfb8e4c-63ac-4e90-8aad-44de200dc60a
-# ╟─c6ea9917-c597-4711-9fd4-66e33062b380
 # ╟─2c692039-dd5b-4430-9f2e-d9eaa8851fbf
+# ╟─1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
+# ╟─c26d95cb-e681-43e0-acc7-e4af4bf5e0da
 # ╟─809e4588-4d79-4a6d-a0e7-625805fc73d7
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─ec7eb05f-fd6d-4477-a80b-9bfe1fe02fac
 # ╟─7772957f-3d7b-44b0-9cfe-998b8e6ab3cc
 # ╟─fd69dddd-5903-41eb-8ddc-ee2d2f34a473
-# ╟─7ecae17d-855e-4dd7-8404-4c3057470007
+# ╟─fba8ea15-ea3f-430e-afbb-6140a3c372ca
 # ╟─9ed6aaaf-fba8-4101-9a6c-48215f4ec3f9
-# ╟─092fc2ea-cbc3-4f2b-90b4-da5d8980b97c
+# ╟─c82f00a2-301c-4b5b-a034-c13d06554f09
 # ╟─87e46deb-aaad-4e78-81e9-410e3dda062d
 # ╟─34f55f22-1115-4962-801f-bde4edca05f3
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
-# ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
+# ╠═74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
-# ╠═dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
-# ╟─2439b90f-9082-4ab4-b37c-73215979d1d7
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
 # ╟─00000000-0000-0000-0000-000000000001
