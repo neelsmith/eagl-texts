@@ -3,7 +3,7 @@
 
     To use it, check the three required settings identified in the following comments.
 =#
-script_version = "1.0.1"
+script_version = "1.1.0"
 originaldir = pwd()
 @info("Starting from directory $(originaldir)")
 
@@ -124,7 +124,7 @@ function webpage(idx, sentences, groups, tokens)
     nav = navlinks(idx, sentences)
 
     # Continuous text view:
-    plaintext = htmltext(sentence.range, sentences, tokens, sov = false, vucolor = false)
+    plaintext = htmltext(sentence.range, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
 
 
     # Text colored by verbal expression:
