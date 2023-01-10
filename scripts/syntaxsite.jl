@@ -181,10 +181,10 @@ function publishall(sentences, groups, tokens)
     @info("Done: wrote $(length(sentences)) HTML pages linked to accompanying PNG file in $(outputdir). (Now in $(pwd()))")
 end
 
-#publishall(sentences, groups, tokens)
+publishall(sentences, groups, tokens)
 
 
 # This works if you want to republish a specific sentence identified
 # by its sequence number:
-publishsentence(14, sentences, groups, tokens)  
+#publishsentence(16, sentences, groups, tokens)  
 
