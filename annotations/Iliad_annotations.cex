@@ -1,0 +1,63 @@
+// Iliad 21
+// Sentence 6819
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.7.1)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a|6819|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+21.1.1-21.5.7a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.2|subordiante clause|transitive|2|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.3|subordinate clause|transitive|3|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.4|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.5|subordinate clause|transitive|2|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.6|circumstantial participle|transitive|3|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+21.1.1-21.5.7a.7|subordinate clause|intransitive|3|urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1-21.5.7a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.1|lexical|Ἀλλ'|nothing|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.2|lexical|ὅτε|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.3|lexical|δὴ|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.4|lexical|πόρον|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.5|lexical|ἷξον|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.6|lexical|ἐϋρρεῖος|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.1.7|lexical|ποταμοῖο|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.1|lexical|Ξάνθου|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.2|lexical|δινήεντος|21.1.1-21.5.7a.2|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.2a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.3|lexical|ὃν|21.1.1-21.5.7a.3|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.4|lexical|ἀθάνατος|21.1.1-21.5.7a.3|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.5|lexical|τέκετο|21.1.1-21.5.7a.3|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.6|lexical|Ζεύς|21.1.1-21.5.7a.3|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.2.6a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.1|lexical|ἔνθα|21.1.1-21.5.7a.4|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.2|lexical|διατμήξας|21.1.1-21.5.7a.4|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.3|lexical|τοὺς|21.1.1-21.5.7a.1|20|object|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.4|lexical|μὲν|21.1.1-21.5.7a.1|16|attributive|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.5|lexical|πεδίον|21.1.1-21.5.7a.1|20|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.6|lexical|δὲ|21.1.1-21.5.7a.1|18|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.3.7|lexical|δίωκε|21.1.1-21.5.7a.1|1|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.1|lexical|πρὸς|21.1.1-21.5.7a.1|20|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.2|lexical|πόλιν|21.1.1-21.5.7a.1|21|object of preposition|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.2a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.3|lexical|ᾗ|21.1.1-21.5.7a.5|22|relative pronoun|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.4|lexical|περ|21.1.1-21.5.7a.5|23|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.5|lexical|Ἀχαιοὶ|21.1.1-21.5.7a.5|27|subject|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.6|lexical|ἀτυζόμενοι|21.1.1-21.5.7a.6|25|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.4.7|lexical|φοβέοντο|21.1.1-21.5.7a.5|23|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.1|lexical|ἤματι|21.1.1-21.5.7a.5|27|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.2|lexical|τῷ|21.1.1-21.5.7a.5|28|article|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.3|lexical|προτέρῳ|21.1.1-21.5.7a.5|28|attributive|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.3a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.4|lexical|ὅτε|21.1.1-21.5.7a.7|28|subordinate conjunction|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.5|lexical|μαίνετο|21.1.1-21.5.7a.7|31|subject|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.6|lexical|φαίδιμος|21.1.1-21.5.7a.7|34|attributive|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.7|lexical|Ἕκτωρ|21.1.1-21.5.7a.7|32|subject|nothing|nothing
+urn:cts:greekLit:tlg0012.tlg001.allen_tokens:21.5.7a|ignore|:|0|nothing|nothing|nothing|nothing
