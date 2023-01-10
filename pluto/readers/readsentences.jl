@@ -61,11 +61,11 @@ md"""*Load from* $(@bind srctype Select(["", "url", "file"]))"""
 # ╔═╡ 176cfe71-a2a5-4fc6-940a-658495b470ac
 if srctype == "url"
 	md"""*Source URL*: $(@bind url confirm(TextField(80; default = 
-	"https://raw.githubusercontent.com/neelsmith/GreekSyntax/main/data/Lysias1_annotations.cex")))
+	"https://raw.githubusercontent.com/neelsmith/eagl-texts/main/annotations/Lysias1_annotations.cex")))
 	"""
 elseif srctype == "file"
 	
-	defaultdir = joinpath(dirname(pwd()), "data")
+	defaultdir = joinpath(dirname(dirname(pwd())), "annotations")
 	md"""*Source directory*: $(@bind basedir confirm(TextField(80; default = defaultdir)))"""
 end
 
