@@ -295,7 +295,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.1"
+GreekSyntax = "~0.11.2"
 PlutoUI = "~0.7.49"
 """
 
@@ -305,7 +305,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "a3c3a8269596aaa29003575d11c10f06bf3898de"
+project_hash = "4080a787a6e61015c6fbfbeb52d3fa481901cb54"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -477,9 +477,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "b35434fd059f1ca27df359d63336b1235060d20c"
+git-tree-sha1 = "331f698667dd710dd1d3b6d90bba245b5b17c83d"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.1"
+version = "0.11.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
