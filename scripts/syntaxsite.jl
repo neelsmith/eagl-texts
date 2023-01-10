@@ -9,13 +9,13 @@ originaldir = pwd()
 
 #= There are three required settings: =#
 #1: directory where output will be written
-outputdir = joinpath(originaldir, "debug", "lysias_reader")
+outputdir = joinpath(originaldir, "debug", "reader")
 #2: title for your text
-textlabel = "Lysias, Oration 1"
+textlabel = "Hyginus, Fabulae"
 #3:  source for your syntactic annotations.
 # You can either use a local file, or download a file from a URL.  Uncomment only ONE of these two settings.
 # (If you leave both uncommented, the the URL takes precedence over the local file.)
-annotations_file = joinpath(pwd(), "annotations", "Lysias1_annotations.cex")
+annotations_file = joinpath(pwd(), "annotations", "Hyginus_annotations.cex")
 #annotations_url = "https://raw.githubusercontent.com/neelsmith/GreekAndLatinSyntax/main/data/Lysias1_annotations.cex"
 
 # set up environment: you shouldn't touch this bit.
