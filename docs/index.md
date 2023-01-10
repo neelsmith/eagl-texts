@@ -15,4 +15,5 @@ The [eagl-texts repository](https://github.com/neelsmith/eagl-texts) hosts delim
 
 ## Syntactically highlighted readers
 
-This readers on this site are automatically generated from annotations on selections from the following texts.
+
+This readers hosted on this site are automatically generated from annotations on selections from the texts linked below.  Currently, the readers present each text sentence by sentence, with multiple views for each sentence highlighting syntactic structures in different ways.
