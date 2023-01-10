@@ -44,8 +44,8 @@ md"""# Build a web site for syntactically annotated texts
 
 # ╔═╡ 24abee74-963f-465a-b889-b88ecddca4f3
 begin
-	defaultoutdir = joinpath(pwd(),"html_output")
-	md"""*Output directory* $(@bind outputdir TextField(80; default = defaultoutdir))
+	defaultoutdir = joinpath(dirname(pwd()),"scratchpad")
+	md"""*Output directory* $(@bind  outputdir confirm(TextField(80; default = defaultoutdir)))
 	"""
 end
 
@@ -295,7 +295,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.0"
+GreekSyntax = "~0.11.1"
 PlutoUI = "~0.7.49"
 """
 
@@ -477,9 +477,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "b1f46a1f58731d836ad330e3ae89cb22a393ce87"
+git-tree-sha1 = "b35434fd059f1ca27df359d63336b1235060d20c"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.0"
+version = "0.11.1"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]

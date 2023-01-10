@@ -9,13 +9,13 @@ originaldir = pwd()
 
 #= There are three required settings: =#
 #1: directory where output will be written
-outputdir = joinpath(originaldir, "debug", "reader")
+outputdir = joinpath(originaldir, "scratchpad", "reader")
 #2: title for your text
 textlabel = "Hyginus, Fabulae"
 #3:  source for your syntactic annotations.
 # You can either use a local file, or download a file from a URL.  Uncomment only ONE of these two settings.
 # (If you leave both uncommented, the the URL takes precedence over the local file.)
-annotations_file = joinpath(pwd(), "annotations", "Hyginus_annotations.cex")
+annotations_file = joinpath(pwd(), "annotations", "Iliad_annotations.cex")
 #annotations_url = "https://raw.githubusercontent.com/neelsmith/GreekAndLatinSyntax/main/data/Lysias1_annotations.cex"
 
 # set up environment: you shouldn't touch this bit.
@@ -124,7 +124,7 @@ function webpage(idx, sentences, groups, tokens)
     nav = navlinks(idx, sentences)
 
     # Continuous text view:
-    plaintext = htmltext(sentence.range, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
+    plaintext = htmltext(sentence.range, sentences, tokens, sov = true, vucolor = false, syntaxtips = true)
 
 
     # Text colored by verbal expression:
