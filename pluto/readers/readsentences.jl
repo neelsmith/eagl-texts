@@ -29,7 +29,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.2";
+nbversion = "0.3.3";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,6 +37,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.3.3*: change default file and URL sources to new host on aegl-texts repository
 - **0.3.2**: use `passage` class on div wrapping text passages
 - **0.3.1**: updates internal manifest to use version `0.9` of `GreekSyntax`
 - **0.3.0**: use updated `GreekSyntax` package; add options to use default or customized CSS and color palette
