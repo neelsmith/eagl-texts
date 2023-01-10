@@ -14,66 +14,63 @@ macro bind(def, element)
     end
 end
 
-# ╔═╡ c91e9345-9a42-4418-861b-6cdda203a71e
-# ╠═╡ show_logs = false
+# ╔═╡ 4fa2c004-746d-448b-a163-fa6c396f1003
 begin
-	
 	using PlutoUI
-	import PlutoUI: combine # For using `aside`, from PlutoTeachingTools
-	using PlutoTeachingTools
-	using Kroki
-	using CitableText
-	
 	using GreekSyntax
-	#using LatinSyntax
-	
 	using Downloads
-
-	using CitableText, CitableCorpus
+	using CitableText
+	using Dates
 	md"""*Unhide this cell to see environment configuration.*"""
 end
 
-# ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.0";
+# ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
+nbversion = "0.1.0";
 
-# ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
+# ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
 
-# ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
+# ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
-- **0.3.0**: Support tooltips display
-- **0.2.2**: Support Greek or Latin texts
-- **0.2.1**: Update internal manifest to use version `0.9` of `GreekSyntax` package.
-- **0.2.0**: Update internal manifest to use updated version of `GreekSyntax` package; new user controls on diagramming and visual formatting.
-- **0.1.1**: Change default URL for source data
 - **0.1.0**: initial release	
 	"""
 end
 
-# ╔═╡ e7059fa0-82f2-11ed-3bfe-059070a00b1d
-md"""## Read Greek or Latin texts by level of subordination
+# ╔═╡ 93b49926-9104-11ed-19c6-df715bde3818
+md"""# Build a web site for syntactically annotated texts
 
 """
 
-# ╔═╡ b9311908-9282-4658-95ab-6e1ff0ebb84f
-md"""### Load data set"""
+# ╔═╡ 24abee74-963f-465a-b889-b88ecddca4f3
+begin
+	defaultoutdir = joinpath(dirname(pwd()),"scratchpad")
+	md"""*Output directory* $(@bind  outputdir confirm(TextField(80; default = defaultoutdir)))
+	"""
+end
 
-# ╔═╡ 86d64b7d-e3f1-4346-96fa-fb166f7ceeea
-md"""*Load from* $(@bind srctype Select(["", "url", "file"]))"""
+# ╔═╡ 3d38cad6-d10e-4eac-b33c-1cb15ac8f198
+md"""
+*Label for text* $(@bind textlabel
+	TextField(80; placeholder = 
+	"Lysias, Oration 1"))
+"""
 
-# ╔═╡ 176cfe71-a2a5-4fc6-940a-658495b470ac
+# ╔═╡ 6f8812cd-5bcb-4db7-a431-bc7402b0d187
+md"""*Load annotations from* $(@bind srctype Select(["", "url", "file"]))"""
+
+# ╔═╡ 45bb7468-adfe-41c9-9ab9-d3c597e380f8
 if srctype == "url"
-	md"""*Source URL*: $(@bind url confirm(TextField(80; default = 
-	"https://raw.githubusercontent.com/neelsmith/eagl-texts/main/annotations/Lysias1_annotations.cex")))
+	md"""*Source URL*: $(@bind url TextField(80; default = 
+	"https://raw.githubusercontent.com/neelsmith/eagl-texts/main/annotations/Lysias1_annotations.cex"))
 	"""
 elseif srctype == "file"
 	
-	defaultdir = joinpath(dirname(dirname(pwd())), "annotations")
-	md"""*Source directory*: $(@bind basedir confirm(TextField(80; default = defaultdir)))"""
+	defaultdir = joinpath(dirname(pwd()), "annotations")
+	md"""*Source directory*: $(@bind basedir TextField(80; default = defaultdir))"""
 end
 
-# ╔═╡ 255d6736-08d5-4565-baef-f3b6f4d433e1
+# ╔═╡ 2fd228b9-1a78-49c9-862e-3e7e11a3b2e0
 if srctype == "file"
 	
 	cexfiles = filter(readdir(basedir)) do fname
@@ -86,192 +83,20 @@ if srctype == "file"
 	md"""*Choose a file* $(@bind dataset Select(datasets))"""
 end
 
+# ╔═╡ ca9cc614-b1c3-4b31-a263-e80a09a978a0
+md"""*All settings correct: Go!* $(@bind runit CheckBox())"""
 
-# ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
+# ╔═╡ 60c5db9e-5185-42e1-a5cd-49ec516f07f3
 html"""
 <br/><br/><br/>
-<br/><br/>
-"""
-
-# ╔═╡ ec7eb05f-fd6d-4477-a80b-9bfe1fe02fac
- md""">  ## CSS and visual styling
-
-To learn how to customize the display of texts, check this option: $(@bind seecss CheckBox())
-"""
-
-# ╔═╡ fd69dddd-5903-41eb-8ddc-ee2d2f34a473
-begin
-	cheatsheet = """
-
-<p>(See fuller <a href="https://neelsmith.github.io/GreekSyntax.jl/stable/html/">documentation</a>.)
-	</p>
-
-<h4>On <code>div</code></h4>
-
-	<ul>
-<li> <code>class="passage"</code></li>
-	</ul>
-
-	<h4>On <code>blockquote</code></h4>
-
-	<ul>
-<li> <code>class="subordination"</code></li>
-	</ul>
-
-<h4>On <code>span</code></h4>
-
-Class attributes:
-
-	<ul>
-<li> <code>connector</code></li>
-<li> <code>subject</code></li>
-<li> <code>verb</code></li>
-<li> <code>object</code></li>
-</ul>
-
-	<p>
-Also on <code>span</code>: colors from a vector of colors are directly set in <code>style</code> attribute for verbal groups.
-	</p>
-"""
-
-	Foldable("Summary of CSS usage", HTML("""$(cheatsheet)""")) |> aside
-end
-
-# ╔═╡ 7ecae17d-855e-4dd7-8404-4c3057470007
-md"""*Use default CSS* $(@bind defaultcss CheckBox(true))"""
-
-# ╔═╡ 9ed6aaaf-fba8-4101-9a6c-48215f4ec3f9
- css = if defaultcss
- 	cssbody = GreekSyntax.defaultcss()
-	 HTML("<style>$(cssbody)</style>")
-	 
- else
-	 
- html"""
-<style>
- div.passage {
- 	padding-top: 2em;
- 	padding-bottom: 2em;
- 
- }
-  blockquote.subordination {
- 	padding: 0em;
- 
- }
-  .connector {
- background: yellow;  
- font-style: bold;
-}
-
-.subject {
- 	text-decoration: underline;
- 	text-decoration-thickness: 3px;
-}
-.object {
- 	text-decoration: underline;
- 	text-decoration-style: wavy;
- }
- .verb {
- 	border: thin solid black;
- 	padding: 1px 3px;
- 	
- }
-
- .unassigned {
- color: silver;
- }
- 
-
-span.tooltip{
-  position: relative;
-  display: inline;
-}
-span.tooltip:hover:after{ visibility: visible; opacity: 0.8; bottom: 20px; }
-span.tooltip:hover:before{ visibility: visible; opacity: 0.8; bottom: 14px; }
-
-span.tooltip:after{
-  display: block;
-  visibility: hidden;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  opacity: 0.9;
-  content: attr(tool-tips);
-  height: auto;
-  width: auto;
-  min-width: 100px;
-  padding: 5px 8px;
-  z-index: 999;
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  background: rgba(0,0,0,0.85);
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-span.tooltip:before {
-  position: absolute;
-  visibility: hidden;
-  width: 0;
-  height: 0;
-  left: 50%;
-  bottom: 0px;
-  opacity: 0;
-  content: "";
-  border-style: solid;
-  border-width: 6px 6px 0 6px;
-  border-color: rgba(0,0,0,0.85) transparent transparent transparent;
-}
- """
- end
-
-# ╔═╡ 092fc2ea-cbc3-4f2b-90b4-da5d8980b97c
-md"""*Use default color palette* $(@bind defaultcolors CheckBox(true))"""
-
-# ╔═╡ 87e46deb-aaad-4e78-81e9-410e3dda062d
-palette = if defaultcolors
-	
-	GreekSyntax.defaultpalette
-	
-else
-	["#79A6A3;",
-	"#E5B36A;",
-	"#C7D7CA;",
-	"#E7926C;",
-	"#D29DC0;",
-	"#C2D6C4;",
-	"#D291BC;",
-	"E7DCCA;",
-	"#FEC8D8;",
-	"#F5CF89;",
-	"#F394AF;"
-]
-end
-
-# ╔═╡ 34f55f22-1115-4962-801f-bde4edca05f3
-html"""
-<br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/>
-<br/><br/><br/><br/><br/><br/><br/>
 <hr/>
 """
 
-# ╔═╡ 85e2f41f-1163-45f1-b10a-aa25769f8345
-md"You should not need to edit the following cells:"
+# ╔═╡ d8df443c-44b0-4243-ae40-9ad1a684281f
+md"> Check settings and load data"
 
-# ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
-md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text annotations from a local file or a URL.
->
-
-
-"""
-
-# ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
-(sentences, verbalunits, tokens) = if srctype == "file"
+# ╔═╡ 9447b4e0-e2e3-4c5f-9958-ede1549d0027
+(sentences, groups, tokens) = if srctype == "file"
 	 joinpath(basedir, dataset) |> readlines |> readdelimited
 elseif srctype == "url"
 	Downloads.download(url) |> readlines |> readdelimited
@@ -279,231 +104,198 @@ else
 	(nothing, nothing, nothing)
 end
 
-# ╔═╡ 20f31f23-9d89-47d3-85a3-b53b5bc67a9f
-"""True if selected dataset exists."""
-function dsexists()
-	! isnothing(sentences) && ! isempty(sentences)
-end
-
-# ╔═╡ 31ea4680-63ff-44fc-82cf-dadb041fd144
-if srctype == "url"
-	if dsexists()
-		md"""*Summary of data loaded*:  **$(length(sentences)) sentences** with **$(length(verbalunits)) verbal units** composed from **$(length(tokens)) tokens**."""
-		
-	else
-		md"Something is broken"
+# ╔═╡ 5f0898f7-bc7d-479c-a304-c84ded1a9a90
+if runit
+			
+	open(joinpath(outputdir, "syntax.css"), "w") do io
+		write(io, GreekSyntax.defaultcss() * "\n")
 	end
-elseif srctype == "file"
-if ! @isdefined(dataset) || isempty(dataset)
-	md"""*Please choose a file*"""
+
+	open(joinpath(outputdir, "page.css"), "w") do io
+		write(io, GreekSyntax.pagecss())
+	end
+
+
+	md"""*Wrote CSS files to $(outputdir).*"""	
 else
-	if dsexists()
-		md"""*Summary of data loaded*:  **$(length(sentences)) sentences** with **$(length(verbalunits)) verbal units** composed from **$(length(tokens)) tokens**."""
-		
+	md"""*Waiting to write CSS files...*"""
+end
+
+
+# ╔═╡ 49f787aa-63ec-4883-ac98-49310bdad7d8
+"True if all settings are OK"
+function settingsok()
+	if ! isdir(outputdir) || isempty(textlabel) || isnothing(sentences)
+		false
 	else
-		md"Something is broken"
+		true
 	end
 end
-end
 
-# ╔═╡ 185edebe-b458-436e-91e7-3db8703991bf
-if dsexists()
-	md"""### Read by sentence"""
-end
-
-# ╔═╡ 32048e21-b1eb-49f1-94e6-c5347331f727
-if dsexists()
-	sentencemenu = [0 => ""]
-	for (i,s) in enumerate(sentences)
-		push!(sentencemenu, i => string("[", s.sequence, "] ") * passagecomponent(s.range))
+# ╔═╡ 792a44c9-093d-431d-9277-a77163433570
+"""Make directory for syntax diagrams."""
+function mkpngdir(outdir)
+	imgdir = if startswith(outdir, "/")
+		joinpath(outdir, "pngs")
+	else
+		joinpath(pwd(), outdir, "pngs")
 	end
-
-	
-	md"""*Choose a sentence* $(@bind sentchoice Select(sentencemenu)) 
-	"""
+	mkpath(imgdir)
 end
 
-# ╔═╡ deb8fb9d-407f-4bc8-9690-92934e5751e1
-# Add this when tooltip data are added to GreekSyntax.jl
-#*Add tooltips* $(@bind tippy CheckBox())if dsexists()
-begin
-	if dsexists()
-	md""" *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox()) *Include tooltips* $(@bind tooltips CheckBox())
+# ╔═╡ 3e11aa5f-f020-4229-95c6-3f64145738ed
+pngdir = mkpngdir(outputdir)
+
+# ╔═╡ d0e510b8-edab-4249-9609-fd082225def2
+md"""> Functions composing HTML"""
+
+# ╔═╡ 903326cf-c9eb-45fd-b6a9-d131bebab02a
+
+"""Wrap page title and body content in HTML elements,
+and include link to syntax.css.
 """
-end
+function wrap_page(title, content)
+    """<html>
+    <head>
+    <title>$(title)</title>
+    <link rel=\"stylesheet\" href=\"syntax.css\">
+    <link rel=\"stylesheet\" href=\"page.css\">
+    </head>
+    <body>$(content)</body>
+    </html>"""
 end
 
-# ╔═╡ 2c692039-dd5b-4430-9f2e-d9eaa8851fbf
-if dsexists()
-	md"""*Include syntax diagram* $(@bind diagram CheckBox())
+# ╔═╡ 3faa116c-df96-4110-bf43-daef4b4ccdb1
+
+"""Compose navigation links for page with index `idx`.
 """
+function navlinks(idx::Int, sentencelist::Vector{SentenceAnnotation})
+    nxt = ""
+    prev = ""
+    if idx == 1
+        nxtpsg = sentences[idx + 1].range |> passagecomponent
+        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+    
+        prev = ""
+        
+    elseif idx == length(sentences)
+        nxt = ""
+
+        prevpsg = sentences[idx - 1].range |> passagecomponent
+        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+
+    else
+        nxtpsg = sentences[idx + 1].range |> passagecomponent
+        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+
+        prevpsg = sentences[idx - 1].range |> passagecomponent
+        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+    end
+nav = "<p class=\"nav\">$(prev) | $(nxt)</p>"
 end
 
-# ╔═╡ 69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
-sentence = if dsexists() && sentchoice > 0
-	sentences[sentchoice]
+# ╔═╡ 5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
+
+"""Compose HMTL page for sentence number `idx`.
+"""
+function webpage(idx, sentences, groups, tokens, versionid)
+    sentence = sentences[idx]
+    @info("$(idx). Writing page for $(sentence.sequence) == $(sentence.range)...")
+
+    # Compose parts of page content:
+
+    #  Heading and subheading
+    psg = passagecomponent(sentence.range)
+    pagetitle = "$(textlabel),  $(psg)"
+    hdg = "<h1>$(pagetitle)</h1>"
+    subhead = "<h2>Sentence $(sentence.sequence)</h2>"
+     
+    # navigation links
+    nav = navlinks(idx, sentences)
+
+    # Continuous text view:
+    plaintext = htmltext(sentence.range, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
+
+
+    # Text colored by verbal expression:
+    key1 = "<div class=\"key right\"><strong>Highlighting</strong>:" *  GreekSyntax.sovkey() * "</div>"
+    txtdisplay1 = "<div class=\"passage\">" * htmltext_indented(sentence, groups, tokens, sov = true, vucolor = false) * "</div>"
+
+    # Text indented by level of subordination
+    pagegroups = GreekSyntax.groupsforsentence(sentence, groups)
+    key2 = "<div class=\"key left\"><strong>Color code</strong>:" * GreekSyntax.htmlgrouplist(pagegroups) * "</div>"
+    txtdisplay2 = "<div class=\"passage\">" * htmltext(sentence, tokens, sov = true, vucolor = true) * "</div>"
+
+    # Syntax diagram (pre-generated PNG)
+    @info("Linking to image for $(sentence.sequence) == $(sentence.range)")
+    imglink = "<img src=\"pngs/sentence_$(sentence.sequence).png\" alt=\"Syntax diagram, sentence $(sentence.sequence)\"/>"
+    diagram = "<div class=\"diagram\">" * imglink * "</div>"
+    
+    m = now() |> monthname
+    d = now() |> day
+    y = now() |> year
+    footer = "<footer>Site created by Pluto notebook <code>webpublisher.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
+
+    # String all the parts together!
+    htmlparts = [hdg, nav, subhead, plaintext, txtdisplay1, txtdisplay2, key1, key2, diagram, footer]
+    bodycontent = join(htmlparts, "\n\n")
+    wrap_page(pagetitle, bodycontent)
+end
+
+
+# ╔═╡ 2f4f4048-3998-4743-aa5c-641e82e23c22
+
+"""Write HTML page for sentence `num` to HTML file.
+"""
+function publishsentence(num, sentences, groups, tokens, versionid; pngdir = pngdir, outdir = outputdir)
+    idx = findfirst(s -> s.sequence == num, sentences)
+    # Write png for page:
+    sentence = sentences[idx]
+    @info("Composing diagram for sentence $(num) == $(sentence.range)")
+    pngout = mermaiddiagram(sentence, tokens, format = "png")
+    write(joinpath(pngdir, "sentence_$(sentence.sequence).png"), pngout)
+
+    psg = passagecomponent(sentence.range)
+    pagehtml = webpage(idx, sentences, groups, tokens, versionid)
+    open(joinpath(outputdir, "$(psg).html"), "w") do io
+        write(io, pagehtml)
+    end
+    @info("Done: wrote HTML page for sentence $(num) in $(outputdir) as $(psg).html.")
+end
+
+# ╔═╡ 94054ecf-5089-4f36-a94d-62de91ff022a
+"""Write HTML pages for all sentences in `sentences`.
+"""
+function publishall(sentences, groups, tokens, versionid)
+    for sentence in sentences
+        publishsentence(sentence.sequence, sentences, groups, tokens, versionid)   
+    end
+    @info("Done: wrote $(length(sentences)) HTML pages linked to accompanying PNG file in $(outputdir). (Now in $(pwd()))")
+end
+
+# ╔═╡ f6337759-7c80-43db-b050-a7895e201542
+if ! runit 
 else
-	nothing
-end
-
-# ╔═╡ ecfb8e4c-63ac-4e90-8aad-44de200dc60a
-# ╠═╡ show_logs = false
-if @isdefined(sentchoice) && sentchoice > 0 
-	slidermax = GreekSyntax.maxdepthforsentence(sentence, verbalunits)
-	md"""*Show sentence up to level*: $(@bind threshhold NumberField(1:slidermax))
-"""
-end
-
-# ╔═╡ 1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
-if @isdefined(sentchoice) && sentchoice > 0
-	
-	sovkey =  sov ? """<p><b>SOV+ highlighting</b>:</p><ul>
-	<li><span class="connector">sentence connector</span></li>
-	<li><span class="verb">unit verb</span></li>
-	<li><span class="subject">subject of unit verb</span></li>
-	<li><span class="object">object of unit verb</span></li>
-	</ul>
-	""" : ""
-
-	sentgroups = GreekSyntax.groupsforsentence(sentence, verbalunits)
-	levelgroups = filter(sentgroups) do gr
-		gr.depth <= threshhold
-	end
-
-	
-	colorkey = vucolor ? "<p><b>Color</b></p>" * htmlgrouplist(sentence, levelgroups) : ""
-	
-	keytext = sovkey * colorkey
-
-	if ! isempty(keytext)
-		aside(Foldable("Key to highlighting",  HTML(keytext)))
-	end
-end
-
-# ╔═╡ 2439b90f-9082-4ab4-b37c-73215979d1d7
-"""True if data has been loaded and parsed."""
-function dataloaded()
-	! isnothing(sentence)
-end
-
-# ╔═╡ dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
-	if dataloaded()
-		(sentencetokens, connectorids, origin) = GreekSyntax.tokeninfoforsentence(sentence, tokens)
-	end
-
-# ╔═╡ c6ea9917-c597-4711-9fd4-66e33062b380
-# ╠═╡ show_logs = false
-if @isdefined(sentchoice) && sentchoice > 0  
-	local levelselection = GreekSyntax.filterbylevel(threshhold, verbalunits, sentencetokens)
-	local newsent = SentenceAnnotation(
-	    GreekSyntax.sentencerange(levelselection), sentence.sequence, sentence.connector
-	)
-
-	
-	htmltext_indented(newsent, verbalunits, levelselection, sov = sov, vucolor = vucolor, palette = palette, syntaxtips = tooltips )   |> HTML
-	
-end
-
-# ╔═╡ 809e4588-4d79-4a6d-a0e7-625805fc73d7
-# ╠═╡ show_logs = false
-
-if @isdefined(sentchoice) && sentchoice > 0 && diagram
-	#=
-	local levelselection = GreekSyntax.filterbylevel(threshhold, verbalunits, sentencetokens)
-	local newsent = SentenceAnnotation(
-	    GreekSyntax.sentencerange(levelselection), sentence.sequence, sentence.connector
-	)
-	=#
-	diagramwarning = md"""Diagramming is currently turned off when viewing only selected selected levels of subordination because you can end up with diagrammed words connected to words that are excluded from the diagram.
-
-A future version of this notebook might try to address this.
-	"""
-
-	
-	if threshhold < GreekSyntax.maxdepthforsentence(sentence, verbalunits)
-		warning_box(diagramwarning)
+	if settingsok()		
+		publishall(sentences, groups, tokens, nbversion)
+		md"""**Done**: wrote **$(length(sentences))** HTML pages linked to accompanying PNG file in *$(outputdir)*."""
 	else
-		graphstr  = mermaiddiagram(sentence, sentencetokens)
-		mermaid"""$(graphstr)"""
-	end
-end
-
-
-# ╔═╡ 698f3062-02a4-48b5-955e-a8c3ee527872
-"""Format user instructions with Markdown admonition."""
-instructions(title, text) = Markdown.MD(Markdown.Admonition("tip", title, [text]))
-
-# ╔═╡ d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
-begin
-	loadmsg = md"""
-	
-You may load syntactically annotated texts from a URL or from a local file.
-
-*To load from a URL*:
-	
-- paste or type a URL in the input box, and verify your choice with the `Submit` button 
-
-	
-*To load from a file*:
-	
-1. Identify a directory with delimited-text files containing syntactic annotations, and verify your choice with the `Submit` button.
-2. Choose a file from the popup menu.
-
-
-"""
-	aside(Foldable("How to load annotated texts", instructions("Loading data sets", loadmsg))  )
-end
-
-# ╔═╡ f0ca233e-2113-451a-ac90-3ecb1f44d329
-begin
-	if dsexists()
-	readmsg = md"""
-
-#### Text formatting
-	
-- The `Highlight SOV+ functions` highlights the subject, object and verb for each verbal expression, and the connecting word for each sentence with special formatting defined in CSS (below).
-- The 'Color verbal units` option colors words by the verbal expression they belong to.
-
-
-#### Syntax diagram
-	
-The `Include syntax diagram` option appends a graph illustrating the syntactic relations of every word in the sentence.	
-
-"""
-	Foldable("Formatting options", instructions("Reading annotated texts", readmsg))  
-	end
-end
-
-# ╔═╡ 7772957f-3d7b-44b0-9cfe-998b8e6ab3cc
-begin
-	if seecss
-	cssmsg = md"""
-The following two cells define the visual appearance of the text's formatting.  If you are familiar with CSS, you can modify them to tailor the presentation to your preferences.
-
-1.  Unfold the `Summary of CSS usage` to see what attributes are defined in the HTML generated by the `GreekSyntax` package.  You can alter the corresponding CSS values in the definition of `css` in the following cell.
-2. The second cell defines `palette`, a series of colors that the notebook cycles through in highlighting different verbal expressions by color.  You can directly edit the cell to change those RGB values
-"""
-		instructions("Style your own", cssmsg)
+		md"""*Please complete settings.*"""
 	end
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
-PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
-CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.1"
-Kroki = "~0.2.0"
-PlutoTeachingTools = "~0.2.5"
+GreekSyntax = "~0.11.2"
 PlutoUI = "~0.7.49"
 """
 
@@ -513,7 +305,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "dc94b5133438339f4bf953d84c6f24efdc079705"
+project_hash = "4080a787a6e61015c6fbfbeb52d3fa481901cb54"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -588,12 +380,6 @@ deps = ["CSV", "CitableBase", "DocStringExtensions", "Documenter", "HTTP", "Test
 git-tree-sha1 = "8637a7520d7692d68cdebec69740d84e50da5750"
 uuid = "e2e9ead3-1b6c-4e96-b95f-43e6ab899178"
 version = "0.10.1"
-
-[[deps.CodeTracking]]
-deps = ["InteractiveUtils", "UUIDs"]
-git-tree-sha1 = "0e5c14c3bb8a61b3d53b2c0620570c332c8d0663"
-uuid = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
-version = "1.2.0"
 
 [[deps.CodecZlib]]
 deps = ["TranscodingStreams", "Zlib_jll"]
@@ -685,21 +471,15 @@ git-tree-sha1 = "335bfdceacc84c5cdf16aadc768aa5ddfc5383cc"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 version = "0.8.4"
 
-[[deps.Formatting]]
-deps = ["Printf"]
-git-tree-sha1 = "8339d61043228fdd3eb658d86c926cb282ae72a8"
-uuid = "59287772-0a20-5a39-b81b-1366585eb4c0"
-version = "0.4.2"
-
 [[deps.Future]]
 deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "b35434fd059f1ca27df359d63336b1235060d20c"
+git-tree-sha1 = "331f698667dd710dd1d3b6d90bba245b5b17c83d"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.1"
+version = "0.11.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -773,28 +553,11 @@ git-tree-sha1 = "3c837543ddb02250ef42f4738347454f95079d4e"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.3"
 
-[[deps.JuliaInterpreter]]
-deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "72ab280d921e8a013a83e64709f66bc3e854b2ed"
-uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.9.20"
-
 [[deps.Kroki]]
 deps = ["Base64", "CodecZlib", "DocStringExtensions", "HTTP", "JSON", "Markdown", "Reexport"]
 git-tree-sha1 = "a3235f9ff60923658084df500cdbc0442ced3274"
 uuid = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
 version = "0.2.0"
-
-[[deps.LaTeXStrings]]
-git-tree-sha1 = "f2355693d6778a178ade15952b7ac47a4ff97996"
-uuid = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
-version = "1.3.0"
-
-[[deps.Latexify]]
-deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Printf", "Requires"]
-git-tree-sha1 = "2422f47b34d4b127720a18f86fa7b1aa2e141f29"
-uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.15.18"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -837,22 +600,10 @@ git-tree-sha1 = "cedb76b37bc5a6c702ade66be44f831fa23c681e"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
 version = "1.0.0"
 
-[[deps.LoweredCodeUtils]]
-deps = ["JuliaInterpreter"]
-git-tree-sha1 = "60168780555f3e663c536500aa790b6368adc02a"
-uuid = "6f1432cf-f94c-5a45-995e-cdbf5db27b0b"
-version = "2.3.0"
-
 [[deps.MIMEs]]
 git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
 uuid = "6c6e2e6c-3030-632d-7369-2d6c69616d65"
 version = "0.1.4"
-
-[[deps.MacroTools]]
-deps = ["Markdown", "Random"]
-git-tree-sha1 = "42324d08725e200c23d4dfb549e0d5d89dede2d2"
-uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
-version = "0.5.10"
 
 [[deps.Markdown]]
 deps = ["Base64"]
@@ -925,24 +676,6 @@ deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markd
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 version = "1.8.0"
 
-[[deps.PlutoHooks]]
-deps = ["InteractiveUtils", "Markdown", "UUIDs"]
-git-tree-sha1 = "072cdf20c9b0507fdd977d7d246d90030609674b"
-uuid = "0ff47ea0-7a50-410d-8455-4348d5de0774"
-version = "0.0.5"
-
-[[deps.PlutoLinks]]
-deps = ["FileWatching", "InteractiveUtils", "Markdown", "PlutoHooks", "Revise", "UUIDs"]
-git-tree-sha1 = "8f5fa7056e6dcfb23ac5211de38e6c03f6367794"
-uuid = "0ff47ea0-7a50-410d-8455-4348d5de0420"
-version = "0.1.6"
-
-[[deps.PlutoTeachingTools]]
-deps = ["Downloads", "HypertextLiteral", "LaTeXStrings", "Latexify", "Markdown", "PlutoLinks", "PlutoUI", "Random"]
-git-tree-sha1 = "ea3e4ac2e49e3438815f8946fa7673b658e35bdb"
-uuid = "661c6b06-c737-4d37-b85c-46df65de6f69"
-version = "0.2.5"
-
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
 git-tree-sha1 = "eadad7b14cf046de6eb41f13c9275e5aa2711ab6"
@@ -983,18 +716,6 @@ uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
 version = "1.2.2"
-
-[[deps.Requires]]
-deps = ["UUIDs"]
-git-tree-sha1 = "838a3a4188e2ded87a4f9f184b4b0d78a1e91cb7"
-uuid = "ae029012-a4dd-5104-9daa-d747884805df"
-version = "1.3.0"
-
-[[deps.Revise]]
-deps = ["CodeTracking", "Distributed", "FileWatching", "JuliaInterpreter", "LibGit2", "LoweredCodeUtils", "OrderedCollections", "Pkg", "REPL", "Requires", "UUIDs", "Unicode"]
-git-tree-sha1 = "fd5dba2f01743555d8435f7c96437b29eae81a17"
-uuid = "295af30f-e4ad-537b-8983-00126c2a3abe"
-version = "3.5.0"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
@@ -1148,42 +869,30 @@ version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─6791a277-05ea-43d6-9710-c4044f0c178a
-# ╟─c91e9345-9a42-4418-861b-6cdda203a71e
-# ╟─282716c0-e0e4-4433-beb4-4b988fddaa9c
-# ╟─a4946b0e-17c9-4f90-b820-2439047f2a6a
-# ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
-# ╟─b9311908-9282-4658-95ab-6e1ff0ebb84f
-# ╟─d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
-# ╟─86d64b7d-e3f1-4346-96fa-fb166f7ceeea
-# ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
-# ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
-# ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
-# ╟─185edebe-b458-436e-91e7-3db8703991bf
-# ╟─32048e21-b1eb-49f1-94e6-c5347331f727
-# ╟─f0ca233e-2113-451a-ac90-3ecb1f44d329
-# ╟─deb8fb9d-407f-4bc8-9690-92934e5751e1
-# ╟─1efb3f4c-13a7-4e71-a2f0-fdd9a057f37c
-# ╟─ecfb8e4c-63ac-4e90-8aad-44de200dc60a
-# ╟─c6ea9917-c597-4711-9fd4-66e33062b380
-# ╟─2c692039-dd5b-4430-9f2e-d9eaa8851fbf
-# ╟─809e4588-4d79-4a6d-a0e7-625805fc73d7
-# ╟─73efb203-72ad-4c16-9836-140303f4e189
-# ╟─ec7eb05f-fd6d-4477-a80b-9bfe1fe02fac
-# ╟─7772957f-3d7b-44b0-9cfe-998b8e6ab3cc
-# ╟─fd69dddd-5903-41eb-8ddc-ee2d2f34a473
-# ╟─7ecae17d-855e-4dd7-8404-4c3057470007
-# ╟─9ed6aaaf-fba8-4101-9a6c-48215f4ec3f9
-# ╟─092fc2ea-cbc3-4f2b-90b4-da5d8980b97c
-# ╟─87e46deb-aaad-4e78-81e9-410e3dda062d
-# ╟─34f55f22-1115-4962-801f-bde4edca05f3
-# ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
-# ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
-# ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
-# ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
-# ╠═dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
-# ╟─2439b90f-9082-4ab4-b37c-73215979d1d7
-# ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
-# ╟─698f3062-02a4-48b5-955e-a8c3ee527872
+# ╟─7e0a834e-ab93-4320-9119-cbd04495dc9b
+# ╟─4fa2c004-746d-448b-a163-fa6c396f1003
+# ╟─5ede902b-be5d-479a-9816-209b1adb7ce8
+# ╟─31d7e8b4-e4b3-450e-9401-f4256dfe8d53
+# ╟─93b49926-9104-11ed-19c6-df715bde3818
+# ╟─24abee74-963f-465a-b889-b88ecddca4f3
+# ╟─3d38cad6-d10e-4eac-b33c-1cb15ac8f198
+# ╟─6f8812cd-5bcb-4db7-a431-bc7402b0d187
+# ╟─45bb7468-adfe-41c9-9ab9-d3c597e380f8
+# ╟─2fd228b9-1a78-49c9-862e-3e7e11a3b2e0
+# ╟─ca9cc614-b1c3-4b31-a263-e80a09a978a0
+# ╟─f6337759-7c80-43db-b050-a7895e201542
+# ╟─60c5db9e-5185-42e1-a5cd-49ec516f07f3
+# ╟─d8df443c-44b0-4243-ae40-9ad1a684281f
+# ╟─9447b4e0-e2e3-4c5f-9958-ede1549d0027
+# ╟─3e11aa5f-f020-4229-95c6-3f64145738ed
+# ╟─5f0898f7-bc7d-479c-a304-c84ded1a9a90
+# ╟─49f787aa-63ec-4883-ac98-49310bdad7d8
+# ╟─792a44c9-093d-431d-9277-a77163433570
+# ╟─d0e510b8-edab-4249-9609-fd082225def2
+# ╟─94054ecf-5089-4f36-a94d-62de91ff022a
+# ╟─2f4f4048-3998-4743-aa5c-641e82e23c22
+# ╟─5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
+# ╟─903326cf-c9eb-45fd-b6a9-d131bebab02a
+# ╟─3faa116c-df96-4110-bf43-daef4b4ccdb1
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
