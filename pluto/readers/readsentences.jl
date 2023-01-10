@@ -474,7 +474,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "c282ff76651e8dcdabc6a1b1f790bef36fdab3fe"
+project_hash = "55000192c24ceef3366efb7565dc1c7330cf3532"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
