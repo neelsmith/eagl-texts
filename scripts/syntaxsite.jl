@@ -31,17 +31,13 @@ Pkg.add("Dates")
 Pkg.update()
 cd(originaldir)
 
-#= 2. Optionally, you may define your own CSS.
-
-Each web page includes:
+#= HTML and CSS organization: each web page includes
 
 - 2 divs of class `passage`, with two different text displays of the passage.  Each div is accompanied by a div of class `key` with a key to interpreting the visual formatting of the passage.
 - 1 div of class `diagram` with a link to the png file for this sentence.
 
 =#
 using GreekSyntax
-css_text = GreekSyntax.defaultcss()
-page_css = GreekSyntax.pagecss()
 
 #= 3. Good to go!  The rest of this script should run
 without any further modification.

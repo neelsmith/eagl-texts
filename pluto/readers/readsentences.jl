@@ -29,7 +29,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.3";
+nbversion = "0.4.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,6 +37,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.4.0*:	 add option to include tooltips in display
 - **0.3.3*: change default file and URL sources to new host on aegl-texts repository
 - **0.3.2**: use `passage` class on div wrapping text passages
 - **0.3.1**: updates internal manifest to use version `0.9` of `GreekSyntax`
@@ -49,7 +50,7 @@ if history
 end
 
 # ╔═╡ e7059fa0-82f2-11ed-3bfe-059070a00b1d
-md"""## Read Greek texts by sentence
+md"""## Read annotated texts by sentence
 
 """
 
@@ -148,6 +149,8 @@ md"""*Use default CSS* $(@bind defaultcss CheckBox(true))"""
  div.passage {
  	padding-top: 2em;
  	padding-bottom: 2em;
+ 	margin-top: 1em;
+ 	margin-bottom: 1em;
  
  }
   blockquote.subordination {
@@ -326,7 +329,7 @@ begin
 	if dsexists()
 	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
 	]
-	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox()) 
+	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
 """
 end
 end
@@ -335,11 +338,11 @@ end
 # ╠═╡ show_logs = false
 if @isdefined(sentchoice) && sentchoice > 0
 	if txtdisplay == "continuous"
-		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor) * "</div>"
+		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
 		HTML(rendered)
 		
 	else # indented
-		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], verbalunits, tokens; sov = sov, vucolor = vucolor) * "</div>"
+		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], verbalunits, tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
 
 		HTML(rendered)
 		
@@ -459,7 +462,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.9.0"
+GreekSyntax = "~0.11.0"
 Kroki = "~0.2.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -471,7 +474,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "bca951455e145e55e5b0df5fcdfe910dee11c878"
+project_hash = "c282ff76651e8dcdabc6a1b1f790bef36fdab3fe"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -655,9 +658,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "9e046f538366814bc7ff78aa81d4112a077ed64d"
+git-tree-sha1 = "b1f46a1f58731d836ad330e3ae89cb22a393ce87"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.9.0"
+version = "0.11.0"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -750,9 +753,9 @@ version = "1.3.0"
 
 [[deps.Latexify]]
 deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Printf", "Requires"]
-git-tree-sha1 = "ab9aa169d2160129beb241cb2750ca499b4e90e9"
+git-tree-sha1 = "2422f47b34d4b127720a18f86fa7b1aa2e141f29"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.15.17"
+version = "0.15.18"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -1046,9 +1049,9 @@ version = "2.0.0"
 
 [[deps.TranscodingStreams]]
 deps = ["Random", "Test"]
-git-tree-sha1 = "e4bdc63f5c6d62e80eb1c0043fcc0360d5950ff7"
+git-tree-sha1 = "94f38103c984f89cf77c402f2a68dbd870f8165f"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.9.10"
+version = "0.9.11"
 
 [[deps.Tricks]]
 git-tree-sha1 = "6bac775f2d42a611cdfcd1fb217ee719630c4175"
@@ -1136,7 +1139,7 @@ version = "17.4.0+0"
 # ╟─34f55f22-1115-4962-801f-bde4edca05f3
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
-# ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
+# ╠═74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
