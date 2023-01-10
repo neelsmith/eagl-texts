@@ -73,7 +73,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 31cc3ad6-ac34-49f7-a86f-575a08eb1358
-nbversion = "0.7.0";
+nbversion = "0.7.1";
 
 # ╔═╡ ed67e569-147c-4899-b338-f3282d9474b1
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,6 +82,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 if history
 md"""
 
+- **0.7.1**: Redefine default data directory for new host site on aegl-texts.
 - **0.7.0**: Works with either Greek or Latin texts.
 - **0.6.0**: Allow loading source data from file or URL.
 - **0.5.1**: Fixes a bug in serializing verbal expressions.
@@ -123,7 +124,7 @@ md"""*Please provide a title for your collection of annotations.*
 
 # ╔═╡ 3c3003e6-ebe9-434a-8960-6504b0e1578e
 begin
-	defaultdir = joinpath(pwd(), "output")
+	defaultdir = joinpath(dirname(dirname(pwd())), "scratchpad")
 	md"""*Directory where results will be saved*: $(@bind outputdir confirm(TextField(80, default = defaultdir)))"""
 # *Title*: $(@bind title TextField(80; placeholder = "Title for text"))
 end
@@ -143,7 +144,7 @@ if srctype == "url"
 
 elseif srctype == "file"
 	
-	defaultsrcdir = joinpath(dirname(pwd()), "data", "texts")
+	defaultsrcdir = joinpath(dirname(dirname(pwd())), "texts")
 	md"""*Source directory*: $(@bind basedir confirm(TextField(80; default = defaultsrcdir)))"""
 end
 
