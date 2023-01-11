@@ -91,6 +91,11 @@ Show these:
 - [  types of verbal expression
 """
 
+# ╔═╡ 7ba42585-cde0-4c2c-a6b9-376a2db4984c
+md"""Show the following observations:
+
+*Number of groups* $(@bind showgroupcounts CheckBox(true))"""
+
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
 html"""
 <br/><br/><br/>
@@ -133,6 +138,12 @@ if dsexists()
 	
 end
 
+# ╔═╡ 57f3f111-1ac6-4827-b7a4-10c3b1604c9b
+if dsexists()
+	x = map(s -> string(s.sequence), sentences)
+end
+
+
 # ╔═╡ 8a16520a-db12-4e16-8e7f-197b79d88f4d
 if dsexists()
 	skippedsentences = sentences[end].sequence - sentences[1].sequence - length(sentences)
@@ -156,19 +167,39 @@ else
 Coverage:
 		
 - Range of citable passages:  **$(displayrange)**
-- **$(length(sentences)) sentences** annotated: **$(skippedsentences)** sentences in that range *omitted* from annotations
+- **$(length(sentences))** sentences annotated: **$(skippedsentences)** sentences in that range *omitted* from annotations
 
 
 Content:
 		
-- **$(length(groups)) verbal expressions** 
-- **$(length(tokens)) tokens**, 
+- **$(length(groups))** verbal expressions
+- **$(length(tokens))** tokens 
 """
 		
 	else
 		md"Something is broken"
 	end
 end
+end
+
+# ╔═╡ 8606d07c-4167-4802-a033-cddb46afcde9
+if dsexists()
+	groupcounts = map(sentences) do s
+		GreekSyntax.groupsforsentence(s, groups) |> length
+	end
+end
+
+# ╔═╡ 7ea1c306-8304-4d5a-ae22-f677eec744c1
+if dsexists()
+	yvalues = []
+	if showgroupcounts
+		push!(yvalues, groupcounts)
+	end
+	if isempty(yvalues)
+		md"""*No data selected.*"""
+	else
+		plot(x, yvalues)
+	end
 end
 
 # ╔═╡ 698f3062-02a4-48b5-955e-a8c3ee527872
@@ -220,7 +251,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "a57e6727d97e1daaae79e911d059724f48608794"
+project_hash = "798c174bd58756c497c2b85a03995a22d6deb390"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1402,13 +1433,17 @@ version = "1.4.1+0"
 # ╟─86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
-# ╠═31ea4680-63ff-44fc-82cf-dadb041fd144
+# ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
 # ╠═aa88ffc8-d044-4887-9b33-e5da77f5cfa1
+# ╠═7ba42585-cde0-4c2c-a6b9-376a2db4984c
+# ╠═7ea1c306-8304-4d5a-ae22-f677eec744c1
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
 # ╠═7325db1f-6c3b-4479-a83b-9fb21e363e09
+# ╟─57f3f111-1ac6-4827-b7a4-10c3b1604c9b
 # ╠═8a16520a-db12-4e16-8e7f-197b79d88f4d
+# ╠═8606d07c-4167-4802-a033-cddb46afcde9
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
