@@ -29,7 +29,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.0";
+nbversion = "0.4.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,6 +37,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.4.1*:	 cut out a little cruft
 - **0.4.0*:	 add option to include tooltips in display
 - **0.3.3*: change default file and URL sources to new host on aegl-texts repository
 - **0.3.2**: use `passage` class on div wrapping text passages
@@ -323,15 +324,11 @@ if dsexists()
 end
 
 # ╔═╡ deb8fb9d-407f-4bc8-9690-92934e5751e1
-# Add this when tooltip data are added to GreekSyntax.jl
-#*Add tooltips* $(@bind tippy CheckBox())if dsexists()
-begin
-	if dsexists()
+if dsexists()
 	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
 	]
 	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
 """
-end
 end
 
 # ╔═╡ c26d95cb-e681-43e0-acc7-e4af4bf5e0da
