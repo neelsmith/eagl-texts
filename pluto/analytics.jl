@@ -78,23 +78,16 @@ if srctype == "file"
 end
 
 
-# ╔═╡ aa88ffc8-d044-4887-9b33-e5da77f5cfa1
-md"""
-Show these:
-
-- [ ] depth
-- [ ] count of verbal expressions and *lexical* tokens
-- [ ] elisions (implied nodes)
-- [ ] asyndeton
-- [ ] distance from connector
-- [ ] distance from root related to sequence in sentence
-- [  types of verbal expression
-"""
-
 # ╔═╡ 7ba42585-cde0-4c2c-a6b9-376a2db4984c
-md"""Show the following observations:
+md"""### Basic observations
 
-*Number of groups* $(@bind showgroupcounts CheckBox(true))"""
+
+*Number of verbal expressions* $(@bind showgroupcounts CheckBox(true))
+*Depth of subordination* $(@bind showdepths CheckBox(true))
+*Number of words* $(@bind showlexcounts CheckBox()) *Types of verbal expression* $(@bind showgrouptypes CheckBox())
+
+
+"""
 
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
 html"""
@@ -104,6 +97,22 @@ html"""
 
 # ╔═╡ 85e2f41f-1163-45f1-b10a-aa25769f8345
 md"You should not need to edit the following cells:"
+
+# ╔═╡ aa88ffc8-d044-4887-9b33-e5da77f5cfa1
+md"""> In development
+
+Checklist of features to compute:
+
+- [x] depth
+- [x] count of verbal expressions 
+- [x] *lexical* tokens
+- [x] types of verbal expression
+- [ ] elisions (implied nodes)
+- [ ] asyndeton
+- [ ] distance from connector
+- [ ] distance from root related to sequence in sentence
+
+"""
 
 # ╔═╡ 8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
 md"> Computed data values"
@@ -150,37 +159,24 @@ if dsexists()
 end
 
 # ╔═╡ 31ea4680-63ff-44fc-82cf-dadb041fd144
-if srctype == "url"
-	if dsexists()
-		md"""*Summary of data loaded*:  **$(length(sentences)) sentences** with **$(length(groups)) verbal expressions** composed from **$(length(tokens)) tokens**."""
-		
-	else
-		md"Something is broken"
-	end
-elseif srctype == "file"
-if ! @isdefined(dataset) || isempty(dataset)
-	md"""*Please choose a file*"""
-else
-	if dsexists()
-		md"""## Summary of data loaded  
+if dsexists()
+	md"""### Summary of data loaded  
 
 Coverage:
-		
+	
 - Range of citable passages:  **$(displayrange)**
 - **$(length(sentences))** sentences annotated: **$(skippedsentences)** sentences in that range *omitted* from annotations
 
 
-Content:
-		
+Annotated content:
+	
 - **$(length(groups))** verbal expressions
 - **$(length(tokens))** tokens 
 """
-		
-	else
-		md"Something is broken"
-	end
+	
 end
-end
+
+
 
 # ╔═╡ 8606d07c-4167-4802-a033-cddb46afcde9
 if dsexists()
@@ -189,16 +185,56 @@ if dsexists()
 	end
 end
 
+# ╔═╡ c130c944-cf74-4454-abcb-ada3a96d9f3a
+if dsexists()
+	depths = map(sentences) do s
+		sentgroups = GreekSyntax.groupsforsentence(s, groups)
+		map(g -> g.depth, sentgroups) |> maximum
+	end
+end
+
+# ╔═╡ fa08a61b-f3ee-468c-aec6-94c743c6d8f5
+if dsexists()
+	lexcounts = map(sentences) do s
+		(sentencetokens, connectors, origin) = GreekSyntax.tokeninfoforsentence(s, tokens)
+		filter(t -> t.tokentype == "lexical", sentencetokens) |> length
+	end
+end
+
+# ╔═╡ 35ca2090-9ea9-477d-8222-7a2f067bb4ef
+if dsexists()
+	grouptypes = map(sentences) do s
+		sentgroups = GreekSyntax.groupsforsentence(s, groups)
+		map(g -> g.syntactic_type, sentgroups) |> unique |> length
+	end
+end
+
 # ╔═╡ 7ea1c306-8304-4d5a-ae22-f677eec744c1
 if dsexists()
 	yvalues = []
+	ylabels = []
 	if showgroupcounts
 		push!(yvalues, groupcounts)
+		push!(ylabels, "Verbal expressions")
 	end
+	if showdepths
+		push!(yvalues, depths)
+		push!(ylabels, "Syntactic depth")
+	end
+	if showlexcounts
+		push!(yvalues, lexcounts)
+		push!(ylabels, "Words")
+	end
+
+	if showgrouptypes
+		push!(yvalues, grouptypes)
+		push!(ylabels, "Types of verbal expression")
+	end
+	
 	if isempty(yvalues)
 		md"""*No data selected.*"""
 	else
-		plot(x, yvalues)
+		plot(x, xlabel = "Sequence of sentence  in complete work", yvalues, label = reshape(ylabels, 1, :))
 	end
 end
 
@@ -1434,16 +1470,19 @@ version = "1.4.1+0"
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
 # ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
-# ╠═aa88ffc8-d044-4887-9b33-e5da77f5cfa1
-# ╠═7ba42585-cde0-4c2c-a6b9-376a2db4984c
-# ╠═7ea1c306-8304-4d5a-ae22-f677eec744c1
+# ╟─7ba42585-cde0-4c2c-a6b9-376a2db4984c
+# ╟─7ea1c306-8304-4d5a-ae22-f677eec744c1
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
+# ╟─aa88ffc8-d044-4887-9b33-e5da77f5cfa1
 # ╟─8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
 # ╠═7325db1f-6c3b-4479-a83b-9fb21e363e09
 # ╟─57f3f111-1ac6-4827-b7a4-10c3b1604c9b
 # ╠═8a16520a-db12-4e16-8e7f-197b79d88f4d
 # ╠═8606d07c-4167-4802-a033-cddb46afcde9
+# ╠═c130c944-cf74-4454-abcb-ada3a96d9f3a
+# ╠═fa08a61b-f3ee-468c-aec6-94c743c6d8f5
+# ╠═35ca2090-9ea9-477d-8222-7a2f067bb4ef
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
