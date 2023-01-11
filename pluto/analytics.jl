@@ -29,7 +29,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.1.0";
+nbversion = "0.2.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,8 +37,8 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-
-- **0.0.1**: initial release	
+- **0.2.0**: add reading of individual passages
+- **0.1.0**: initial release	
 	"""
 end
 
@@ -89,6 +89,9 @@ md"""### Basic observations
 
 """
 
+# ╔═╡ 688a50e2-57e1-4a91-9701-dd6aa44812ef
+md"""Display a passage"""
+
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
 html"""
 <br/><br/><br/>
@@ -137,6 +140,43 @@ end
 """True if selected dataset exists."""
 function dsexists()
 	! isnothing(sentences) && ! isempty(sentences)
+end
+
+# ╔═╡ 5ce73837-a376-4d2c-88f9-ce084262dda4
+if dsexists()
+	sentencemenu = [0 => ""]
+	for (i,s) in enumerate(sentences)
+		push!(sentencemenu, i => string("[", s.sequence, "] ") * passagecomponent(s.range))
+	end
+
+	
+	md"""*Choose a sentence* $(@bind sentchoice Select(sentencemenu)) 
+	"""
+end
+
+# ╔═╡ 7a694e8a-8907-4067-9625-3f00e1322345
+	if dsexists()
+	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
+	]
+	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
+"""
+end
+
+# ╔═╡ b5541ee3-65d9-4b65-8f3b-21cc490478fe
+if @isdefined(sentchoice) && sentchoice > 0
+	sentseq = sentences[sentchoice].sequence
+	hdg = "<strong>Sentence $(sentseq)</strong>"
+	if txtdisplay == "continuous"
+		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+		HTML(hdg * rendered)
+		
+	else # indented
+		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], groups, tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+
+		HTML(hdg * rendered)
+		
+	end
+	
 end
 
 # ╔═╡ 7325db1f-6c3b-4479-a83b-9fb21e363e09
@@ -262,6 +302,9 @@ You may load syntactically annotated texts from a URL or from a local file.
 """
 	aside(Foldable("How to load annotated texts", instructions("Loading data sets", loadmsg))  )
 end
+
+# ╔═╡ cf66b68c-6ad3-4e14-98b7-791672d6e0a8
+css = HTML("<style>" * GreekSyntax.defaultcss() * "</style>")
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1472,6 +1515,10 @@ version = "1.4.1+0"
 # ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
 # ╟─7ba42585-cde0-4c2c-a6b9-376a2db4984c
 # ╟─7ea1c306-8304-4d5a-ae22-f677eec744c1
+# ╟─688a50e2-57e1-4a91-9701-dd6aa44812ef
+# ╟─5ce73837-a376-4d2c-88f9-ce084262dda4
+# ╟─7a694e8a-8907-4067-9625-3f00e1322345
+# ╟─b5541ee3-65d9-4b65-8f3b-21cc490478fe
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─aa88ffc8-d044-4887-9b33-e5da77f5cfa1
@@ -1487,5 +1534,6 @@ version = "1.4.1+0"
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
+# ╠═cf66b68c-6ad3-4e14-98b7-791672d6e0a8
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
