@@ -30,6 +30,11 @@ In the `pluto/readers` directory:
 - `readsentences.jl`: read texts with options to visualize syntax per sentence
 - `readsubordination.jl`:  read texts with options to explore sentences by level of syntactic subordination
 
+### Notebook to analyze syntactically annotated texts
+
+The `pluto/analytics.jl` notebook computes measurements about features of syntax per sentence.
+
+
 ### Notebook to annotate citable texts
 
 You can use `annotater/ctssyntaxer.jl`to annotate the syntax of a citable Greek text.
