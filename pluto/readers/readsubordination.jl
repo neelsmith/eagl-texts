@@ -32,7 +32,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.0";
+nbversion = "0.3.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -40,6 +40,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.3.1**: Update internal package manifest
 - **0.3.0**: Support tooltips display
 - **0.2.2**: Support Greek or Latin texts
 - **0.2.1**: Update internal manifest to use version `0.9` of `GreekSyntax` package.
@@ -347,7 +348,7 @@ end
 # ╔═╡ ecfb8e4c-63ac-4e90-8aad-44de200dc60a
 # ╠═╡ show_logs = false
 if @isdefined(sentchoice) && sentchoice > 0 
-	slidermax = GreekSyntax.maxdepthforsentence(sentence, verbalunits)
+	slidermax = maxdepth(sentence, verbalunits)
 	md"""*Show sentence up to level*: $(@bind threshhold NumberField(1:slidermax))
 """
 end
@@ -386,7 +387,9 @@ end
 
 # ╔═╡ dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
 	if dataloaded()
-		(sentencetokens, connectorids, origin) = GreekSyntax.tokeninfoforsentence(sentence, tokens)
+		sentencetokens = tokensforsentence(sentence, tokens)
+		connectorids = GreekSyntax.connectorindexes(sentence, tokens)
+		origin = GreekSyntax.originindex(sentence, tokens)
 	end
 
 # ╔═╡ c6ea9917-c597-4711-9fd4-66e33062b380
@@ -418,7 +421,7 @@ A future version of this notebook might try to address this.
 	"""
 
 	
-	if threshhold < GreekSyntax.maxdepthforsentence(sentence, verbalunits)
+	if threshhold < maxdepth(sentence, verbalunits)
 		warning_box(diagramwarning)
 	else
 		graphstr  = mermaiddiagram(sentence, sentencetokens)
@@ -499,7 +502,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 [compat]
 CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.3"
+GreekSyntax = "~0.12.4"
 Kroki = "~0.2.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -695,15 +698,15 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "eb2529d580c10d5f4e81cd94c2b6814adb6047ce"
+git-tree-sha1 = "64b3c0e4f42952c4a89dcea3a8e212a3b4acbc20"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.3"
+version = "0.12.4"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "fd9861adba6b9ae4b42582032d0936d456c8602d"
+git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.6.3"
+version = "1.7.1"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -891,9 +894,9 @@ version = "0.3.20+0"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
-git-tree-sha1 = "df6830e37943c7aaa10023471ca47fb3065cc3c4"
+git-tree-sha1 = "6503b77492fd7fcb9379bf73cd31035670e3c509"
 uuid = "4d8831e6-92b7-49fb-bdf8-b643e874388c"
-version = "1.3.2"
+version = "1.3.3"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1013,9 +1016,10 @@ uuid = "777ac1f9-54b0-4bf8-805c-2214025038e7"
 version = "1.1.0"
 
 [[deps.SnoopPrecompile]]
-git-tree-sha1 = "f604441450a3c0569830946e5b33b78c928e1a85"
+deps = ["Preferences"]
+git-tree-sha1 = "e760a70afdcd461cf01a575947738d359234665c"
 uuid = "66db9d55-30c0-4569-8b51-7e840670fc0c"
-version = "1.0.1"
+version = "1.0.3"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
