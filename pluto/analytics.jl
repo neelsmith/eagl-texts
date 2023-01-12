@@ -22,6 +22,7 @@ begin
 	import PlutoUI: combine # For using `aside`, from PlutoTeachingTools
 	using PlutoTeachingTools
 	using Plots
+	#using PlutoVista Doesn't work with the plotting syntax I'm using?
 	using CitableText
 	using GreekSyntax
 	using Downloads
@@ -29,7 +30,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.2.0";
+nbversion = "0.3.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,7 +38,9 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-- **0.2.0**: add reading of individual passages
+
+- **0.3.0**: additional metrics courtesy of update to `GreekSyntax` package
+- **0.2.0**: adds reading of individual passages
 - **0.1.0**: initial release	
 	"""
 end
@@ -78,19 +81,24 @@ if srctype == "file"
 end
 
 
+# ╔═╡ 39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
+md"""### Observations to plot"""
+
 # ╔═╡ 7ba42585-cde0-4c2c-a6b9-376a2db4984c
-md"""### Basic observations
+md"""
+
+*Number of words* $(@bind showlexcounts CheckBox(true)) *Depth of subordination* $(@bind showdepths CheckBox(true))
 
 
-*Number of verbal expressions* $(@bind showgroupcounts CheckBox(true))
-*Depth of subordination* $(@bind showdepths CheckBox(true))
-*Number of words* $(@bind showlexcounts CheckBox()) *Types of verbal expression* $(@bind showgrouptypes CheckBox())
+*Number of verbal expressions* $(@bind showgroupcounts CheckBox())  *Types of verbal expression* $(@bind showgrouptypes CheckBox())
 
+
+
+*Maximum token displacement* $(@bind showmtd CheckBox()) *Average token displacement* $(@bind showatd CheckBox())
+
+*Maximum expression displacement* $(@bind showmgd CheckBox()) *Average expression displacement* $(@bind showagd CheckBox())
 
 """
-
-# ╔═╡ 688a50e2-57e1-4a91-9701-dd6aa44812ef
-md"""Display a passage"""
 
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
 html"""
@@ -110,15 +118,20 @@ Checklist of features to compute:
 - [x] count of verbal expressions 
 - [x] *lexical* tokens
 - [x] types of verbal expression
+- [x] distance from connector
 - [ ] elisions (implied nodes)
 - [ ] asyndeton
-- [ ] distance from connector
 - [ ] distance from root related to sequence in sentence
 
 """
 
 # ╔═╡ 8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
-md"> Computed data values"
+md"> Computed data values:
+>
+> - passage range
+> - x values
+> - y values
+"
 
 # ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
 md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text annotations from a local file or a URL.
@@ -150,13 +163,13 @@ if dsexists()
 	end
 
 	
-	md"""*Choose a sentence* $(@bind sentchoice Select(sentencemenu)) 
+	md"""*Display the text for a sentence* $(@bind sentchoice Select(sentencemenu)) 
 	"""
 end
 
 # ╔═╡ 7a694e8a-8907-4067-9625-3f00e1322345
 	if dsexists()
-	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
+	displaymenu = ["indented" => "indented for subordination", "continuous" => "continuous text"
 	]
 	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
 """
@@ -180,6 +193,7 @@ if @isdefined(sentchoice) && sentchoice > 0
 end
 
 # ╔═╡ 7325db1f-6c3b-4479-a83b-9fb21e363e09
+# Passage range:
 if dsexists()
 	u1 = collapsePassageBy(sentences[1].range, 1) |> passagecomponent
 	u2 = collapsePassageBy(sentences[end].range, 1) |> passagecomponent
@@ -188,14 +202,45 @@ if dsexists()
 end
 
 # ╔═╡ 57f3f111-1ac6-4827-b7a4-10c3b1604c9b
+# x values
 if dsexists()
 	x = map(s -> string(s.sequence), sentences)
 end
 
 
 # ╔═╡ 8a16520a-db12-4e16-8e7f-197b79d88f4d
+# All the possible y values!
 if dsexists()
 	skippedsentences = sentences[end].sequence - sentences[1].sequence - length(sentences)
+
+	groupcounts = map(sentences) do s
+		GreekSyntax.groupsforsentence(s, groups) |> length
+	end
+
+	depths = map(sentences) do s
+		sentgroups = GreekSyntax.groupsforsentence(s, groups)
+		map(g -> g.depth, sentgroups) |> maximum
+	end
+
+	lexcounts = map(sentences) do s
+		lexicalforsentence(s, tokens) |> length
+	end
+	grouptypes = map(sentences) do s
+		sentgroups = GreekSyntax.groupsforsentence(s, groups)
+		map(g -> g.syntactic_type, sentgroups) |> unique |> length
+	end
+	mtd = map(sentences) do s
+		maxtokendisplacement(s, tokens)
+	end
+	atd = map(sentences) do s
+		avgtokendisplacement(s, tokens)
+	end
+	agd = map(sentences) do s
+		avggroupdisplacement(s, groups, tokens)
+	end
+	mgd = map(sentences) do s
+		maxgroupdisplacement(s, groups, tokens)
+	end
 end
 
 # ╔═╡ 31ea4680-63ff-44fc-82cf-dadb041fd144
@@ -218,37 +263,6 @@ end
 
 
 
-# ╔═╡ 8606d07c-4167-4802-a033-cddb46afcde9
-if dsexists()
-	groupcounts = map(sentences) do s
-		GreekSyntax.groupsforsentence(s, groups) |> length
-	end
-end
-
-# ╔═╡ c130c944-cf74-4454-abcb-ada3a96d9f3a
-if dsexists()
-	depths = map(sentences) do s
-		sentgroups = GreekSyntax.groupsforsentence(s, groups)
-		map(g -> g.depth, sentgroups) |> maximum
-	end
-end
-
-# ╔═╡ fa08a61b-f3ee-468c-aec6-94c743c6d8f5
-if dsexists()
-	lexcounts = map(sentences) do s
-		(sentencetokens, connectors, origin) = GreekSyntax.tokeninfoforsentence(s, tokens)
-		filter(t -> t.tokentype == "lexical", sentencetokens) |> length
-	end
-end
-
-# ╔═╡ 35ca2090-9ea9-477d-8222-7a2f067bb4ef
-if dsexists()
-	grouptypes = map(sentences) do s
-		sentgroups = GreekSyntax.groupsforsentence(s, groups)
-		map(g -> g.syntactic_type, sentgroups) |> unique |> length
-	end
-end
-
 # ╔═╡ 7ea1c306-8304-4d5a-ae22-f677eec744c1
 if dsexists()
 	yvalues = []
@@ -270,6 +284,29 @@ if dsexists()
 		push!(yvalues, grouptypes)
 		push!(ylabels, "Types of verbal expression")
 	end
+
+	if showmtd
+		push!(yvalues, mtd)
+		push!(ylabels, "Maximum token displacement")
+	end
+
+	if showatd
+		push!(yvalues, atd)
+		push!(ylabels, "Average token displacement")
+	end
+
+
+	
+	if showmgd
+		push!(yvalues, mgd)
+		push!(ylabels, "Maximum expression displacement")
+	end
+
+	if showagd
+		push!(yvalues, agd)
+		push!(ylabels, "Average expression displacement")
+	end
+
 	
 	if isempty(yvalues)
 		md"""*No data selected.*"""
@@ -303,6 +340,17 @@ You may load syntactically annotated texts from a URL or from a local file.
 	aside(Foldable("How to load annotated texts", instructions("Loading data sets", loadmsg))  )
 end
 
+# ╔═╡ bf279ded-a4d8-44ff-93b1-985c9a77ca4b
+begin
+	plotsmsg = md"""
+
+Explanation of these metrics is being developed as part of the [`GreekSyntax` documentation](https://neelsmith.github.io/GreekSyntax.jl/stable/metrics/)
+
+
+"""
+	aside(Foldable("What are these observations?", instructions("Syntax metrics", plotsmsg))  )
+end
+
 # ╔═╡ cf66b68c-6ad3-4e14-98b7-791672d6e0a8
 css = HTML("<style>" * GreekSyntax.defaultcss() * "</style>")
 
@@ -318,7 +366,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.3"
+GreekSyntax = "~0.12.1"
 Plots = "~1.38.1"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -330,7 +378,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "798c174bd58756c497c2b85a03995a22d6deb390"
+project_hash = "a57e6727d97e1daaae79e911d059724f48608794"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -625,9 +673,9 @@ version = "1.3.14+0"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "eb2529d580c10d5f4e81cd94c2b6814adb6047ce"
+git-tree-sha1 = "f0e67e0ba978173d3f3e65088a3a126605340f65"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.3"
+version = "0.12.1"
 
 [[deps.Grisu]]
 git-tree-sha1 = "53bb909d1151e57e2484c3d1b53e19552b887fb2"
@@ -636,9 +684,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "fd9861adba6b9ae4b42582032d0936d456c8602d"
+git-tree-sha1 = "a8746094344c6c40be50bad7f06ab93439ea8c3d"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.6.3"
+version = "1.7.0"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -932,9 +980,9 @@ version = "0.8.1+0"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
-git-tree-sha1 = "df6830e37943c7aaa10023471ca47fb3065cc3c4"
+git-tree-sha1 = "6503b77492fd7fcb9379bf73cd31035670e3c509"
 uuid = "4d8831e6-92b7-49fb-bdf8-b643e874388c"
-version = "1.3.2"
+version = "1.3.3"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1136,9 +1184,10 @@ uuid = "777ac1f9-54b0-4bf8-805c-2214025038e7"
 version = "1.1.0"
 
 [[deps.SnoopPrecompile]]
-git-tree-sha1 = "f604441450a3c0569830946e5b33b78c928e1a85"
+deps = ["Preferences"]
+git-tree-sha1 = "e760a70afdcd461cf01a575947738d359234665c"
 uuid = "66db9d55-30c0-4569-8b51-7e840670fc0c"
-version = "1.0.1"
+version = "1.0.3"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
@@ -1513,9 +1562,10 @@ version = "1.4.1+0"
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
 # ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
+# ╟─39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
+# ╟─bf279ded-a4d8-44ff-93b1-985c9a77ca4b
 # ╟─7ba42585-cde0-4c2c-a6b9-376a2db4984c
 # ╟─7ea1c306-8304-4d5a-ae22-f677eec744c1
-# ╟─688a50e2-57e1-4a91-9701-dd6aa44812ef
 # ╟─5ce73837-a376-4d2c-88f9-ce084262dda4
 # ╟─7a694e8a-8907-4067-9625-3f00e1322345
 # ╟─b5541ee3-65d9-4b65-8f3b-21cc490478fe
@@ -1523,13 +1573,9 @@ version = "1.4.1+0"
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─aa88ffc8-d044-4887-9b33-e5da77f5cfa1
 # ╟─8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
-# ╠═7325db1f-6c3b-4479-a83b-9fb21e363e09
+# ╟─7325db1f-6c3b-4479-a83b-9fb21e363e09
 # ╟─57f3f111-1ac6-4827-b7a4-10c3b1604c9b
-# ╠═8a16520a-db12-4e16-8e7f-197b79d88f4d
-# ╠═8606d07c-4167-4802-a033-cddb46afcde9
-# ╠═c130c944-cf74-4454-abcb-ada3a96d9f3a
-# ╠═fa08a61b-f3ee-468c-aec6-94c743c6d8f5
-# ╠═35ca2090-9ea9-477d-8222-7a2f067bb4ef
+# ╟─8a16520a-db12-4e16-8e7f-197b79d88f4d
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
