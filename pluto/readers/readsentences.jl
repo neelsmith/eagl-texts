@@ -29,7 +29,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.0";
+nbversion = "0.4.2";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -37,8 +37,10 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-- **0.4.0*:	 add option to include tooltips in display
-- **0.3.3*: change default file and URL sources to new host on aegl-texts repository
+- **0.4.2**:	update internal package manifest
+- **0.4.1**:	 cut out a little cruft
+- **0.4.0**:	 add option to include tooltips in display
+- **0.3.3**: change default file and URL sources to new host on aegl-texts repository
 - **0.3.2**: use `passage` class on div wrapping text passages
 - **0.3.1**: updates internal manifest to use version `0.9` of `GreekSyntax`
 - **0.3.0**: use updated `GreekSyntax` package; add options to use default or customized CSS and color palette
@@ -323,15 +325,11 @@ if dsexists()
 end
 
 # ╔═╡ deb8fb9d-407f-4bc8-9690-92934e5751e1
-# Add this when tooltip data are added to GreekSyntax.jl
-#*Add tooltips* $(@bind tippy CheckBox())if dsexists()
-begin
-	if dsexists()
+if dsexists()
 	displaymenu = ["continuous" => "continuous text", "indented" => "indented for subordination"
 	]
 	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
 """
-end
 end
 
 # ╔═╡ c26d95cb-e681-43e0-acc7-e4af4bf5e0da
@@ -462,7 +460,7 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.11.3"
+GreekSyntax = "~0.12.4"
 Kroki = "~0.2.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -474,7 +472,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "55000192c24ceef3366efb7565dc1c7330cf3532"
+project_hash = "c282ff76651e8dcdabc6a1b1f790bef36fdab3fe"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -658,15 +656,15 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "eb2529d580c10d5f4e81cd94c2b6814adb6047ce"
+git-tree-sha1 = "64b3c0e4f42952c4a89dcea3a8e212a3b4acbc20"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.11.3"
+version = "0.12.4"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "fd9861adba6b9ae4b42582032d0936d456c8602d"
+git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.6.3"
+version = "1.7.1"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -854,9 +852,9 @@ version = "0.3.20+0"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
-git-tree-sha1 = "df6830e37943c7aaa10023471ca47fb3065cc3c4"
+git-tree-sha1 = "6503b77492fd7fcb9379bf73cd31035670e3c509"
 uuid = "4d8831e6-92b7-49fb-bdf8-b643e874388c"
-version = "1.3.2"
+version = "1.3.3"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -976,9 +974,10 @@ uuid = "777ac1f9-54b0-4bf8-805c-2214025038e7"
 version = "1.1.0"
 
 [[deps.SnoopPrecompile]]
-git-tree-sha1 = "f604441450a3c0569830946e5b33b78c928e1a85"
+deps = ["Preferences"]
+git-tree-sha1 = "e760a70afdcd461cf01a575947738d359234665c"
 uuid = "66db9d55-30c0-4569-8b51-7e840670fc0c"
-version = "1.0.1"
+version = "1.0.3"
 
 [[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"

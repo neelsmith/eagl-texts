@@ -66,6 +66,7 @@ begin
 	using PlutoGrid
 
 	Pkg.status()
+	
 	md"""(*Unhide this cell to see environment setup.*)"""
 end
 
@@ -529,6 +530,9 @@ sentenceorthotokens = begin
 end
 
 
+# ╔═╡ fbb1f5d0-8151-4a22-a802-b27a2cd97501
+
+
 # ╔═╡ a1412f88-e367-4884-b908-a39926a6cf95
 """Compose a CTS URN for the connecting word or words in a sentence."""
 function connectorurn(sentencetokens, connections)
@@ -670,8 +674,14 @@ end
 
 # ╔═╡ 0e0cd61d-f4d0-4615-a413-4dae483b031b
 if step1()
-	 local step1res = hl_connector(sentenceorthotokens, connectorlist)
-	HTML("<i>Define verbal expressions in this sentence:</i><br/><br/><blockquote><strong>$(passagecomponent(sentenceannotation.range))</strong>: " * step1res * "</blockquote>")
+	local step1res = hl_connector(sentenceorthotokens, connectorlist)
+	if isnothing(connectorlist[1]) # asyndeton!
+		hdg = """<span class=\"connector\"><i>asyndeton</i></span>"""
+		
+		HTML("<i>Define verbal expressions in this sentence:</i><br/><br/><blockquote><strong>$(passagecomponent(sentenceannotation.range))</strong>  ($(hdg)): " * step1res * "</blockquote>")
+	else
+		HTML("<i>Define verbal expressions in this sentence:</i><br/><br/><blockquote><strong>$(passagecomponent(sentenceannotation.range))</strong>: " * step1res * "</blockquote>")
+	end
 
 end
 
@@ -1432,7 +1442,8 @@ end;
 # ╟─a36f18f6-20c8-4d24-9ed3-cf6afd9e0b52
 # ╟─d437d981-8140-49f2-89ef-4a2ddef1cacb
 # ╟─725e9948-db7d-4f45-8954-d8c554185c6e
-# ╟─a1412f88-e367-4884-b908-a39926a6cf95
+# ╠═fbb1f5d0-8151-4a22-a802-b27a2cd97501
+# ╠═a1412f88-e367-4884-b908-a39926a6cf95
 # ╟─d95ddf5b-60db-48c2-9204-2b9d1c8ddca8
 # ╟─d1496b85-c488-4130-a915-aeedfb1e45c0
 # ╟─b3589032-ad92-4dfc-8c0a-62ca4b97d2aa
@@ -1466,4 +1477,4 @@ end;
 # ╟─36a67acb-e449-489d-a548-bd5761f1321c
 # ╟─ab5048e0-e1c4-42ec-8837-a16dd231fe37
 # ╟─d1eca415-05cb-435a-8f64-aad583a56d43
-# ╠═7bc296a5-d4ee-4a60-be7c-20df3a121176
+# ╟─7bc296a5-d4ee-4a60-be7c-20df3a121176
