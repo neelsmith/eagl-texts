@@ -1431,6 +1431,39 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.52a|ignore|.|0|nothing|nothing|
 
 
 // Sentence 44
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.7.1)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.53-1.17.63a|44|
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+1.17.53-1.17.63a.1|Independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.53-1.17.63a
+1.17.53-1.17.63a.2|Independent clause|linking|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.53-1.17.63a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.53|lexical|ταῦτά|1.17.53-1.17.63a.1|7|subject|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.54|lexical|μου|1.17.53-1.17.63a.1|1|genitive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.55|lexical|πάντα|1.17.53-1.17.63a.1|1|pronoun|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.56|lexical|εἰς|1.17.53-1.17.63a.1|7|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.57|lexical|τὴν|1.17.53-1.17.63a.1|6|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.58|lexical|γνώμην|1.17.53-1.17.63a.1|4|object of preposition|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.59|lexical|εἰσῄει|1.17.53-1.17.63a.1|0|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.59a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.60|lexical|καὶ|1.17.53-1.17.63a.2|10|conjunction|7|conjunction
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.61|lexical|μεστὸς|1.17.53-1.17.63a.2|10|predicate|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.62|lexical|ἦ|1.17.53-1.17.63a.2|8|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.63|lexical|ὑποψίας|1.17.53-1.17.63a.2|9|genitive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.63a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+
 // Sentence 45
 // Sentence 46
 // Sentence 47
