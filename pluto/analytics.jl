@@ -21,16 +21,23 @@ begin
 	using PlutoUI
 	import PlutoUI: combine # For using `aside`, from PlutoTeachingTools
 	using PlutoTeachingTools
-	using Plots
-	#using PlutoVista Doesn't work with the plotting syntax I'm using?
+	
+	
 	using CitableText
 	using GreekSyntax
 	using Downloads
+
+	using SplitApplyCombine
+
+	#using PlutoVista Doesn't work with the plotting syntax I'm using?
+	using Plots
+	plotly()
+	#using PlotlyJS
 	md"""*Unhide this cell to see environment configuration.*"""
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.1";
+nbversion = "0.4.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -39,6 +46,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 if history
 	md"""
 
+- **0.4.0**: add optional plotting of relation types' frequency
 - **0.3.1**: update internal package manifest
 - **0.3.0**: additional metrics courtesy of update to `GreekSyntax` package
 - **0.2.0**: adds reading of individual passages
@@ -83,7 +91,7 @@ end
 
 
 # ╔═╡ 39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
-md"""### Observations to plot"""
+md"""### Measures of sentence's complexity"""
 
 # ╔═╡ 7ba42585-cde0-4c2c-a6b9-376a2db4984c
 # This expression is broken:  filing issue on GreekSyntax.jl:
@@ -91,10 +99,10 @@ md"""### Observations to plot"""
 
 md"""
 
-*Number of words* $(@bind showlexcounts CheckBox(true)) *Depth of subordination* $(@bind showdepths CheckBox(true))
+*Number of words* $(@bind showlexcounts CheckBox()) *Depth of subordination* $(@bind showdepths CheckBox(true))
 
 
-*Number of verbal expressions* $(@bind showgroupcounts CheckBox())  *Types of verbal expression* $(@bind showgrouptypes CheckBox())
+*Number of verbal expressions* $(@bind showgroupcounts CheckBox(true))  *Types of verbal expression* $(@bind showgrouptypes CheckBox())
 
 
 
@@ -102,6 +110,20 @@ md"""
 
 
 
+"""
+
+# ╔═╡ 93d5e6e2-ede3-47f3-a101-69957ade5635
+md"""
+*Show frequency of syntax  relations* $(@bind showsyntypes CheckBox(true))
+*Show frequency of types of verbal expression* $(@bind showvutypes CheckBox(true))"""
+
+
+# ╔═╡ 757c4c9e-7db6-4a2c-9057-803a9829cf3b
+md""" ### Frequency of syntactic features
+"""
+
+# ╔═╡ d54f3199-7bbe-4c31-91d6-5b86e40ab20c
+md""" ### View a passage of the text
 """
 
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
@@ -156,6 +178,38 @@ end
 """True if selected dataset exists."""
 function dsexists()
 	! isnothing(sentences) && ! isempty(sentences)
+end
+
+# ╔═╡ ce04ba69-8526-4802-926e-0a0038bfdda8
+if dsexists() && showvutypes
+	vucounts = []
+	vugroupdict = map(g -> lowercase(g.syntactic_type), groups) |> group
+	for k in keys(vugroupdict)
+		push!(vucounts, (k, length(vugroupdict[k])))
+	end
+	sortedcounts = sort(vucounts, by = pr ->  pr[2], rev = true)
+	xs = map(pr -> pr[1], sortedcounts)
+	ys = map(pr -> pr[2], sortedcounts)
+	bar(xs, ys, title = "Types of verbal expression", xrotation = -45, xticks = :all, legend = false)
+end
+
+# ╔═╡ 8d890d45-52c7-4537-8760-1b1cf549a2cc
+if dsexists() && showsyntypes
+	synpairs = []
+	related = filter(t -> !isnothing(t.node1), tokens)
+	syndict = map(t -> t.node1relation, related) |> group
+	for k in keys(syndict)
+		push!(synpairs, (k, length(syndict[k])))
+	end
+
+	
+	syncounts = sort(synpairs, by = pr ->  pr[2], rev = true)
+
+	syntaxxs = map(pr -> pr[1], syncounts)
+	syntaxys = map(pr -> pr[2], syncounts)
+
+	bar(syntaxxs, syntaxys, title = "Types of syntactic relation",legend = false, xrotation = -45, xticks = :all)
+
 end
 
 # ╔═╡ 5ce73837-a376-4d2c-88f9-ce084262dda4
@@ -370,6 +424,7 @@ GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+SplitApplyCombine = "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66"
 
 [compat]
 CitableText = "~0.15.2"
@@ -377,6 +432,7 @@ GreekSyntax = "~0.12.5"
 Plots = "~1.38.2"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
+SplitApplyCombine = "~1.2.2"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -385,7 +441,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "a57e6727d97e1daaae79e911d059724f48608794"
+project_hash = "be91247fdcef8a2aa28e64dd7e9aa88d0a575335"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1569,13 +1625,18 @@ version = "1.4.1+0"
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
 # ╟─31ea4680-63ff-44fc-82cf-dadb041fd144
-# ╟─39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
 # ╟─bf279ded-a4d8-44ff-93b1-985c9a77ca4b
+# ╟─39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
 # ╟─7ba42585-cde0-4c2c-a6b9-376a2db4984c
 # ╟─7ea1c306-8304-4d5a-ae22-f677eec744c1
+# ╟─93d5e6e2-ede3-47f3-a101-69957ade5635
+# ╟─d54f3199-7bbe-4c31-91d6-5b86e40ab20c
 # ╟─5ce73837-a376-4d2c-88f9-ce084262dda4
 # ╟─7a694e8a-8907-4067-9625-3f00e1322345
 # ╟─b5541ee3-65d9-4b65-8f3b-21cc490478fe
+# ╟─757c4c9e-7db6-4a2c-9057-803a9829cf3b
+# ╟─ce04ba69-8526-4802-926e-0a0038bfdda8
+# ╟─8d890d45-52c7-4537-8760-1b1cf549a2cc
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─aa88ffc8-d044-4887-9b33-e5da77f5cfa1
