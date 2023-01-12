@@ -30,7 +30,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.0";
+nbversion = "0.3.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -39,6 +39,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 if history
 	md"""
 
+- **0.3.1**: update internal package manifest
 - **0.3.0**: additional metrics courtesy of update to `GreekSyntax` package
 - **0.2.0**: adds reading of individual passages
 - **0.1.0**: initial release	
@@ -85,6 +86,9 @@ end
 md"""### Observations to plot"""
 
 # ╔═╡ 7ba42585-cde0-4c2c-a6b9-376a2db4984c
+# This expression is broken:  filing issue on GreekSyntax.jl:
+# *Maximum expression displacement* $(@bind showmgd CheckBox()) *Average expression displacement* $(@bind showagd CheckBox())
+
 md"""
 
 *Number of words* $(@bind showlexcounts CheckBox(true)) *Depth of subordination* $(@bind showdepths CheckBox(true))
@@ -96,7 +100,7 @@ md"""
 
 *Maximum token displacement* $(@bind showmtd CheckBox()) *Average token displacement* $(@bind showatd CheckBox())
 
-*Maximum expression displacement* $(@bind showmgd CheckBox()) *Average expression displacement* $(@bind showagd CheckBox())
+
 
 """
 
@@ -119,18 +123,17 @@ Checklist of features to compute:
 - [x] *lexical* tokens
 - [x] types of verbal expression
 - [x] distance from connector
-- [ ] elisions (implied nodes)
-- [ ] asyndeton
-- [ ] distance from root related to sequence in sentence
+- [ ] elisions (implied nodes and asyndeton)
+
 
 """
 
 # ╔═╡ 8cfb8c24-f8ab-40ef-9934-39c5c1f93c21
 md"> Computed data values:
 >
-> - passage range
-> - x values
-> - y values
+> - passage range of annotations (canonical URN)
+> - x values to plot (sequence of annotated sentences)
+> - possible y values (for selection by user)
 "
 
 # ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
@@ -194,23 +197,21 @@ end
 
 # ╔═╡ 7325db1f-6c3b-4479-a83b-9fb21e363e09
 # Passage range:
-if dsexists()
+displayrange = if dsexists()
 	u1 = collapsePassageBy(sentences[1].range, 1) |> passagecomponent
 	u2 = collapsePassageBy(sentences[end].range, 1) |> passagecomponent
-	displayrange = u1 * "-" * u2
-	
+	u1 * "-" * u2	
+else
+	nothing
 end
 
 # ╔═╡ 57f3f111-1ac6-4827-b7a4-10c3b1604c9b
-# x values
-if dsexists()
-	x = map(s -> string(s.sequence), sentences)
-end
-
+x = dsexists() ? map(s -> string(s.sequence), sentences) : nothing
 
 # ╔═╡ 8a16520a-db12-4e16-8e7f-197b79d88f4d
 # All the possible y values!
 if dsexists()
+	
 	skippedsentences = sentences[end].sequence - sentences[1].sequence - length(sentences)
 
 	groupcounts = map(sentences) do s
@@ -225,22 +226,28 @@ if dsexists()
 	lexcounts = map(sentences) do s
 		lexicalforsentence(s, tokens) |> length
 	end
+
 	grouptypes = map(sentences) do s
 		sentgroups = GreekSyntax.groupsforsentence(s, groups)
 		map(g -> g.syntactic_type, sentgroups) |> unique |> length
 	end
+	
 	mtd = map(sentences) do s
 		maxtokendisplacement(s, tokens)
 	end
+	
 	atd = map(sentences) do s
 		avgtokendisplacement(s, tokens)
 	end
+	#=
 	agd = map(sentences) do s
 		avggroupdisplacement(s, groups, tokens)
 	end
+	
 	mgd = map(sentences) do s
 		maxgroupdisplacement(s, groups, tokens)
 	end
+	=#
 end
 
 # ╔═╡ 31ea4680-63ff-44fc-82cf-dadb041fd144
@@ -296,7 +303,7 @@ if dsexists()
 	end
 
 
-	
+	#=
 	if showmgd
 		push!(yvalues, mgd)
 		push!(ylabels, "Maximum expression displacement")
@@ -306,7 +313,7 @@ if dsexists()
 		push!(yvalues, agd)
 		push!(ylabels, "Average expression displacement")
 	end
-
+=#
 	
 	if isempty(yvalues)
 		md"""*No data selected.*"""
@@ -366,8 +373,8 @@ PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.12.1"
-Plots = "~1.38.1"
+GreekSyntax = "~0.12.5"
+Plots = "~1.38.2"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
 """
@@ -673,9 +680,9 @@ version = "1.3.14+0"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "f0e67e0ba978173d3f3e65088a3a126605340f65"
+git-tree-sha1 = "e38c7e8b8db1ba138c00de5a184a792a84ed70f3"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.12.1"
+version = "0.12.5"
 
 [[deps.Grisu]]
 git-tree-sha1 = "53bb909d1151e57e2484c3d1b53e19552b887fb2"
@@ -684,9 +691,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "a8746094344c6c40be50bad7f06ab93439ea8c3d"
+git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.7.0"
+version = "1.7.1"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -1054,9 +1061,9 @@ version = "1.3.2"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "JLFzf", "JSON", "LaTeXStrings", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Preferences", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "RelocatableFolders", "Requires", "Scratch", "Showoff", "SnoopPrecompile", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "Unzip"]
-git-tree-sha1 = "02ecc6a3427e7edfff1cebcf66c1f93dd77760ec"
+git-tree-sha1 = "a99bbd3664bb12a775cda2eba7f3b2facf3dad94"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.38.1"
+version = "1.38.2"
 
 [[deps.PlutoHooks]]
 deps = ["InteractiveUtils", "Markdown", "UUIDs"]
