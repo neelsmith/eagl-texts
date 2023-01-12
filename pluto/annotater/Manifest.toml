@@ -197,9 +197,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "64b3c0e4f42952c4a89dcea3a8e212a3b4acbc20"
+git-tree-sha1 = "e38c7e8b8db1ba138c00de5a184a792a84ed70f3"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.12.4"
+version = "0.12.5"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
