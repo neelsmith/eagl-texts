@@ -74,7 +74,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 31cc3ad6-ac34-49f7-a86f-575a08eb1358
-nbversion = "0.7.1";
+nbversion = "0.8.0";
 
 # ╔═╡ ed67e569-147c-4899-b338-f3282d9474b1
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -83,6 +83,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 if history
 md"""
 
+- **0.8.0**: Validate user input
 - **0.7.1**: Redefine default data directory for new host site on aegl-texts.
 - **0.7.0**: Works with either Greek or Latin texts.
 - **0.6.0**: Allow loading source data from file or URL.
@@ -530,9 +531,6 @@ sentenceorthotokens = begin
 end
 
 
-# ╔═╡ fbb1f5d0-8151-4a22-a802-b27a2cd97501
-
-
 # ╔═╡ a1412f88-e367-4884-b908-a39926a6cf95
 """Compose a CTS URN for the connecting word or words in a sentence."""
 function connectorurn(sentencetokens, connections)
@@ -671,6 +669,37 @@ if step1()
 else
 	md""
 end
+
+# ╔═╡ 6e81981c-f5ab-4a46-ae85-a9b4af7370cc
+if step1()
+	
+	vutips = """
+You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
+	
+*Syntactic type of verbal expression*
+
+- **ind**ependent clause
+- **s**ubordinate clause
+- **c**ircumstantial participle
+- **at**tributive participle
+- **inf**initive in indirect statement
+- **p**articiple in indirect statement
+- **q**uote
+- **as**ide
+
+*Semantic type of verbal expression*
+
+- **t**ransitive
+- **i**ntransitive
+- **l**inking
+	
+
+"""
+	Foldable("Cheat sheet for annotating verbal expressions",Markdown.parse(vutips)) |> aside
+end
+
+
+
 
 # ╔═╡ 0e0cd61d-f4d0-4615-a413-4dae483b031b
 if step1()
@@ -845,14 +874,9 @@ else
 	vusfromdf(vudf)
 end
 
-# ╔═╡ 63c1e44b-9411-4e78-9cc8-5bebc9148c6d
-if ! isnothing(vudf)
-	HTML("<p><i>Verbal expressions defined</i>:</p>"  * htmlgrouplist(verbalunits)) |> aside
-end
-
 # ╔═╡ 065cecf9-6651-4e55-bae6-70ae6646c427
 if ! isnothing(vudf)
-	HTML(htmlgrouplist(verbalunits)) |> aside
+	HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
 end
 
 # ╔═╡ f21fd0c4-602c-4782-908c-3dcd91ad936d
@@ -1030,48 +1054,38 @@ if step3()
 	if nrow(vudf) == 0
 	md""
 else
-	syntaxtips = [ "##","",
-		"**Organization of verbal units**",
-		"",
-		"- conjunction",
-		"- connector",
-		"- unit verb",
-		"",
-	"**Subordination**","",
-	"- conjunction",
-"- subordinate conjunction",
-"- relative",
-"- indirect statement",
-"- quoted",
-"- indirect statement with infinitive",
-"- indirect statement with participle",
-"- articular infinitive",
-"- circumstantial participle",
-"- attributive participle",
-"",
-	"**Relations to `unit verb`**",
-"",
+	syntaxtips = """
+You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
+	
+*Syntactic type of token's relation*
 
-"- subject",
-"- object",
-"- adverbial",
-"- dative",
-"- direct address",
-"- modal particle",
-		"- complementary infinitive",
-		"- supplementary participle",
-	"",
-	"**Relations to substantives**",
-"",
-"- attribute",
-"- article",
-"- pronoun",
-"",
-	"**Relations to prepositions**",
-"- object of preposition"
-	]
-	syntaxtipstr = join(syntaxtips, "\n")
-	Foldable("See cheat sheet for syntactic relations",aside(Markdown.parse(syntaxtipstr))) |> aside
+- **con**junction
+- **subo**rdinate conjunction
+- **r**elative pronoun
+- **u**nit verb
+- **pre**dicate
+- **subj**ect
+- **di**rect address
+- **com**plementary infinitive
+- **sup**plementary participle
+- **m**odal particle
+- **ad**verbial
+- **at**tributive
+- **ar**ticle
+- **pro**noun
+- **da**tive
+- **g**enitive
+
+*Other pre-defined abbreviations*
+
+- **o** == object
+- **op** == 	object of preposition
+- **s** == subject		
+- **sc** == subordinate conjunction
+		
+"""
+	
+	Foldable("Cheat sheet for annotating syntactic relations",aside(Markdown.parse(syntaxtips))) |> aside
 end
 	else
 		md""
@@ -1219,7 +1233,8 @@ begin
 	tipsmd = md"""
 
 - As you complete each step of annotating a sentence, the next step is presented to you.
-- In the right hand column, you'll find notes to help you.  Use the dark triangle to unfold a help section.
+- Each step has notes to help you.  Use the dark triangle to unfold a help section.
+- In the right column, you'll find reference material: cheat sheets for valid values, and a running summary of data you've entered.
 - A table of contents is pinned to the top right of notebook. This can be useful as your notebook grows in length.  For example, if you save your annotatoins for a sentence, and want to continue with a new sentence, you can use the table of contents to jump directly to the section headed *Annotate the connection of the sentence to its context*.  You can hide the table of contents if it gets in your way.
 """
 	Foldable("A few tips for navigating this notebook", instructions("Tips for navigating the notebook", tipsmd)) 
@@ -1240,7 +1255,7 @@ For each input box, use the `Submit` button to verify your entry.  When you have
 It may take a moment for the notebook to download and parse your file.
 
 """
-	Foldable("How to load texts to analyze", instructions("Loading files", loadmsg)) |> aside
+	Foldable("How to load texts to analyze", instructions("Loading files", loadmsg)) 
 end
 
 
@@ -1274,7 +1289,7 @@ if prereqs()
 	"""
 
 
-		Foldable("Step 1 instructions", instructions("Annotating a sentence", msg1)) |> aside
+		Foldable("Step 1 instructions", instructions("Annotating a sentence", msg1)) 
 
 end
 
@@ -1293,7 +1308,7 @@ When you have associated each token with the correct verbal expression, check th
 	
 	"""
 
-	Foldable("Step 2 instructions", instructions("Defining verbal units", msg2)) |> aside
+	Foldable("Step 2 instructions", instructions("Defining verbal units", msg2))
 	
 end
 
@@ -1305,7 +1320,7 @@ if step3()
 	Unfold the cheat sheet below to see a list of valid tags for relations.
 	"""
 	Foldable("Step 3 instructions",
-	instructions("Assigning tokens to verbal units", msg4)) |> aside
+	instructions("Assigning tokens to verbal units", msg4))
 else
 	md""
 end
@@ -1394,8 +1409,8 @@ end;
 # ╟─2a49f12a-88b3-4667-8650-46cd7e127fd9
 # ╟─a638caf3-94c9-4a03-8fa4-05d99d8e135a
 # ╟─b8ab34a6-2336-471c-bb74-6ad0800ba22d
+# ╟─6e81981c-f5ab-4a46-ae85-a9b4af7370cc
 # ╟─0e0cd61d-f4d0-4615-a413-4dae483b031b
-# ╟─63c1e44b-9411-4e78-9cc8-5bebc9148c6d
 # ╟─3181e436-9270-48ed-8d15-da8ad9e4927e
 # ╟─d10e1b6d-c6ac-4bc3-a44b-01f9837a520e
 # ╟─065cecf9-6651-4e55-bae6-70ae6646c427
@@ -1442,8 +1457,7 @@ end;
 # ╟─a36f18f6-20c8-4d24-9ed3-cf6afd9e0b52
 # ╟─d437d981-8140-49f2-89ef-4a2ddef1cacb
 # ╟─725e9948-db7d-4f45-8954-d8c554185c6e
-# ╠═fbb1f5d0-8151-4a22-a802-b27a2cd97501
-# ╠═a1412f88-e367-4884-b908-a39926a6cf95
+# ╟─a1412f88-e367-4884-b908-a39926a6cf95
 # ╟─d95ddf5b-60db-48c2-9204-2b9d1c8ddca8
 # ╟─d1496b85-c488-4130-a915-aeedfb1e45c0
 # ╟─b3589032-ad92-4dfc-8c0a-62ca4b97d2aa
