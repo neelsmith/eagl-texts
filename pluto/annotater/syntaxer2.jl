@@ -593,9 +593,6 @@ SentenceAnnotation(
 	)	
 end
 
-# ╔═╡ cce81eed-77da-493b-b2c8-914edd9b3681
-sentenceannotation
-
 # ╔═╡ 89df8479-12a3-40a9-aee7-87a5c47c1e61
 """Compose an HTML `blockquote` element setting highlighting on any connector tokens in `tknlist` with an index
 appearing in the index list `idxlist`.
@@ -870,7 +867,7 @@ else
 end
 
 # ╔═╡ e3b25956-c258-4887-b6dc-e0cb1742aa83
-if ! isempty(vudf)
+if step1() && ! isempty(vudf)
 	if vuok(vudf) #! isnothing(vudf)
 		HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
 	else
@@ -1224,12 +1221,6 @@ else
 	md""
 end
 
-# ╔═╡ 9ff27c61-4917-4836-bae7-cd9e9e60e9d8
-syntaxannotations
-
-# ╔═╡ ae77c5cf-4aba-48a5-8501-d0103b72933e
-mermaiddiagram(sentenceannotation, syntaxannotations)
-
 # ╔═╡ d1c1e48c-f3ae-4392-8515-f05c10bfc7ee
 
 md"""> ### File management
@@ -1464,10 +1455,7 @@ end
 # ╟─715cc820-563e-40f5-8fbe-ae3c5da80098
 # ╟─5d356a75-b397-4bee-883f-1237d7a6971d
 # ╟─76e31d77-b3e4-4922-812d-a242c90a3254
-# ╠═50820954-68ff-44df-9f07-e31af269f279
-# ╠═cce81eed-77da-493b-b2c8-914edd9b3681
-# ╠═9ff27c61-4917-4836-bae7-cd9e9e60e9d8
-# ╠═ae77c5cf-4aba-48a5-8501-d0103b72933e
+# ╟─50820954-68ff-44df-9f07-e31af269f279
 # ╟─d871b6f7-f9a9-4747-86b6-101ca7f3d48d
 # ╟─99fb5e68-dc50-4ef0-93a9-a392c9036b60
 # ╟─e931ff8d-299e-419e-b991-4a9caa94734e
