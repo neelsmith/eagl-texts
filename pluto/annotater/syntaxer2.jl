@@ -818,6 +818,15 @@ if ! isnothing(vudf)
 	HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
 end
 
+# ╔═╡ 647450a0-21fe-46de-ab58-1614df53b66a
+vudf[1,: ]
+
+# ╔═╡ 3c1b1407-2c92-43ee-a8ca-b0d0022f4916
+debugcex = join([vudf[1,:passage], vudf[1,:syntactic_type], vudf[1, :semantic_type], string(vudf[1, :depth]), string(vudf[1,:sentence])], "|")
+
+# ╔═╡ e9f067a8-d94a-49e5-b804-8adcc936443b
+verbalunit(debugcex)
+
 # ╔═╡ 72d51241-9ca7-42be-81f6-9a961ab62fe0
 """True if Step 2 editing is complete."""
 function step2()
@@ -1114,7 +1123,10 @@ end
 # ╟─702c10de-f79e-4071-bc1a-de148620e639
 # ╟─34335816-0b0e-486f-b01d-f09be94cb286
 # ╠═a9735bd6-d270-483e-b724-5f2c1dd1b5b2
-# ╠═367931f1-1f35-488c-a9c0-1f75f51e0522
+# ╠═647450a0-21fe-46de-ab58-1614df53b66a
+# ╠═3c1b1407-2c92-43ee-a8ca-b0d0022f4916
+# ╠═e9f067a8-d94a-49e5-b804-8adcc936443b
+# ╟─367931f1-1f35-488c-a9c0-1f75f51e0522
 # ╠═5c025e03-1da2-425a-9213-be715697f2b3
 # ╟─4e432568-2d57-4064-9dc6-73ab3b78cbf8
 # ╟─ca0e7f64-ea9c-4379-93a7-df2f82019a97
