@@ -593,6 +593,9 @@ SentenceAnnotation(
 	)	
 end
 
+# ╔═╡ cce81eed-77da-493b-b2c8-914edd9b3681
+sentenceannotation
+
 # ╔═╡ 89df8479-12a3-40a9-aee7-87a5c47c1e61
 """Compose an HTML `blockquote` element setting highlighting on any connector tokens in `tknlist` with an index
 appearing in the index list `idxlist`.
@@ -703,40 +706,93 @@ if step1()
 
 end
 
+# ╔═╡ 715cc820-563e-40f5-8fbe-ae3c5da80098
+if step1() 
+	md"""*Done assigning tokens* $(@bind tokensassigned CheckBox())
+	"""  |> aside
+else
+	md""
+end
+
 # ╔═╡ 34335816-0b0e-486f-b01d-f09be94cb286
 md"""> ### Global variable derived from the user's *definition of verbal expressions*
 >
-> - `verbalunits`: vector of `VerbalUnitAnnotations`. We use the function `vusfromdf` to construct this.
+> - `verbalunits`: vector of `VerbalUnitAnnotations`. 
+>
+> We use the following functions to construct this:
+>
+> - `vusfromdf` 
+> - `badvuvalues`
+> - `vuok`
 """
 
-# ╔═╡ 367931f1-1f35-488c-a9c0-1f75f51e0522
- md"""### ===> SAVE FAILED OUTPUT FROM THIS <==="""
-
-# ╔═╡ 5c025e03-1da2-425a-9213-be715697f2b3
-"""Create a vector of `VerbalUnitAnnotation`s from the user-edited
-data frame `vudataframe`
+# ╔═╡ 0fd133f8-9f42-42d2-abe7-34fc955a7250
+"""True if all values in DataFrame can be used to construct valid `VerbalUnitAnnotation`.
 """
-function vusfromdf(vudataframe)
-	
-	verbals = VerbalUnitAnnotation[]
+function vuok(vudataframe)
+	vuvalsok = true
 	for row in eachrow(vudataframe)
 		strs = [
 			row.passage, row.syntactic_type,
 			row.semantic_type, string(row.depth),
 			string(row.sentence)
 		]
-		va = verbalunit(join(strs, "|"))
-		push!(verbals, va)
-		#=
-		push!(verbals, VerbalUnitAnnotation(
-			row.passage,
-			row.syntactic_type,
-			row.semantic_type,
-			row.depth,
-			row.sentence
-		))=#
+		try
+			va = verbalunit(join(strs, "|"))
+		catch e
+			vuvalsok = false
+		end
 	end
-	verbals
+	vuvalsok
+end
+
+# ╔═╡ 8b15255d-d824-499d-94d5-0ba34aed3fff
+"""Collect error messages for any bad values for syntactic or semantic type
+in data frame `vudataframe`.
+"""
+function badvuvalues(vudataframe)
+	
+	vuerrors =  []
+	for row in eachrow(vudataframe)
+		strs = [
+			row.passage, row.syntactic_type,
+			row.semantic_type, string(row.depth),
+			string(row.sentence)
+		]
+		try
+			va = verbalunit(join(strs, "|"))
+		catch e
+			push!(vuerrors, e.msg)
+		end
+	end
+	vuerrors
+end
+
+# ╔═╡ 5c025e03-1da2-425a-9213-be715697f2b3
+"""Create a vector of `VerbalUnitAnnotation`s from the user-edited
+data frame `vudataframe`, or return `nothing` if there are errors.
+"""
+function vusfromdf(vudataframe)
+	if vuok(vudataframe)
+		verbals = VerbalUnitAnnotation[]
+		for row in eachrow(vudataframe)
+			strs = [
+				row.passage, row.syntactic_type,
+				row.semantic_type, string(row.depth),
+				string(row.sentence)
+			]
+			try
+				va = verbalunit(join(strs, "|"))
+				push!(verbals, va)
+			catch e
+				
+			end
+		end
+		verbals
+	else
+		nothing
+	end
+	
 end
 
 # ╔═╡ 4e432568-2d57-4064-9dc6-73ab3b78cbf8
@@ -814,18 +870,23 @@ else
 end
 
 # ╔═╡ e3b25956-c258-4887-b6dc-e0cb1742aa83
-if ! isnothing(vudf)
-	HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
+if ! isempty(vudf)
+	if vuok(vudf) #! isnothing(vudf)
+		HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
+	else
+		badvuvallines = ["Please correct the following errors in your definitions of verbal expressions (Unfold the *Cheat sheet for annotating verbal expressions* in the right column if you need help.)", ""]
+
+		for s in  badvuvalues(vudf)
+			push!(badvuvallines, "1. " * s)
+		end
+		badvuvalmsg = Markdown.parse(join(badvuvallines, "\n"))
+		
+		
+		keep_working(badvuvalmsg)
+		
+	end
+	
 end
-
-# ╔═╡ 647450a0-21fe-46de-ab58-1614df53b66a
-vudf[1,: ]
-
-# ╔═╡ 3c1b1407-2c92-43ee-a8ca-b0d0022f4916
-debugcex = join([vudf[1,:passage], vudf[1,:syntactic_type], vudf[1, :semantic_type], string(vudf[1, :depth]), string(vudf[1,:sentence])], "|")
-
-# ╔═╡ e9f067a8-d94a-49e5-b804-8adcc936443b
-verbalunit(debugcex)
 
 # ╔═╡ 72d51241-9ca7-42be-81f6-9a961ab62fe0
 """True if Step 2 editing is complete."""
@@ -838,9 +899,6 @@ md"""> ### Global variables derived from *assigning tokens to verbal expressions
 >
 > - `intermediatetokens`. This is a Vector of `TokenAnnotations` for each token in the sentence, but without any assigned syntactic roles yet.
 """
-
-# ╔═╡ def6daf8-bdd7-4bfb-87e5-17b7b19e5fdd
-md"""### ===> REWRITE THIS ONE <==="""
 
 # ╔═╡ 45f62b20-de3e-4520-b568-ea93f498be2c
 md"""> ### UI for *assigning tokens to verbal expressions*
@@ -926,6 +984,281 @@ end
 
 # ╔═╡ ef91e94f-1a6b-4087-92f4-b5907c5736a4
 isnothing(assignedtokensdf) ? md"`assignedtokensdf` undefined" : describe(assignedtokensdf)
+
+# ╔═╡ 4e09278f-3f0c-451e-8e1a-5d2058b695f4
+md"""> ### Global variables for *defining syntactic relations*
+>
+> - `syntaxannotations` The final Vector of `TokenAnnotation`s
+"""
+
+# ╔═╡ 83c175b5-80f4-4830-af00-d8e03dc17bfd
+md"""## ===> REWRITE THIS <==="""
+
+# ╔═╡ a5c9a4d7-2cc1-4702-9d3e-c17bda50399a
+md"""> ### UI for *defining syntactic relations*
+>
+> - `syntaxsrcdf`: the DataFrame we'll feed to the PlutoGrid widget. It has one row ready to edit for each lexical token in the sentence.
+> - `syntax`: the DataFram with user edited values.
+"""
+
+# ╔═╡ 3b221a15-e014-4c7a-becd-dc16186c8c1b
+syntaxsrcdf = if isnothing(intermediatetokens)
+	nothing
+else
+	syntaxtuples = []
+	lexcount = 0
+	for  t in intermediatetokens
+		if t.tokentype == "lexical"
+			lexcount = lexcount + 1
+			tupl = (
+			passage = string(passagecomponent(t.urn)),
+			reference = lexcount,
+			token = t.text,
+			node1 = missing, node1rel = missing, 
+			node2 = missing, node2rel = missing
+			)
+			push!(syntaxtuples, tupl)
+		end
+	end
+
+	#=
+	if isempty(connectorlist) || isnothing(connectorlist[1])
+		psg = sentencerange(sentence) |> passagecomponent
+		deranged = replace(psg, "-" => "_")
+		extrarow = (passage = string( "_asyndeton_",deranged), reference = seq + 1, token = "asyndeton", node1 = missing, node1rel = missing, node2 = missing, node2rel = missing)
+		push!(syntaxstrings, extrarow)
+	end
+		=#
+	syntaxtuples |> DataFrame
+
+end;
+
+# ╔═╡ 8158b56a-f0b2-4cc6-afc3-e6b19008bd28
+"""True if Step 3 editing is complete."""
+function step3()
+	step1() && tokensassigned
+end
+
+# ╔═╡ 5d356a75-b397-4bee-883f-1237d7a6971d
+if step3()
+	md"""### Step 3. Define syntactic relations"""
+else
+	md""
+end
+
+# ╔═╡ d871b6f7-f9a9-4747-86b6-101ca7f3d48d
+if step3() 
+	HTML("""<h4>Edit syntactic relations</h4>
+
+	""")
+end
+
+# ╔═╡ 99fb5e68-dc50-4ef0-93a9-a392c9036b60
+if step3()
+	if nrow(vudf) == 0
+	md""
+else
+	syntaxtips = """
+You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
+	
+*Syntactic type of token's relation*
+
+- **con**junction
+- **subo**rdinate conjunction
+- **r**elative pronoun
+- **u**nit verb
+- **pre**dicate
+- **subj**ect
+- **di**rect address
+- **com**plementary infinitive
+- **sup**plementary participle
+- **m**odal particle
+- **ad**verbial
+- **at**tributive
+- **ar**ticle
+- **pro**noun
+- **da**tive
+- **g**enitive
+
+*Other pre-defined abbreviations*
+
+- **o** == object
+- **op** == 	object of preposition
+- **s** == subject		
+- **sc** == subordinate conjunction
+		
+"""
+	
+	Foldable("Cheat sheet for annotating syntactic relations",aside(Markdown.parse(syntaxtips))) |> aside
+end
+	else
+		md""
+	end
+
+# ╔═╡ 5b6deb79-3e9c-493f-b33b-60928d6248cf
+if step3()
+	@bind syntaxdf editable_table(syntaxsrcdf; filterable=true, pagination=true)
+else
+	md""
+end
+
+# ╔═╡ 11a6e61a-64b4-4b6f-8b58-b2370d503a85
+syntaxdf[1,:]
+
+# ╔═╡ c7b73446-17bf-4cf2-97e0-ac51a6f77acc
+syntax = @isdefined(syntaxdf) ? create_dataframe(syntaxdf) : nothing;
+
+# ╔═╡ 0c9bcdd2-7981-4292-b4e3-e68ad3a02e73
+"""True if all values in DataFrame can be used to construct valid `VerbalUnitAnnotation`.
+"""
+function tokensyntaxok(syntaxframe)
+	tokensok = true
+	for tkn in intermediatetokens
+		dfmatchesx = filter(row -> row.passage == passagecomponent(tkn.urn), syntax)
+		if nrow(dfmatchesx) == 1
+			cols = [string(tkn.urn), tkn.tokentype, tkn.text, tkn.verbalunit,
+				string(dfmatchesx[1, :node1]),
+				dfmatchesx[1, :node1rel],
+				string(dfmatchesx[1, :node2]),
+				dfmatchesx[1, :node2rel]
+			]
+			try 
+				newta = token(join(cols, "|"))
+			catch
+				tokensok = false
+			end
+		end
+	end
+	tokensok
+end
+
+# ╔═╡ cc7e43d2-a82e-4198-86bd-7fafb1af1616
+tokensyntaxok(syntax)
+
+# ╔═╡ 8127de22-83d4-4eaa-99ef-892ebf3c7974
+"""True if all values in DataFrame can be used to construct valid `VerbalUnitAnnotation`.
+"""
+function tokensyntaxerrors(syntaxframe)
+	tokenerrors = []
+	for tkn in intermediatetokens
+		dfmatchesx = filter(row -> row.passage == passagecomponent(tkn.urn), syntax)
+		if nrow(dfmatchesx) == 1
+			cols = [string(tkn.urn), tkn.tokentype, tkn.text, tkn.verbalunit,
+				string(dfmatchesx[1, :node1]),
+				dfmatchesx[1, :node1rel],
+				string(dfmatchesx[1, :node2]),
+				dfmatchesx[1, :node2rel]
+			]
+			try 
+				newta = token(join(cols, "|"))
+			catch e
+				push!(tokenerrors, e.msg)
+			end
+		end
+	end
+	tokenerrors
+end
+
+# ╔═╡ d374ee82-a2ed-4b6c-9b60-9f82faa9af3b
+if ! isempty(syntax)
+	if tokensyntaxok(vudf) #! isnothing(vudf)
+		#HTML("<p>Defined groups:<p>" * htmlgrouplist(verbalunits)) |> aside
+	else
+		
+		badtknvallines = ["Please correct the following errors in your definitions of syntactic relations. (Unfold the *Cheat sheet for annotating syntactic relations* in the right column if you need help.)", ""]
+
+		for s in  tokensyntaxerrors(vudf)
+			push!(badtknvallines, "1. " * s)
+		end
+		badtknvalmsg = Markdown.parse(join(badtknvallines, "\n"))
+		
+	
+		
+		
+		keep_working(badtknvalmsg)
+		
+	end
+	
+end
+
+# ╔═╡ 9a889ec1-a505-459f-83db-09ea570d0738
+tokensyntaxerrors(syntax)
+
+# ╔═╡ 610f2928-7795-465d-86b6-5a3d2c38cf37
+
+# Check on intermediatetokens, AND syntax
+syntaxannotations = if isnothing(syntax) || isnothing(intermediatetokens)
+	nothing
+	
+else
+	newtokens = TokenAnnotation[]
+	for tkn in intermediatetokens
+		dfmatches = filter(row -> row.passage == passagecomponent(tkn.urn), syntax)
+		if nrow(dfmatches) == 1
+			cols = [string(tkn.urn), tkn.tokentype, tkn.text, tkn.verbalunit,
+				string(dfmatches[1, :node1]),
+				dfmatches[1, :node1rel],
+				string(dfmatches[1, :node2]),
+				dfmatches[1, :node2rel]
+			]
+			try
+				push!(newtokens, token(join(cols, "|")))
+			catch e
+			end
+	
+			
+		else
+			push!(newtokens, tkn)
+		end
+	end
+	newtokens
+end
+
+# ╔═╡ 50820954-68ff-44df-9f07-e31af269f279
+if step3()
+	graphstr = mermaiddiagram(sentenceannotation, syntaxannotations)
+	mermaid"""$(graphstr)"""
+
+	
+else 
+	md""
+end
+
+# ╔═╡ 9ff27c61-4917-4836-bae7-cd9e9e60e9d8
+syntaxannotations
+
+# ╔═╡ ae77c5cf-4aba-48a5-8501-d0103b72933e
+mermaiddiagram(sentenceannotation, syntaxannotations)
+
+# ╔═╡ d1c1e48c-f3ae-4392-8515-f05c10bfc7ee
+
+md"""> ### File management
+>
+> 
+>
+
+"""
+
+# ╔═╡ f889d827-1a13-49e0-a13d-59286da5fe45
+mkpath(outputdir);
+
+# ╔═╡ debb5ce9-540f-467c-bb42-32ce89896300
+fname = replace(title, " " => "_");
+
+# ╔═╡ a9d2249b-243c-485b-b572-c0642950ab7f
+"""Append delimited-text representation of annotations to file `filename`.
+"""
+function appendannotations(filename, sents, vus, tkns; delimiter = "|")
+	hdrlines = isfile(filename) ? readlines(filename) : []
+	push!(hdrlines, "")
+	push!(hdrlines, "//")
+	push!(hdrlines, "// Automatically appended from Pluto notebook \"Analyze syntax of Greek text from a CTS source\" (version $(nbversion))")
+	push!(hdrlines, "//")
+
+	txt = join(hdrlines, "\n") * "\n#!sentences\n" * delimited(sents) * "\n\n#!verbal_units\n" * delimited(vus) * "\n\n#!tokens\n" * delimited(tkns)	
+
+	
+end
 
 # ╔═╡ f12dfef3-7b61-485b-9142-fa9473313b7b
 md"""> ### Settings for visual formatting"""
@@ -1038,6 +1371,19 @@ When you have associated each token with the correct verbal expression, check th
 	
 end
 
+# ╔═╡ 76e31d77-b3e4-4922-812d-a242c90a3254
+if step3()
+	msg4 = md"""Associate each token with a token it depends on, and define their relation.  If the token is a conjunction or a relative clause, you should also 
+	associate it with a second token and define that relation, too.
+
+	Unfold the cheat sheet below to see a list of valid tags for relations.
+	"""
+	Foldable("Step 3 instructions",
+	instructions("Annotating relations of tokens", msg4))
+else
+	md""
+end
+
 # ╔═╡ 88ebf7e0-9a13-48e7-98ea-a17d876248ab
 begin
 	if seecss
@@ -1049,6 +1395,33 @@ The following two cells define the visual appearance of the text's formatting.  
 """
 		instructions("Style your own", cssmsg)
 	end
+end
+
+# ╔═╡ e3b9930a-1317-45fd-a56d-c27944a25529
+begin
+	whysocomplicated = md"""	
+
+Because it's fundamentally at odds with what Pluto is all about!
+
+#### Pluto is stateless
+
+- this makes reactivity possible
+- cells have a value
+- you can't reassign variables
+
+#### Interactive widgets
+
+- wrap a javascript widget in Pluto so cell returns value of widget
+- mutable value lives in the DOM only
+
+#### Editing a table
+	
+- lungben's widget  [PlutoGrid](https://github.com/lungben/PlutoGrid.jl) lets you edit a DataFrame.  You start from a source data frame
+- the widget returns a stream of data that you can use to create a new DataFrame with the edited values.  Now any other cell has access to the second DataFrame with edited values.
+
+	"""
+
+	Foldable("Why is this notebook so complicated?", instructions("Using Pluto as for editing data", whysocomplicated)) 
 end
 
 # ╔═╡ Cell order:
@@ -1084,11 +1457,22 @@ end
 # ╟─637953de-ab10-4206-bb3e-b4ed54da1235
 # ╟─a0f1c242-4a19-4085-be17-5d9b870b434a
 # ╟─5ebca725-912f-49fa-8f9a-43833a62b0ed
-# ╟─5b76798a-69b0-4ac6-b55b-dfb0b204ec2f
 # ╟─e3b25956-c258-4887-b6dc-e0cb1742aa83
+# ╟─5b76798a-69b0-4ac6-b55b-dfb0b204ec2f
 # ╟─f113a61d-5ff1-4544-bf7a-3b87d9de0798
 # ╟─59f712d2-12e2-44ef-b79c-b842a134a168
+# ╟─715cc820-563e-40f5-8fbe-ae3c5da80098
+# ╟─5d356a75-b397-4bee-883f-1237d7a6971d
+# ╟─76e31d77-b3e4-4922-812d-a242c90a3254
+# ╠═50820954-68ff-44df-9f07-e31af269f279
+# ╠═cce81eed-77da-493b-b2c8-914edd9b3681
+# ╠═9ff27c61-4917-4836-bae7-cd9e9e60e9d8
+# ╠═ae77c5cf-4aba-48a5-8501-d0103b72933e
+# ╟─d871b6f7-f9a9-4747-86b6-101ca7f3d48d
+# ╟─99fb5e68-dc50-4ef0-93a9-a392c9036b60
 # ╟─e931ff8d-299e-419e-b991-4a9caa94734e
+# ╟─5b6deb79-3e9c-493f-b33b-60928d6248cf
+# ╟─d374ee82-a2ed-4b6c-9b60-9f82faa9af3b
 # ╟─863f3c5f-f10f-4755-a74a-e011eefc6e14
 # ╟─88ebf7e0-9a13-48e7-98ea-a17d876248ab
 # ╟─7126004e-586a-426f-bd91-3b02196900bb
@@ -1097,6 +1481,7 @@ end
 # ╟─da77076f-121e-40c6-aeae-05f2728ad918
 # ╟─70e6314b-12ee-491c-95ca-85a464b2ed41
 # ╟─6084a7fb-9f6d-4c1c-b0f8-b36ff1bd12a8
+# ╟─e3b9930a-1317-45fd-a56d-c27944a25529
 # ╟─d0880c49-23d8-4180-ad66-993ba8640555
 # ╟─3eda4f2c-5145-4472-9d4e-3aaeaff0f732
 # ╟─61e97fa8-ca3c-41f1-98e9-8b3ec0d6a811
@@ -1114,7 +1499,7 @@ end
 # ╟─f9eb7ac5-0049-455a-b55b-33fdb5515dd7
 # ╟─ab8b3a18-7e91-41d5-b649-a98da35bfe48
 # ╟─1dc7ec37-fc96-4129-866b-88f5a6b2951b
-# ╠═c4301d12-c62b-4161-8847-555d78ca346d
+# ╟─c4301d12-c62b-4161-8847-555d78ca346d
 # ╟─14586c88-3e6f-42da-85cb-9470c03e92e1
 # ╟─ab68c779-e090-486a-b30e-12a05376d9fe
 # ╟─78a55417-7588-4ddc-a977-89c1d3bca0b5
@@ -1122,12 +1507,10 @@ end
 # ╟─89df8479-12a3-40a9-aee7-87a5c47c1e61
 # ╟─702c10de-f79e-4071-bc1a-de148620e639
 # ╟─34335816-0b0e-486f-b01d-f09be94cb286
-# ╠═a9735bd6-d270-483e-b724-5f2c1dd1b5b2
-# ╠═647450a0-21fe-46de-ab58-1614df53b66a
-# ╠═3c1b1407-2c92-43ee-a8ca-b0d0022f4916
-# ╠═e9f067a8-d94a-49e5-b804-8adcc936443b
-# ╟─367931f1-1f35-488c-a9c0-1f75f51e0522
-# ╠═5c025e03-1da2-425a-9213-be715697f2b3
+# ╟─a9735bd6-d270-483e-b724-5f2c1dd1b5b2
+# ╟─0fd133f8-9f42-42d2-abe7-34fc955a7250
+# ╟─8b15255d-d824-499d-94d5-0ba34aed3fff
+# ╟─5c025e03-1da2-425a-9213-be715697f2b3
 # ╟─4e432568-2d57-4064-9dc6-73ab3b78cbf8
 # ╟─ca0e7f64-ea9c-4379-93a7-df2f82019a97
 # ╟─908b20bc-fcf8-40d1-9a0b-a4efe2b2ffd8
@@ -1135,11 +1518,26 @@ end
 # ╟─edea857d-268d-418f-b08c-d78b088cdc44
 # ╟─72d51241-9ca7-42be-81f6-9a961ab62fe0
 # ╟─d602d574-16a6-47c9-9bcf-b34bf7ac47ce
-# ╟─def6daf8-bdd7-4bfb-87e5-17b7b19e5fdd
 # ╟─c140b87e-998b-435d-9c91-9babca73c5bf
 # ╟─45f62b20-de3e-4520-b568-ea93f498be2c
 # ╠═cf4c142e-3aad-46d4-be53-62292b779606
 # ╠═db319239-96da-4bf3-887c-ff953b56f109
 # ╠═ef91e94f-1a6b-4087-92f4-b5907c5736a4
+# ╟─4e09278f-3f0c-451e-8e1a-5d2058b695f4
+# ╠═11a6e61a-64b4-4b6f-8b58-b2370d503a85
+# ╟─83c175b5-80f4-4830-af00-d8e03dc17bfd
+# ╟─0c9bcdd2-7981-4292-b4e3-e68ad3a02e73
+# ╠═cc7e43d2-a82e-4198-86bd-7fafb1af1616
+# ╠═9a889ec1-a505-459f-83db-09ea570d0738
+# ╠═8127de22-83d4-4eaa-99ef-892ebf3c7974
+# ╟─610f2928-7795-465d-86b6-5a3d2c38cf37
+# ╟─a5c9a4d7-2cc1-4702-9d3e-c17bda50399a
+# ╠═c7b73446-17bf-4cf2-97e0-ac51a6f77acc
+# ╠═3b221a15-e014-4c7a-becd-dc16186c8c1b
+# ╟─8158b56a-f0b2-4cc6-afc3-e6b19008bd28
+# ╟─d1c1e48c-f3ae-4392-8515-f05c10bfc7ee
+# ╠═f889d827-1a13-49e0-a13d-59286da5fe45
+# ╠═debb5ce9-540f-467c-bb42-32ce89896300
+# ╟─a9d2249b-243c-485b-b572-c0642950ab7f
 # ╟─f12dfef3-7b61-485b-9142-fa9473313b7b
 # ╟─3ed465c3-512b-4489-8d7e-3d7fdf565c0c
