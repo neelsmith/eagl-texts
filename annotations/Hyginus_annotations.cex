@@ -1,3 +1,4 @@
+
 //Sentence 1198
 //
 // Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.7.0)
@@ -313,3 +314,40 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.12|lexical|duxit|122a.4.1-122
 urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.12a|ignore|;|0|nothing|nothing|nothing|nothing
 
 // Sentence 1211
+
+
+
+// Pandora:
+// Sentence 1412
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.8.1)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.1-142a.1.8a|1412|
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+142a.1.1-142a.1.8a.1|Independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.1-142a.1.8a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.1|lexical|Prometheus|142a.1.1-142a.1.8a.1|8|subject|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.2|lexical|Iapeti|142a.1.1-142a.1.8a.1|3|genitive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.3|lexical|filius|142a.1.1-142a.1.8a.1|1|apposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.4|lexical|primus|142a.1.1-142a.1.8a.1|8|predicate|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.5|lexical|homines|142a.1.1-142a.1.8a.1|8|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.6|lexical|ex|142a.1.1-142a.1.8a.1|8|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.7|lexical|luto|142a.1.1-142a.1.8a.1|6|object of preposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.8|lexical|finxit|142a.1.1-142a.1.8a.1|9|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:142a.1.8a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+// Sentence 1413
+// Sentence 1414
+// Sentence 1415
+// Sentence 1416
+// Sentence 1417
