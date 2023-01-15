@@ -36,7 +36,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.9|lexical|καὶ|1.6.1-1.6.46a.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.10|lexical|γυναῖκα|1.6.1-1.6.46a.3|11|object|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.11|lexical|ἠγαγόμην|1.6.1-1.6.46a.3|5|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.12|lexical|εἰς|1.6.1-1.6.46a.3|5|adverbial|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.13|lexical|τὴν|1.6.1-1.6.46a.3|14|arrticle|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.13|lexical|τὴν|1.6.1-1.6.46a.3|14|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.14|lexical|οἰκίαν|1.6.1-1.6.46a.3|12|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.14a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.15|lexical|τὸν|1.6.1-1.6.46a.1|18|article|nothing|nothing
@@ -90,7 +90,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.6.47-1.6.64a.2|subordinate clause|linking|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.47-1.6.64a
 1.6.47-1.6.64a.3|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.47-1.6.64a
 1.6.47-1.6.64a.4|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.47-1.6.64a
-1.6.47-1.6.64a.5|indirect statement with infinitive|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.47-1.6.64a
+1.6.47-1.6.64a.5|infinitive in indirect statement|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.6.47-1.6.64a
 
 
 #!tokens
@@ -314,7 +314,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.5|lexical|ἄνδρες|1.9.1-1.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.5a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.5b|ignore|(|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.6|lexical|δεῖ|1.9.1-1.9.28a.3|7|unit verb|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.7|lexical|γὰρ|1.9.1-1.9.28a.3|1|aside|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.7|lexical|γὰρ|1.9.1-1.9.28a.3|1|conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.8|lexical|καὶ|1.9.1-1.9.28a.3|9|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.9|lexical|ταῦθ'|1.9.1-1.9.28a.3|11|object|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.10|lexical|ὑμῖν|1.9.1-1.9.28a.3|11|dative|nothing|nothing
@@ -401,8 +401,8 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.44|lexical|δέοι|1.9.39-1.9.5
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.44a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.45|lexical|κινδυνεύῃ|1.9.39-1.9.57a.3|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.46|lexical|κατὰ|1.9.39-1.9.57a.5|11|adverbial|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.47|lexical|τῆς|1.9.39-1.9.57a.5|10|ariticle|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.48|lexical|κλίμακος|1.9.39-1.9.57a.5|8|object of prepositin|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.47|lexical|τῆς|1.9.39-1.9.57a.5|10|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.48|lexical|κλίμακος|1.9.39-1.9.57a.5|8|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.49|lexical|καταβαίνουσα|1.9.39-1.9.57a.5|7|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.49a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.50|lexical|ἐγὼ|1.9.39-1.9.57a.1|15|subject|nothing|nothing
@@ -415,6 +415,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.55|lexical|δὲ|1.9.39-1.9.57a.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.56|lexical|γυναῖκες|1.9.39-1.9.57a.2|20|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.57|lexical|κάτω|1.9.39-1.9.57a.2|20|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.9.57a|ignore|.|0|nothing|nothing|nothing|nothing
+
 
 
 // Sentence 20
@@ -441,7 +442,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.3|lexical|ἤδη|1.10.1-1.10.2
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.4|lexical|συνειθισμένον|1.10.1-1.10.23a.1|5|compound verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.5|lexical|ἦν|1.10.1-1.10.23a.1|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.5a|ignore|,|0|nothing|nothing|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.6|lexical|ὥστε|1.10.1-1.10.23a.2|2|subordinate clause|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.6|lexical|ὥστε|1.10.1-1.10.23a.2|2|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.7|lexical|πολλάκις|1.10.1-1.10.23a.2|10|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.8|lexical|ἡ|1.10.1-1.10.23a.2|9|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.9|lexical|γυνὴ|1.10.1-1.10.23a.2|10|subject|nothing|nothing
@@ -477,7 +478,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.10.24-1.10.49a.2|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.24-1.10.49a
 1.10.24-1.10.49a.3|independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.24-1.10.49a
 1.10.24-1.10.49a.4|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.24-1.10.49a
-1.10.24-1.10.49a.5|indirect statement with infinitive|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.24-1.10.49a
+1.10.24-1.10.49a.5|infinitive in indirect statement|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.24-1.10.49a
 1.10.1-1.10.23a.1|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.1-1.10.23a
 1.10.1-1.10.23a.2|subordinate clause|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.1-1.10.23a
 1.10.1-1.10.23a.3|circumstantial participle|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.10.1-1.10.23a
@@ -618,6 +619,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.4|lexical|ἐπυθόμην|1.1
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.4a|ignore|.|0|nothing|nothing|nothing|nothing
 
 
+
 // Sentence 25
 //
 // Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.6.0)
@@ -630,8 +632,8 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a|25|urn:cts:greekLit:
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.12.5-1.12.19a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
-1.12.5-1.12.19a.2|indirect statement with infinitive|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
-1.12.5-1.12.19a.3|indirect statement with infinitive|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
+1.12.5-1.12.19a.2|infinitive in indirect statement|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
+1.12.5-1.12.19a.3|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
 1.12.5-1.12.19a.4|subordinate clause|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.5-1.12.19a
 
 
@@ -652,7 +654,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.16|lexical|τιτθόν|1.12.5-
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.16a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.17|lexical|ἵνα|1.12.5-1.12.19a.4|8|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.18|lexical|παύσηται|1.12.5-1.12.19a.4|13|unit verb|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.19|lexical|κλᾶον|1.12.5-1.12.19a.4|14|supplementary infinitive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.19|lexical|κλᾶον|1.12.5-1.12.19a.4|14|complementary infinitive|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.19a|ignore|.|0|nothing|nothing|nothing|nothing
 
 
@@ -671,7 +673,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.12.20-1.12.34a.1|Independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.20-1.12.34a
 1.12.20-1.12.34a.2|circumstantial participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.20-1.12.34a
 1.12.20-1.12.34a.3|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.20-1.12.34a
-1.12.20-1.12.34a.4|indirect statement with participle|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.20-1.12.34a
+1.12.20-1.12.34a.4|participle in indirect statement|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.20-1.12.34a
 
 
 #!tokens
@@ -710,7 +712,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.12.35-1.12.50a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
 1.12.35-1.12.50a.2|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
 1.12.35-1.12.50a.3|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
-1.12.35-1.12.50a.4|indirect statement with infinitive|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
+1.12.35-1.12.50a.4|infinitive in indirect statement|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
 1.12.35-1.12.50a.5|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.12.35-1.12.50a
 
 
@@ -895,9 +897,9 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a|32|urn:cts:greekLit
 vuid|syntactic_type|semantic_type|depth|sentence
 1.14.12-1.14.32a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
 1.14.12-1.14.32a.2|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
-1.14.12-1.14.32a.3|indirect statement|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
-1.14.12-1.14.32a.4|indirect statement with infinitive|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
-1.14.12-1.14.32a.5|indirect statement with infinitive|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
+1.14.12-1.14.32a.3|infinitive in indirect statement|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
+1.14.12-1.14.32a.4|infinitive in indirect statement|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
+1.14.12-1.14.32a.5|infinitive in indirect statement|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.12-1.14.32a
 
 
 #!tokens
@@ -916,7 +918,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.21|lexical|τὸν|1.14.12-1.14
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.22|lexical|λύχνον|1.14.12-1.14.32a.4|12|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.23|lexical|ἀποσβεσθῆναι|1.14.12-1.14.32a.4|9|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.24|lexical|τὸν|1.14.12-1.14.32a.4|11|article|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.25|lexical|παρὰ|1.14.12-1.14.32a.4|11|attribute|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.25|lexical|παρὰ|1.14.12-1.14.32a.4|11|attributive|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.26|lexical|τῷ|1.14.12-1.14.32a.4|16|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.27|lexical|παιδίῳ|1.14.12-1.14.32a.4|14|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.27a|ignore|,|0|nothing|nothing|nothing|nothing
@@ -942,7 +944,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.33-1.14.39a|33|
 vuid|syntactic_type|semantic_type|depth|sentence
 1.14.33-1.14.39a.1|Independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.33-1.14.39a
 1.14.33-1.14.39a.2|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.33-1.14.39a
-1.14.33-1.14.39a.3|indirect statement with infiniti9ve|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.33-1.14.39a
+1.14.33-1.14.39a.3|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.33-1.14.39a
 
 
 #!tokens
@@ -952,7 +954,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.34|lexical|ἐγὼ|1.14.33-1.1
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.35|lexical|καὶ|1.14.33-1.14.39a.2|7|conjunction|1|conjunction
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.36|lexical|ταῦτα|1.14.33-1.14.39a.3|6|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.37|lexical|οὕτως|1.14.33-1.14.39a.3|6|adverbial|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.38|lexical|ἔχειν|1.14.33-1.14.39a.3|7|unit verb||nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.38|lexical|ἔχειν|1.14.33-1.14.39a.3|7|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.39|lexical|ἡγούμην|1.14.33-1.14.39a.2|3|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.39a|ignore|.|0|nothing|nothing|nothing|nothing
 
@@ -970,7 +972,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.40-1.14.53a|34|urn:cts:greekLit
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.14.40-1.14.53a.1|Independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.40-1.14.53a
-1.14.40-1.14.53a.2|Indirect statement with accusative|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.40-1.14.53a
+1.14.40-1.14.53a.2|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.40-1.14.53a
 1.14.40-1.14.53a.3|circumstantial participle|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.40-1.14.53a
 
 
@@ -985,11 +987,11 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.44|lexical|ἄνδρες|1.14.4
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.44a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.45|lexical|τὸ|1.14.40-1.14.53a.2|7|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.46|lexical|πρόσωπον|1.14.40-1.14.53a.2|8|subject|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.47|lexical|ἐψιμυθιῶσθαι|1.14.40-1.14.53a.2|1|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.47|lexical|ἐψιμυθιῶσθαι|1.14.40-1.14.53a.2|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.47a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.48|lexical|τοῦ|1.14.40-1.14.53a.3|10|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.49|lexical|ἀδελφοῦ|1.14.40-1.14.53a.3|8|absolute|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.50|lexical|τεθνεῶτος|1.14.40-1.14.53a.3|10|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.50|lexical|τεθνεῶτος|1.14.40-1.14.53a.3|10|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.51|lexical|οὔπω|1.14.40-1.14.53a.3|11|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.52|lexical|τριάκονθ'|1.14.40-1.14.53a.3|14|attributive|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.14.53|lexical|ἡμέρας|1.14.40-1.14.53a.3|11|adverbial|nothing|nothing
@@ -1108,7 +1110,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.15.31-1.15.50a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
 1.15.31-1.15.50a.2|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
 1.15.31-1.15.50a.3|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
-1.15.31-1.15.50a.4|indirect statement with accusative |transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
+1.15.31-1.15.50a.4|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
 1.15.31-1.15.50a.5|subordinate clause|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
 1.15.31-1.15.50a.6|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
 1.15.31-1.15.50a.7|subordinate clause|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31-1.15.50a
@@ -1118,24 +1120,24 @@ vuid|syntactic_type|semantic_type|depth|sentence
 urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.31|lexical|αὕτη|1.15.31-1.15.50a.1|13|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.32|lexical|δὲ|nothing|nothing|nothing|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.33|lexical|ὀργιζομένη|1.15.31-1.15.50a.2|1|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.33|lexical|ὀργιζομένη|1.15.31-1.15.50a.2|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.34|lexical|καὶ|1.15.31-1.15.50a.3|6|conjunction|3|conjunction
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.35|lexical|ἀδικεῖσθαι|1.15.31-1.15.50a.4|6|verbal unit|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.36|lexical|νομίζουσα|1.15.31-1.15.50a.3|1|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.35|lexical|ἀδικεῖσθαι|1.15.31-1.15.50a.4|6|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.36|lexical|νομίζουσα|1.15.31-1.15.50a.3|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.36a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.37|lexical|ὅτι|1.15.31-1.15.50a.5|3|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.38|lexical|οὐκέτι|1.15.31-1.15.50a.5|10|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.39|lexical|ὁμοίως|1.15.31-1.15.50a.5|10|adverbial|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.40|lexical|ἐφοίτα|1.15.31-1.15.50a.5|7|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.40|lexical|ἐφοίτα|1.15.31-1.15.50a.5|7|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.41|lexical|παρ'|1.15.31-1.15.50a.5|10|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.42|lexical|αὐτήν|1.15.31-1.15.50a.5|11|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.42a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.43|lexical|ἐφύλαττεν|1.15.31-1.15.50a.1|2|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.44|lexical|ἕως|1.15.31-1.15.50a.6|13|subordinate conjunction|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.45|lexical|ἐξηῦρεν|1.15.31-1.15.50a.6|14|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.45|lexical|ἐξηῦρεν|1.15.31-1.15.50a.6|14|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.46|lexical|ὅ|1.15.31-1.15.50a.7|15|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.47|lexical|τι|1.15.31-1.15.50a.7|16|pronoun|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.48|lexical|εἴη|1.15.31-1.15.50a.7|16|verbal unit|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.48|lexical|εἴη|1.15.31-1.15.50a.7|16|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.49|lexical|τὸ|1.15.31-1.15.50a.7|20|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.50|lexical|αἴτιον|1.15.31-1.15.50a.7|18|predicate|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.50a|ignore|.|0|nothing|nothing|nothing|nothing
@@ -1157,7 +1159,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.15.51-1.15.70a.2|circumstantial participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.51-1.15.70a
 1.15.51-1.15.70a.3|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.51-1.15.70a
 1.15.51-1.15.70a.4|quote|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.51-1.15.70a
-1.15.51-1.15.70a.5|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.51-1.15.70a
+1.15.51-1.15.70a.5|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.15.51-1.15.70a
 
 
 #!tokens
@@ -1360,7 +1362,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.17.1-1.17.52a.9|subordinate clause|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.1-1.17.52a
 1.17.1-1.17.52a.10|subordinate clause|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.1-1.17.52a
 1.17.1-1.17.52a.11|subordinate clause|intransitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.1-1.17.52a
-1.17.1-1.17.52a.12|indirect statement with infinitive|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.1-1.17.52a
+1.17.1-1.17.52a.12|infinitive in indirect statement|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.1-1.17.52a
 
 
 #!tokens
@@ -1385,7 +1387,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.13|lexical|πάντα|1.17.1-1.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.14|lexical|μου|1.17.1-1.17.52a.3|13|genitive|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.15|lexical|εἰς|1.17.1-1.17.52a.3|18|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.16|lexical|τὴν|1.17.1-1.17.52a.3|17|article|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.17|lexical|γνώμην|1.17.1-1.17.52a.3|15|objet of preposition|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.17|lexical|γνώμην|1.17.1-1.17.52a.3|15|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.18|lexical|εἰσῄει|1.17.1-1.17.52a.3|12|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.18a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.19|lexical|καὶ|1.17.1-1.17.52a.4|21|conjunction|12|conjunction
@@ -1395,7 +1397,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.22|lexical|ὑποψίας|1.17
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.22a|ignore|,|0|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.23|lexical|ἐνθυμούμενος|1.17.1-1.17.52a.6|21|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.24|lexical|μὲν|1.17.1-1.17.52a.6|23|conjunction|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.25|lexical|ὡς|1.17.1-1.17.52a.8|23|subordinate clause|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.25|lexical|ὡς|1.17.1-1.17.52a.8|23|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.26|lexical|ἀπεκλῄσθην|1.17.1-1.17.52a.8|25|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.27|lexical|ἐν|1.17.1-1.17.52a.8|26|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.28|lexical|τῷ|1.17.1-1.17.52a.8|29|article|nothing|nothing
@@ -1416,7 +1418,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.41|lexical|καὶ|1.17.1-1.17.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.42|lexical|ἡ|1.17.1-1.17.52a.9|43|article|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.43|lexical|αὔλειος|1.17.1-1.17.52a.9|32|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.43a|ignore|,|0|nothing|nothing|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.44|lexical|ὃ|1.17.1-1.17.52a.11|37|subordinator|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.44|lexical|ὃ|1.17.1-1.17.52a.11|37|relative pronoun|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.45|lexical|οὐδέποτε|1.17.1-1.17.52a.11|46|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.46|lexical|ἐγένετο|1.17.1-1.17.52a.11|44|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.46a|ignore|,|0|nothing|nothing|nothing|nothing
@@ -1463,7 +1465,6 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.63|lexical|ὑποψίας|1.17
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.17.63a|ignore|.|0|nothing|nothing|nothing|nothing
 
 
-
 // Sentence 45
 
 //
@@ -1478,7 +1479,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a|45|urn:cts:greekLit:
 vuid|syntactic_type|semantic_type|depth|sentence
 1.18.1-1.18.29a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
 1.18.1-1.18.29a.2|circumstantial participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
-1.18.1-1.18.29a.3|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
+1.18.1-1.18.29a.3|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
 1.18.1-1.18.29a.4|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
 1.18.1-1.18.29a.5|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
 1.18.1-1.18.29a.6|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.1-1.18.29a
@@ -1507,7 +1508,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.16|lexical|τῶν|1.18.1-1.18.
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.17|lexical|ἐπιτηδείων|1.18.1-1.18.29a.5|18|genitive|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.18|lexical|τινὰ|1.18.1-1.18.29a.5|15|object|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.19|lexical|ἔλεγον|1.18.1-1.18.29a.4|2|unit verb|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.20|lexical|ὅτι|1.18.1-1.18.29a.5|19|subordinate conjunction||
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.20|lexical|ὅτι|1.18.1-1.18.29a.5|19|subordinate conjunction|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.21|lexical|ἐγὼ|1.18.1-1.18.29a.5|23|subject|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.22|lexical|πάντα|1.18.1-1.18.29a.5|25|pronoun|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.23|lexical|εἴην|1.18.1-1.18.29a.5|20|unit verb|nothing|nothing
@@ -1532,13 +1533,13 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a|46|urn:cts:greekLi
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.18.29b-1.18.62a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.2|quoted|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.3|subordinate conjunction|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.4|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.5|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.6|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.7|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
-1.18.29b-1.18.62a.8|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.2|quote|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.3|subordinate clause|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.4|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.5|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.6|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.7|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
+1.18.29b-1.18.62a.8|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
 1.18.29b-1.18.62a.9|circumstantial participle|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
 1.18.29b-1.18.62a.10|circumstantial participle|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
 1.18.29b-1.18.62a.11|circumstantial participle|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.18.29b-1.18.62a
@@ -1669,7 +1670,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.13-1.19.15a|49|urn:cts:greekLit
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.19.13-1.19.15a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.13-1.19.15a
-1.19.13-1.19.15a.2|indirect statement with accusative|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.13-1.19.15a
+1.19.13-1.19.15a.2|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.13-1.19.15a
 
 
 #!tokens
@@ -1694,10 +1695,10 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a|50|urn:cts:greekLit
 vuid|syntactic_type|semantic_type|depth|sentence
 1.19.16-1.19.38a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
 1.19.16-1.19.38a.2|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
-1.19.16-1.19.38a.3|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
+1.19.16-1.19.38a.3|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
 1.19.16-1.19.38a.4|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
 1.19.16-1.19.38a.5|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
-1.19.16-1.19.38a.6|indirect statement|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
+1.19.16-1.19.38a.6|infinitive in indirect statement|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
 1.19.16-1.19.38a.7|attributive participle|transitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.19.16-1.19.38a
 
 
@@ -1745,7 +1746,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.51-1.20.57a|52|urn:cts:greekLit
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.20.51-1.20.57a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.51-1.20.57a
-1.20.51-1.20.57a.2|attributive participle|iintransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.51-1.20.57a
+1.20.51-1.20.57a.2|attributive participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.51-1.20.57a
 
 
 #!tokens
@@ -1774,7 +1775,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a|53|urn:cts:greekLit:
 vuid|syntactic_type|semantic_type|depth|sentence
 1.20.58-1.21.8a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a
 1.20.58-1.21.8a.2|subordinate clause|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a
-1.20.58-1.21.8a.3|quoted|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a
+1.20.58-1.21.8a.3|quote|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a
 1.20.58-1.21.8a.4|subordinate clause|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.20.58-1.21.8a
 
 
@@ -1846,7 +1847,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.20-1.21.27a|55|urn:cts:greekLit
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.21.20-1.21.27a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.20-1.21.27a
-1.21.20-1.21.27a.2|Indirect statement |transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.20-1.21.27a
+1.21.20-1.21.27a.2|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.20-1.21.27a
 
 
 #!tokens
@@ -1875,8 +1876,8 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a|56|urn:cts:greekLit
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.21.28-1.21.40a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
-1.21.28-1.21.40a.2|Indirect speech with infinitive|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
-1.21.28-1.21.40a.3|Independent|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
+1.21.28-1.21.40a.2|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
+1.21.28-1.21.40a.3|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
 1.21.28-1.21.40a.4|subordinate clause|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.21.28-1.21.40a
 
 
@@ -1913,7 +1914,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.1-1.22.3a|57|
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.22.1-1.22.3a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.1-1.22.3a
-1.22.1-1.22.3a.2|indirect statement with infinitive|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.1-1.22.3a
+1.22.1-1.22.3a.2|infinitive in indirect statement|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.1-1.22.3a
 
 
 #!tokens
@@ -2037,7 +2038,7 @@ urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.33|lexical|τούτῳ|nothing|nothing|nothing|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.34|lexical|ἡλίου|1.22.33-1.22.39a.2|7|absolute|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.35|lexical|δεδυκότος|1.22.33-1.22.39a.2|2|unit verb|nothing|nothing
-urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.36|lexical|ἰόντι|1.22.33-1.22.39a.3|1|unit verb |nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.36|lexical|ἰόντι|1.22.33-1.22.39a.3|1|unit verb|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.37|lexical|ἐξ|1.22.33-1.22.39a.3|4|adverbial|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.38|lexical|ἀγροῦ|1.22.33-1.22.39a.3|5|object of preposition|nothing|nothing
 urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.22.39|lexical|ἀπήντησα|1.22.33-1.22.39a.1|1|unit verb|nothing|nothing
@@ -2057,7 +2058,7 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a|62|urn:cts:greekLit:
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 1.23.1-1.23.13a.1|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
-1.23.1-1.23.13a.2|Indirect statement with infinitive|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
+1.23.1-1.23.13a.2|infinitive in indirect statement|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
 1.23.1-1.23.13a.3|Circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
 1.23.1-1.23.13a.4|Subordinate clause|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
 1.23.1-1.23.13a.5|Circumstantial participle|intransitive|4|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.1-1.23.13a
@@ -2212,7 +2213,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 1.23.52-1.23.76a.3|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
 1.23.52-1.23.76a.4|Independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
 1.23.52-1.23.76a.5|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
-1.23.52-1.23.76a.6|indirect statement with infinitive|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
+1.23.52-1.23.76a.6|infinitive in indirect statement|transitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
 1.23.52-1.23.76a.7|circumstantial participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.52-1.23.76a
 
 
@@ -2251,8 +2252,89 @@ urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.23.76a|ignore|.|0|nothing|nothing|
 
 
 // Sentence 67
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.8.0)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1-1.24.11a|67|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.2
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+1.24.1-1.24.11a.1|independent clause|intransitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1-1.24.11a
+1.24.1-1.24.11a.2|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1-1.24.11a
+1.24.1-1.24.11a.3|subordinate clause|linking|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1-1.24.11a
+1.24.1-1.24.11a.4|attributive participle|intransitive|3|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1-1.24.11a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.1|lexical|παραλαβὼν|1.24.1-1.24.11a.2|11|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.2|lexical|δ'|nothing|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.3|lexical|ὡς|1.24.1-1.24.11a.3|7|subordinate conjunction|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.4|lexical|οἷόν|1.24.1-1.24.11a.3|6|predicate|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.5|lexical|τε|1.24.1-1.24.11a.3|4|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.6|lexical|ἦν|1.24.1-1.24.11a.3|3|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.7|lexical|πλείστους|1.24.1-1.24.11a.2|1|object|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.8|lexical|ἐκ|1.24.1-1.24.11a.2|1|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.9|lexical|τῶν|1.24.1-1.24.11a.4|10|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.10|lexical|παρόντων|1.24.1-1.24.11a.4|8|object of preposition|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.11|lexical|ἐβάδιζον|1.24.1-1.24.11a.1|2|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.11a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+
 // Sentence 68
 // Sentence 69
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.8.0)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a|69|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.29
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+1.24.28-1.24.52a.1|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a
+1.24.28-1.24.52a.2|independent clause|transitive|1|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a
+1.24.28-1.24.52a.3|circumstantial participle|transitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a
+1.24.28-1.24.52a.4|attributive participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a
+1.24.28-1.24.52a.5|attributive participle|intransitive|2|urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28-1.24.52a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.28|lexical|ὤσαντες|1.24.28-1.24.52a.3|12|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.29|lexical|δὲ|nothing|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.30|lexical|τὴν|1.24.28-1.24.52a.3|4|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.31|lexical|θύραν|1.24.28-1.24.52a.3|1|object|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.32|lexical|τοῦ|1.24.28-1.24.52a.3|6|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.33|lexical|δωματίου|1.24.28-1.24.52a.3|4|genitive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.34|lexical|οἱ|1.24.28-1.24.52a.4|12|subject|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.35|lexical|μὲν|1.24.28-1.24.52a.4|7|conjunction|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.36|lexical|πρῶτοι|1.24.28-1.24.52a.4|10|predicate|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.37|lexical|εἰσιόντες|1.24.28-1.24.52a.4|7|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.38|lexical|ἔτι|1.24.28-1.24.52a.1|14|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.39|lexical|εἴδομεν|1.24.28-1.24.52a.1|2|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.40|lexical|αὐτὸν|1.24.28-1.24.52a.1|12|object|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.41|lexical|κατακείμενον|1.24.28-1.24.52a.1|13|attributive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.42|lexical|παρὰ|1.24.28-1.24.52a.1|14|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.43|lexical|τῇ|1.24.28-1.24.52a.1|17|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.44|lexical|γυναικί|1.24.28-1.24.52a.1|15|object of preposition|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.44a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.45|lexical|οἱ|1.24.28-1.24.52a.5|26|subject|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.46|lexical|δ'|1.24.28-1.24.52a.2|18|conjunction|8|conjunction
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.47|lexical|ὕστερον|1.24.28-1.24.52a.5|28|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.48|lexical|ἐν|1.24.28-1.24.52a.2|26|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.49|lexical|τῇ|1.24.28-1.24.52a.2|23|article|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.50|lexical|κλίνῃ|1.24.28-1.24.52a.2|21|object of preposition|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.51|lexical|γυμνὸν|1.24.28-1.24.52a.2|27|attributive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.52|lexical|ἑστηκότα|1.24.28-1.24.52a.2|27|attributive|nothing|nothing
+urn:cts:greekLit:tlg0540.tlg001.omar_tokens:1.24.52a|ignore|.|0|nothing|nothing|nothing|nothing
 
 
 // Sentence 70
