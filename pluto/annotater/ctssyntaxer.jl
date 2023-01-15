@@ -74,7 +74,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
-nbversion = "0.8.0";
+nbversion = "0.8.1";
 
 # ╔═╡ 94bcdb73-7994-49ab-b9dd-449768dc2ebf
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,7 +82,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 # ╔═╡ e98cdbde-4b9b-4439-8ae2-dfed3d4879f4
 if history
 md"""
-
+- **0.8.1**: Incorporates orthography to construct annotations correctly.
 - **0.8.0**: Validate user input
 - **0.7.1**: Redefine default data directory for new host site on aegl-texts.
 - **0.7.0**: Works with either Greek or Latin texts.
@@ -741,7 +741,7 @@ function vuok(vudataframe)
 			string(row.sentence)
 		]
 		try
-			va = verbalunit(join(strs, "|"))
+			va = verbalunit(join(strs, "|"), orthography())
 		catch e
 			vuvalsok = false
 		end
@@ -763,7 +763,7 @@ function badvuvalues(vudataframe)
 			string(row.sentence)
 		]
 		try
-			va = verbalunit(join(strs, "|"))
+			va = verbalunit(join(strs, "|"), orthography())
 		catch e
 			push!(vuerrors, e.msg)
 		end
@@ -785,7 +785,7 @@ function vusfromdf(vudataframe)
 				string(row.sentence)
 			]
 			try
-				va = verbalunit(join(strs, "|"))
+				va = verbalunit(join(strs, "|"), orthography())
 				push!(verbals, va)
 			catch e
 				
@@ -1140,7 +1140,7 @@ else
 				dfmatches[1, :node2rel]
 			]
 			try
-				push!(newtokens, token(join(cols, "|")))
+				push!(newtokens, token(join(cols, "|"), orthography()))
 			catch e
 			end
 	
@@ -1177,7 +1177,7 @@ function tokensyntaxok(syntaxframe)
 				dfmatchesx[1, :node2rel]
 			]
 			try 
-				newta = token(join(cols, "|"))
+				newta = token(join(cols, "|"), orthography())
 			catch
 				tokensok = false
 			end
@@ -1201,7 +1201,7 @@ function tokensyntaxerrors(syntaxframe)
 				dfmatchesx[1, :node2rel]
 			]
 			try 
-				newta = token(join(cols, "|"))
+				newta = token(join(cols, "|"), orthography())
 			catch e
 				push!(tokenerrors, e.msg)
 			end
