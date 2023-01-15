@@ -37,7 +37,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.0";
+nbversion = "0.4.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -46,6 +46,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 if history
 	md"""
 
+- **0.4.1**: use version `0.13.4` of `GreekSyntax` package
 - **0.4.0**: add optional plotting of relation types' frequency
 - **0.3.1**: update internal package manifest
 - **0.3.0**: additional metrics courtesy of update to `GreekSyntax` package
@@ -118,12 +119,12 @@ md"""
 *Show frequency of types of verbal expression* $(@bind showvutypes CheckBox(true))"""
 
 
-# ╔═╡ 757c4c9e-7db6-4a2c-9057-803a9829cf3b
-md""" ### Frequency of syntactic features
-"""
-
 # ╔═╡ d54f3199-7bbe-4c31-91d6-5b86e40ab20c
 md""" ### View a passage of the text
+"""
+
+# ╔═╡ 757c4c9e-7db6-4a2c-9057-803a9829cf3b
+md""" ### Frequency of syntactic features
 """
 
 # ╔═╡ 73efb203-72ad-4c16-9836-140303f4e189
@@ -180,38 +181,6 @@ function dsexists()
 	! isnothing(sentences) && ! isempty(sentences)
 end
 
-# ╔═╡ ce04ba69-8526-4802-926e-0a0038bfdda8
-if dsexists() && showvutypes
-	vucounts = []
-	vugroupdict = map(g -> lowercase(g.syntactic_type), groups) |> group
-	for k in keys(vugroupdict)
-		push!(vucounts, (k, length(vugroupdict[k])))
-	end
-	sortedcounts = sort(vucounts, by = pr ->  pr[2], rev = true)
-	xs = map(pr -> pr[1], sortedcounts)
-	ys = map(pr -> pr[2], sortedcounts)
-	bar(xs, ys, title = "Types of verbal expression", xrotation = -45, xticks = :all, legend = false)
-end
-
-# ╔═╡ 8d890d45-52c7-4537-8760-1b1cf549a2cc
-if dsexists() && showsyntypes
-	synpairs = []
-	related = filter(t -> !isnothing(t.node1), tokens)
-	syndict = map(t -> t.node1relation, related) |> group
-	for k in keys(syndict)
-		push!(synpairs, (k, length(syndict[k])))
-	end
-
-	
-	syncounts = sort(synpairs, by = pr ->  pr[2], rev = true)
-
-	syntaxxs = map(pr -> pr[1], syncounts)
-	syntaxys = map(pr -> pr[2], syncounts)
-
-	bar(syntaxxs, syntaxys, title = "Types of syntactic relation",legend = false, xrotation = -45, xticks = :all)
-
-end
-
 # ╔═╡ 5ce73837-a376-4d2c-88f9-ce084262dda4
 if dsexists()
 	sentencemenu = [0 => ""]
@@ -247,6 +216,38 @@ if @isdefined(sentchoice) && sentchoice > 0
 		
 	end
 	
+end
+
+# ╔═╡ ce04ba69-8526-4802-926e-0a0038bfdda8
+if dsexists() && showvutypes
+	vucounts = []
+	vugroupdict = map(g -> lowercase(g.syntactic_type), groups) |> group
+	for k in keys(vugroupdict)
+		push!(vucounts, (k, length(vugroupdict[k])))
+	end
+	sortedcounts = sort(vucounts, by = pr ->  pr[2], rev = true)
+	xs = map(pr -> pr[1], sortedcounts)
+	ys = map(pr -> pr[2], sortedcounts)
+	bar(xs, ys, title = "Types of verbal expression", xrotation = -45, xticks = :all, legend = false)
+end
+
+# ╔═╡ 8d890d45-52c7-4537-8760-1b1cf549a2cc
+if dsexists() && showsyntypes
+	synpairs = []
+	related = filter(t -> !isnothing(t.node1), tokens)
+	syndict = map(t -> t.node1relation, related) |> group
+	for k in keys(syndict)
+		push!(synpairs, (k, length(syndict[k])))
+	end
+
+	
+	syncounts = sort(synpairs, by = pr ->  pr[2], rev = true)
+
+	syntaxxs = map(pr -> pr[1], syncounts)
+	syntaxys = map(pr -> pr[2], syncounts)
+
+	bar(syntaxxs, syntaxys, title = "Types of syntactic relation",legend = false, xrotation = -45, xticks = :all)
+
 end
 
 # ╔═╡ 7325db1f-6c3b-4479-a83b-9fb21e363e09
@@ -428,7 +429,7 @@ SplitApplyCombine = "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.12.5"
+GreekSyntax = "~0.13.4"
 Plots = "~1.38.2"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
@@ -616,6 +617,12 @@ git-tree-sha1 = "e82c3c97b5b4ec111f3c1b55228cebc7510525a2"
 uuid = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 version = "0.3.25"
 
+[[deps.Distances]]
+deps = ["LinearAlgebra", "SparseArrays", "Statistics", "StatsAPI"]
+git-tree-sha1 = "3258d0659f812acde79e8a74b11f17ac06d0ca04"
+uuid = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+version = "0.10.7"
+
 [[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
@@ -735,10 +742,10 @@ uuid = "3b182d85-2403-5c21-9c21-1e1f0cc25472"
 version = "1.3.14+0"
 
 [[deps.GreekSyntax]]
-deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "e38c7e8b8db1ba138c00de5a184a792a84ed70f3"
+deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "bc69f2437b2f1970eb7046461858605debaa956a"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.12.5"
+version = "0.13.4"
 
 [[deps.Grisu]]
 git-tree-sha1 = "53bb909d1151e57e2484c3d1b53e19552b887fb2"
@@ -747,9 +754,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
+git-tree-sha1 = "eb5aa5e3b500e191763d35198f859e4b40fff4a6"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.7.1"
+version = "1.7.3"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -1083,9 +1090,9 @@ version = "10.40.0+0"
 
 [[deps.Parsers]]
 deps = ["Dates", "SnoopPrecompile"]
-git-tree-sha1 = "6466e524967496866901a78fca3f2e9ea445a559"
+git-tree-sha1 = "8175fc2b118a3755113c8e68084dc1a9e63c61ee"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.5.2"
+version = "2.5.3"
 
 [[deps.Pipe]]
 git-tree-sha1 = "6842804e7867b115ca9de748a0cf6b364523c16d"
@@ -1292,6 +1299,12 @@ deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missin
 git-tree-sha1 = "d1bf48bfcc554a3761a133fe3a9bb01488e06916"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.33.21"
+
+[[deps.StringDistances]]
+deps = ["Distances", "StatsAPI"]
+git-tree-sha1 = "ceeef74797d961aee825aabf71446d6aba898acb"
+uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
+version = "0.11.2"
 
 [[deps.TOML]]
 deps = ["Dates"]
