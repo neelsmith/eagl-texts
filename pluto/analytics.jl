@@ -25,6 +25,8 @@ begin
 	
 	using CitableText
 	using GreekSyntax
+	using LatinSyntax
+	using LatinOrthography, PolytonicGreek
 	using Downloads
 
 	using SplitApplyCombine
@@ -37,7 +39,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.1";
+nbversion = "0.5.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -45,7 +47,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-
+- **0.5.0**: add choice of language and orthography
 - **0.4.1**: use version `0.13.4` of `GreekSyntax` package
 - **0.4.0**: add optional plotting of relation types' frequency
 - **0.3.1**: update internal package manifest
@@ -62,6 +64,15 @@ md"""## Analyze syntactic complexity by sentence
 
 # ╔═╡ b9311908-9282-4658-95ab-6e1ff0ebb84f
 md"""### Load data set"""
+
+# ╔═╡ 8aef0231-b608-4cbf-9473-2d05b0867a8c
+begin
+	orthomenu = ["litgreek" => "Greek: literary orthography", "latin23" => "Latin: 23-character alphabet","latin24" => "Latin: 24-character alphabet", "latin25" => "Latin: 25-character alphabet"]
+	
+md"""
+*Language and orthography of your corpus*: $(@bind ortho Select(orthomenu))
+"""
+end
 
 # ╔═╡ 86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 md"""*Load from* $(@bind srctype Select(["", "url", "file"]))"""
@@ -166,11 +177,26 @@ md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text an
 
 """
 
+# ╔═╡ 2a498b50-db14-4a29-bef8-a3caaa81b2f6
+"""Instantiate `OrthographicSystem` for user's menu choice.
+"""
+function orthography()
+	if ortho == "litgreek"
+		literaryGreek()
+	elseif ortho == "latin23"
+		latin23()
+	else
+		nothing
+	end
+end
+
 # ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
 (sentences, groups, tokens) = if srctype == "file"
-	 joinpath(basedir, dataset) |> readlines |> readdelimited
+	src = joinpath(basedir, dataset) |> readlines
+	readdelimited(src, orthography())
 elseif srctype == "url"
-	Downloads.download(url) |> readlines |> readdelimited
+	src = Downloads.download(url) |> readlines 
+	readdelimited(src, orthography())
 else
 	(nothing, nothing, nothing)
 end
@@ -422,17 +448,23 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
+LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 SplitApplyCombine = "03a91e81-4c3e-53e1-a0a4-9c0c8f19dd66"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.13.4"
+GreekSyntax = "~0.13.8"
+LatinOrthography = "~0.6.0"
+LatinSyntax = "~0.3.0"
 Plots = "~1.38.2"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
+PolytonicGreek = "~0.18.0"
 SplitApplyCombine = "~1.2.2"
 """
 
@@ -442,7 +474,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "be91247fdcef8a2aa28e64dd7e9aa88d0a575335"
+project_hash = "5c9c310c28de91c1bf55f42194f63ac2b5114b67"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -743,9 +775,9 @@ version = "1.3.14+0"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "bc69f2437b2f1970eb7046461858605debaa956a"
+git-tree-sha1 = "4f044cab8a69e2e0d1370e52dc130bc732e1174b"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.4"
+version = "0.13.8"
 
 [[deps.Grisu]]
 git-tree-sha1 = "53bb909d1151e57e2484c3d1b53e19552b887fb2"
@@ -882,6 +914,18 @@ deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdow
 git-tree-sha1 = "2422f47b34d4b127720a18f86fa7b1aa2e141f29"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 version = "0.15.18"
+
+[[deps.LatinOrthography]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "Orthography", "Test"]
+git-tree-sha1 = "d1c33e2385125a1dd2298a3863b7f23905a35e79"
+uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+version = "0.6.0"
+
+[[deps.LatinSyntax]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -1235,9 +1279,9 @@ version = "1.1.1"
 
 [[deps.SentinelArrays]]
 deps = ["Dates", "Random"]
-git-tree-sha1 = "efd23b378ea5f2db53a55ae53d3133de4e080aa9"
+git-tree-sha1 = "c02bd3c9c3fc8463d3591a62a378f90d2d8ab0f3"
 uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
-version = "1.3.16"
+version = "1.3.17"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1634,6 +1678,7 @@ version = "1.4.1+0"
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
 # ╟─b9311908-9282-4658-95ab-6e1ff0ebb84f
 # ╟─d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
+# ╟─8aef0231-b608-4cbf-9473-2d05b0867a8c
 # ╟─86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
@@ -1659,6 +1704,7 @@ version = "1.4.1+0"
 # ╟─8a16520a-db12-4e16-8e7f-197b79d88f4d
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
+# ╟─2a498b50-db14-4a29-bef8-a3caaa81b2f6
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
 # ╠═cf66b68c-6ad3-4e14-98b7-791672d6e0a8
