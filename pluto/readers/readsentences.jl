@@ -22,7 +22,11 @@ begin
 	using PlutoTeachingTools
 	using Kroki
 	using CitableText
+	
 	using GreekSyntax
+	using LatinOrthography
+	using PolytonicGreek
+	
 	using Downloads
 	md"""*Unhide this cell to see environment configuration.*"""
 end
@@ -60,6 +64,15 @@ md"""## Read annotated texts by sentence
 
 # ╔═╡ b9311908-9282-4658-95ab-6e1ff0ebb84f
 md"""### Load data set"""
+
+# ╔═╡ bf0ec977-ddcf-4884-a1f6-1f4c0a469e23
+begin
+	orthomenu = ["litgreek" => "Greek: literary orthography", "latin23" => "Latin: 23-character alphabet","latin24" => "Latin: 24-character alphabet", "latin25" => "Latin: 25-character alphabet"]
+	
+md"""
+*Language and orthography of your corpus*: $(@bind ortho Select(orthomenu))
+"""
+end
 
 # ╔═╡ 86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 md"""*Load from* $(@bind srctype Select(["", "url", "file"]))"""
@@ -266,6 +279,32 @@ html"""
 # ╔═╡ 85e2f41f-1163-45f1-b10a-aa25769f8345
 md"You should not need to edit the following cells:"
 
+# ╔═╡ 557a4ee5-8f45-4740-9a9e-f9818d5e6f80
+"""Set language string based on user's choice of orthographic system.
+"""
+function language()
+	if ortho == "litgreek"
+		"Greek"
+	elseif ortho == "latin23"
+		"Latin"
+	else
+		nothing
+	end
+end
+
+# ╔═╡ 1539e1cd-423f-4178-826b-2eed605cb588
+"""Instantiate `OrthographicSystem` for user's menu choice.
+"""
+function orthography()
+	if ortho == "litgreek"
+		literaryGreek()
+	elseif ortho == "latin23"
+		latin23()
+	else
+		nothing
+	end
+end
+
 # ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
 md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text annotations from a local file or a URL.
 >
@@ -275,9 +314,11 @@ md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text an
 
 # ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
 (sentences, verbalunits, tokens) = if srctype == "file"
-	 joinpath(basedir, dataset) |> readlines |> readdelimited
+	src = joinpath(basedir, dataset) |> readlines
+	readdelimited(src, orthography())
 elseif srctype == "url"
-	Downloads.download(url) |> readlines |> readdelimited
+	src = Downloads.download(url) |> readlines 
+	readdelimited(src, orthography())
 else
 	(nothing, nothing, nothing)
 end
@@ -457,15 +498,19 @@ CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
 Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
+LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.13.4"
+GreekSyntax = "~0.13.5"
 Kroki = "~0.2.0"
+LatinOrthography = "~0.6.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
+PolytonicGreek = "~0.18.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -474,7 +519,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "400f7942c38b4bbcc2e3f87845bc06cf3aec3ee6"
+project_hash = "b4ff132b988cb85b7bdddacea4c046e6397ea464"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -664,9 +709,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "bc69f2437b2f1970eb7046461858605debaa956a"
+git-tree-sha1 = "2045c02b98ad5fb4c6e9228187ecbd782e953ae5"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.4"
+version = "0.13.5"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -762,6 +807,12 @@ deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdow
 git-tree-sha1 = "2422f47b34d4b127720a18f86fa7b1aa2e141f29"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 version = "0.15.18"
+
+[[deps.LatinOrthography]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "Orthography", "Test"]
+git-tree-sha1 = "d1c33e2385125a1dd2298a3863b7f23905a35e79"
+uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+version = "0.6.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -1129,6 +1180,7 @@ version = "17.4.0+0"
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
 # ╟─b9311908-9282-4658-95ab-6e1ff0ebb84f
 # ╟─d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
+# ╟─bf0ec977-ddcf-4884-a1f6-1f4c0a469e23
 # ╟─86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
@@ -1151,8 +1203,10 @@ version = "17.4.0+0"
 # ╟─87e46deb-aaad-4e78-81e9-410e3dda062d
 # ╟─34f55f22-1115-4962-801f-bde4edca05f3
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
+# ╟─557a4ee5-8f45-4740-9a9e-f9818d5e6f80
+# ╟─1539e1cd-423f-4178-826b-2eed605cb588
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
-# ╠═74ec2148-dd53-4f54-9d92-327d5ba44eaf
+# ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
