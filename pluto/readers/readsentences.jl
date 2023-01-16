@@ -325,9 +325,6 @@ else
 	(nothing, nothing, nothing)
 end
 
-# ╔═╡ 21733426-02f4-4e39-95d0-bb5a9d654c70
-orthography()
-
 # ╔═╡ 20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 """True if selected dataset exists."""
 function dsexists()
@@ -511,7 +508,7 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.13.5"
+GreekSyntax = "~0.13.6"
 Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
 LatinSyntax = "~0.3.0"
@@ -716,9 +713,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "2045c02b98ad5fb4c6e9228187ecbd782e953ae5"
+git-tree-sha1 = "8da3a4ba773e7fa10e25dfd128250bf776ecd0cb"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.5"
+version = "0.13.6"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -1219,7 +1216,6 @@ version = "17.4.0+0"
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
-# ╠═21733426-02f4-4e39-95d0-bb5a9d654c70
 # ╟─557a4ee5-8f45-4740-9a9e-f9818d5e6f80
 # ╟─1539e1cd-423f-4178-826b-2eed605cb588
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
