@@ -24,6 +24,7 @@ begin
 	using CitableText
 	
 	using GreekSyntax
+	using LatinSyntax
 	using LatinOrthography
 	using PolytonicGreek
 	
@@ -32,7 +33,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.5";
+nbversion = "0.5.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -40,6 +41,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.5.0**:	adds selection of language and orthography to use
 - **0.4.5**:	use version `0.13.5` of the `GreekSyntax` package
 - **0.4.4**:	use version `0.13.4` of the `GreekSyntax` package
 - **0.4.3**:	update internal package manifest	
@@ -279,6 +281,13 @@ html"""
 # ╔═╡ 85e2f41f-1163-45f1-b10a-aa25769f8345
 md"You should not need to edit the following cells:"
 
+# ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
+md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text annotations from a local file or a URL.
+>
+
+
+"""
+
 # ╔═╡ 557a4ee5-8f45-4740-9a9e-f9818d5e6f80
 """Set language string based on user's choice of orthographic system.
 """
@@ -305,13 +314,6 @@ function orthography()
 	end
 end
 
-# ╔═╡ 136599a5-b7c1-4513-be88-e7e79e1f6fb5
-md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text annotations from a local file or a URL.
->
-
-
-"""
-
 # ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
 (sentences, verbalunits, tokens) = if srctype == "file"
 	src = joinpath(basedir, dataset) |> readlines
@@ -322,6 +324,9 @@ elseif srctype == "url"
 else
 	(nothing, nothing, nothing)
 end
+
+# ╔═╡ 21733426-02f4-4e39-95d0-bb5a9d654c70
+orthography()
 
 # ╔═╡ 20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 """True if selected dataset exists."""
@@ -499,6 +504,7 @@ Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
 Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
 LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
@@ -508,6 +514,7 @@ CitableText = "~0.15.2"
 GreekSyntax = "~0.13.5"
 Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
+LatinSyntax = "~0.3.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
 PolytonicGreek = "~0.18.0"
@@ -519,7 +526,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "b4ff132b988cb85b7bdddacea4c046e6397ea464"
+project_hash = "be3a8adb6047a298eb1e9bc6d7a5dafffdacbbfc"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -813,6 +820,12 @@ deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "D
 git-tree-sha1 = "d1c33e2385125a1dd2298a3863b7f23905a35e79"
 uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
 version = "0.6.0"
+
+[[deps.LatinSyntax]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -1203,11 +1216,12 @@ version = "17.4.0+0"
 # ╟─87e46deb-aaad-4e78-81e9-410e3dda062d
 # ╟─34f55f22-1115-4962-801f-bde4edca05f3
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
-# ╟─557a4ee5-8f45-4740-9a9e-f9818d5e6f80
-# ╟─1539e1cd-423f-4178-826b-2eed605cb588
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
+# ╠═21733426-02f4-4e39-95d0-bb5a9d654c70
+# ╟─557a4ee5-8f45-4740-9a9e-f9818d5e6f80
+# ╟─1539e1cd-423f-4178-826b-2eed605cb588
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
 # ╟─00000000-0000-0000-0000-000000000001
