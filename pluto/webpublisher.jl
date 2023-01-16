@@ -18,6 +18,8 @@ end
 begin
 	using PlutoUI
 	using GreekSyntax
+	using LatinSyntax
+	using LatinOrthography, PolytonicGreek
 	using Downloads
 	using CitableText
 	using Dates
@@ -25,7 +27,7 @@ begin
 end
 
 # ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
-nbversion = "0.1.2";
+nbversion = "0.2.0";
 
 # ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -33,6 +35,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
+- **0.2.0**: 	add selection of language and orthography for corpus
 - **0.1.2**: 	use version `0.13.4` of `GreekSyntax` package
 - **0.1.1**: update internal package manifest
 - **0.1.0**: initial release	
@@ -57,6 +60,15 @@ md"""
 	TextField(80; placeholder = 
 	"Lysias, Oration 1"))
 """
+
+# ╔═╡ 690f1218-fa0f-4410-9ec2-6d4846189111
+begin
+	orthomenu = ["litgreek" => "Greek: literary orthography", "latin23" => "Latin: 23-character alphabet","latin24" => "Latin: 24-character alphabet", "latin25" => "Latin: 25-character alphabet"]
+	
+md"""
+*Language and orthography of your corpus*: $(@bind ortho Select(orthomenu))
+"""
+end
 
 # ╔═╡ 6f8812cd-5bcb-4db7-a431-bc7402b0d187
 md"""*Load annotations from* $(@bind srctype Select(["", "url", "file"]))"""
@@ -97,15 +109,6 @@ html"""
 # ╔═╡ d8df443c-44b0-4243-ae40-9ad1a684281f
 md"> Check settings and load data"
 
-# ╔═╡ 9447b4e0-e2e3-4c5f-9958-ede1549d0027
-(sentences, groups, tokens) = if srctype == "file"
-	 joinpath(basedir, dataset) |> readlines |> readdelimited
-elseif srctype == "url"
-	Downloads.download(url) |> readlines |> readdelimited
-else
-	(nothing, nothing, nothing)
-end
-
 # ╔═╡ 5f0898f7-bc7d-479c-a304-c84ded1a9a90
 if runit
 			
@@ -124,16 +127,6 @@ else
 end
 
 
-# ╔═╡ 49f787aa-63ec-4883-ac98-49310bdad7d8
-"True if all settings are OK"
-function settingsok()
-	if ! isdir(outputdir) || isempty(textlabel) || isnothing(sentences)
-		false
-	else
-		true
-	end
-end
-
 # ╔═╡ 792a44c9-093d-431d-9277-a77163433570
 """Make directory for syntax diagrams."""
 function mkpngdir(outdir)
@@ -147,6 +140,40 @@ end
 
 # ╔═╡ 3e11aa5f-f020-4229-95c6-3f64145738ed
 pngdir = mkpngdir(outputdir)
+
+# ╔═╡ cb126faf-7678-4087-999b-349e03ab929f
+"""Instantiate `OrthographicSystem` for user's menu choice.
+"""
+function orthography()
+	if ortho == "litgreek"
+		literaryGreek()
+	elseif ortho == "latin23"
+		latin23()
+	else
+		nothing
+	end
+end
+
+# ╔═╡ 9447b4e0-e2e3-4c5f-9958-ede1549d0027
+(sentences, groups, tokens) = if srctype == "file"
+	src = joinpath(basedir, dataset) |> readlines
+	readdelimited(src, orthography())
+elseif srctype == "url"
+	src = Downloads.download(url) |> readlines
+	readdelimited(src, orthography())
+else
+	(nothing, nothing, nothing)
+end
+
+# ╔═╡ 49f787aa-63ec-4883-ac98-49310bdad7d8
+"True if all settings are OK"
+function settingsok()
+	if ! isdir(outputdir) || isempty(textlabel) || isnothing(sentences)
+		false
+	else
+		true
+	end
+end
 
 # ╔═╡ d0e510b8-edab-4249-9609-fd082225def2
 md"""> Functions composing HTML"""
@@ -293,12 +320,18 @@ CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
+LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 
 [compat]
 CitableText = "~0.15.2"
-GreekSyntax = "~0.12.5"
+GreekSyntax = "~0.13.8"
+LatinOrthography = "~0.6.0"
+LatinSyntax = "~0.3.0"
 PlutoUI = "~0.7.49"
+PolytonicGreek = "~0.18.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -307,7 +340,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "0d13da4811e9c8042bce0f8bbd892f55672a9e24"
+project_hash = "dcc3624955c2c1427627ce5f2b7a95563bb8f593"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -437,6 +470,12 @@ git-tree-sha1 = "e82c3c97b5b4ec111f3c1b55228cebc7510525a2"
 uuid = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 version = "0.3.25"
 
+[[deps.Distances]]
+deps = ["LinearAlgebra", "SparseArrays", "Statistics", "StatsAPI"]
+git-tree-sha1 = "3258d0659f812acde79e8a74b11f17ac06d0ca04"
+uuid = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+version = "0.10.7"
+
 [[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
@@ -478,16 +517,16 @@ deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
-deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "e38c7e8b8db1ba138c00de5a184a792a84ed70f3"
+deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "4f044cab8a69e2e0d1370e52dc130bc732e1174b"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.12.5"
+version = "0.13.8"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
+git-tree-sha1 = "eb5aa5e3b500e191763d35198f859e4b40fff4a6"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.7.1"
+version = "1.7.3"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -560,6 +599,18 @@ deps = ["Base64", "CodecZlib", "DocStringExtensions", "HTTP", "JSON", "Markdown"
 git-tree-sha1 = "a3235f9ff60923658084df500cdbc0442ced3274"
 uuid = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
 version = "0.2.0"
+
+[[deps.LatinOrthography]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "Orthography", "Test"]
+git-tree-sha1 = "d1c33e2385125a1dd2298a3863b7f23905a35e79"
+uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+version = "0.6.0"
+
+[[deps.LatinSyntax]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -669,9 +720,9 @@ version = "0.18.2"
 
 [[deps.Parsers]]
 deps = ["Dates", "SnoopPrecompile"]
-git-tree-sha1 = "6466e524967496866901a78fca3f2e9ea445a559"
+git-tree-sha1 = "8175fc2b118a3755113c8e68084dc1a9e63c61ee"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.5.2"
+version = "2.5.3"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -725,9 +776,9 @@ version = "0.7.0"
 
 [[deps.SentinelArrays]]
 deps = ["Dates", "Random"]
-git-tree-sha1 = "efd23b378ea5f2db53a55ae53d3133de4e080aa9"
+git-tree-sha1 = "c02bd3c9c3fc8463d3591a62a378f90d2d8ab0f3"
 uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
-version = "1.3.16"
+version = "1.3.17"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -777,6 +828,12 @@ deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missin
 git-tree-sha1 = "d1bf48bfcc554a3761a133fe3a9bb01488e06916"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.33.21"
+
+[[deps.StringDistances]]
+deps = ["Distances", "StatsAPI"]
+git-tree-sha1 = "ceeef74797d961aee825aabf71446d6aba898acb"
+uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
+version = "0.11.2"
 
 [[deps.TOML]]
 deps = ["Dates"]
@@ -879,6 +936,7 @@ version = "17.4.0+0"
 # ╟─93b49926-9104-11ed-19c6-df715bde3818
 # ╟─24abee74-963f-465a-b889-b88ecddca4f3
 # ╟─3d38cad6-d10e-4eac-b33c-1cb15ac8f198
+# ╟─690f1218-fa0f-4410-9ec2-6d4846189111
 # ╟─6f8812cd-5bcb-4db7-a431-bc7402b0d187
 # ╟─45bb7468-adfe-41c9-9ab9-d3c597e380f8
 # ╟─2fd228b9-1a78-49c9-862e-3e7e11a3b2e0
@@ -891,6 +949,7 @@ version = "17.4.0+0"
 # ╟─5f0898f7-bc7d-479c-a304-c84ded1a9a90
 # ╟─49f787aa-63ec-4883-ac98-49310bdad7d8
 # ╟─792a44c9-093d-431d-9277-a77163433570
+# ╟─cb126faf-7678-4087-999b-349e03ab929f
 # ╟─d0e510b8-edab-4249-9609-fd082225def2
 # ╟─94054ecf-5089-4f36-a94d-62de91ff022a
 # ╟─2f4f4048-3998-4743-aa5c-641e82e23c22
