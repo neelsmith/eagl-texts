@@ -28,7 +28,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.4";
+nbversion = "0.4.5";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -36,7 +36,8 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
-- **0.4.4**:	user version `0.13.4` of the `GreekSyntax` package
+- **0.4.5**:	use version `0.13.5` of the `GreekSyntax` package
+- **0.4.4**:	use version `0.13.4` of the `GreekSyntax` package
 - **0.4.3**:	update internal package manifest	
 - **0.4.2**:	update internal package manifest
 - **0.4.1**:	 cut out a little cruft
