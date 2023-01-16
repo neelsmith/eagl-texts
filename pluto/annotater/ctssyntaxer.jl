@@ -74,7 +74,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
-nbversion = "0.9.0";
+nbversion = "0.9.1";
 
 # ╔═╡ 94bcdb73-7994-49ab-b9dd-449768dc2ebf
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,6 +82,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 # ╔═╡ e98cdbde-4b9b-4439-8ae2-dfed3d4879f4
 if history
 md"""
+- **0.9.1**  Fix display of cheat sheets.
 - **0.9.0**: Incorporates language setting to determine cheat sheets.
 - **0.8.1**: Incorporates orthography to construct annotations correctly.
 - **0.8.0**: Validate user input
@@ -403,6 +404,9 @@ function language()
 	end
 end
 
+# ╔═╡ b60244e2-98a1-4a19-97ef-cfcd522cbdfb
+md"""*Parsing sentences using orthography for* **$(language())**"""
+
 # ╔═╡ 96156fef-fd1a-4ca1-83aa-c9f836f5f644
 """Instantiate `OrthographicSystem` for user's menu choice.
 """
@@ -686,7 +690,7 @@ if step1()
 
 	
 	vutips = 
-		if language() == "greek"
+		if language() == "Greek"
 		"""
 You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
 	
@@ -1094,7 +1098,7 @@ if step3()
 	if nrow(vudf) == 0
 	md""
 else
-	syntaxtips = if language() == "greek"
+	syntaxtips = if language() == "Greek"
 	"""
 You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
 	
@@ -1503,6 +1507,7 @@ end
 # ╟─b679f220-5969-4e8d-87ed-9fa06f9c7e35
 # ╟─df550cd1-657b-4401-abbb-72ba7f93ad38
 # ╟─6ef835a0-2056-4dd8-a302-8017296d2ce9
+# ╟─b60244e2-98a1-4a19-97ef-cfcd522cbdfb
 # ╟─5f41b976-8965-4cc0-862b-b76902d73ae4
 # ╟─95fb9dbf-4a52-44e0-b76d-140846bfb8ce
 # ╟─0da2c2a5-0403-43e7-aac3-6c294c59b095
