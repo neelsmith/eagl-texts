@@ -24,6 +24,8 @@ begin
 	using Kroki
 	using CitableText
 	using GreekSyntax
+	using LatinSyntax
+	using LatinOrthography, PolytonicGreek
 	
 	using Downloads
 
@@ -32,7 +34,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.3.3";
+nbversion = "0.4.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -40,6 +42,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.3.3**  add selection of language and orthography	
 - **0.3.3**:	use version `0.13.4` of `GreekSyntax` package
 - **0.3.2**: Update internal package manifest	
 - **0.3.1**: Update internal package manifest
@@ -59,6 +62,15 @@ md"""## Read Greek or Latin texts by level of subordination
 
 # ╔═╡ b9311908-9282-4658-95ab-6e1ff0ebb84f
 md"""### Load data set"""
+
+# ╔═╡ fc051aca-a5f2-42f8-82e1-a0505b13bad2
+begin
+	orthomenu = ["litgreek" => "Greek: literary orthography", "latin23" => "Latin: 23-character alphabet","latin24" => "Latin: 24-character alphabet", "latin25" => "Latin: 25-character alphabet"]
+	
+md"""
+*Language and orthography of your corpus*: $(@bind ortho Select(orthomenu))
+"""
+end
 
 # ╔═╡ 86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 md"""*Load from* $(@bind srctype Select(["", "url", "file"]))"""
@@ -271,11 +283,40 @@ md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text an
 
 """
 
+# ╔═╡ 81038cf4-5f68-45ef-8fa1-50f993862b21
+"""Set language string based on user's choice of orthographic system.
+"""
+function language()
+	if ortho == "litgreek"
+		"Greek"
+	elseif ortho == "latin23"
+		"Latin"
+	else
+		nothing
+	end
+end
+
+# ╔═╡ c644af1f-ea25-4630-a7b3-a5699f8ee96d
+"""Instantiate `OrthographicSystem` for user's menu choice.
+"""
+function orthography()
+	if ortho == "litgreek"
+		literaryGreek()
+	elseif ortho == "latin23"
+		latin23()
+	else
+		nothing
+	end
+end
+
 # ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
 (sentences, verbalunits, tokens) = if srctype == "file"
-	 joinpath(basedir, dataset) |> readlines |> readdelimited
+	src = joinpath(basedir, dataset) |> readlines
+	readdelimited(src, orthography())
 elseif srctype == "url"
-	Downloads.download(url) |> readlines |> readdelimited
+	src = Downloads.download(url) |> readlines 
+
+	readdelimited(src, orthography())
 else
 	(nothing, nothing, nothing)
 end
@@ -498,16 +539,22 @@ CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
 Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
+LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 
 [compat]
 CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.12.5"
+GreekSyntax = "~0.13.5"
 Kroki = "~0.2.0"
+LatinOrthography = "~0.6.0"
+LatinSyntax = "~0.3.0"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
+PolytonicGreek = "~0.18.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -516,7 +563,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "ae4e1a60fedbcc663ca0c541bafaffa6cacf7757"
+project_hash = "e61866a8724f40af25d004eae6b0f0ff925f3d28"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -652,6 +699,12 @@ git-tree-sha1 = "e82c3c97b5b4ec111f3c1b55228cebc7510525a2"
 uuid = "85a47980-9c8c-11e8-2b9f-f7ca1fa99fb4"
 version = "0.3.25"
 
+[[deps.Distances]]
+deps = ["LinearAlgebra", "SparseArrays", "Statistics", "StatsAPI"]
+git-tree-sha1 = "3258d0659f812acde79e8a74b11f17ac06d0ca04"
+uuid = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+version = "0.10.7"
+
 [[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
@@ -699,16 +752,16 @@ deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
-deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "Test", "TestSetExtensions"]
-git-tree-sha1 = "e38c7e8b8db1ba138c00de5a184a792a84ed70f3"
+deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "2045c02b98ad5fb4c6e9228187ecbd782e953ae5"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.12.5"
+version = "0.13.5"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "752b7f2640a30bc991d37359d5fff50ce856ecde"
+git-tree-sha1 = "eb5aa5e3b500e191763d35198f859e4b40fff4a6"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.7.1"
+version = "1.7.3"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -798,6 +851,18 @@ deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdow
 git-tree-sha1 = "2422f47b34d4b127720a18f86fa7b1aa2e141f29"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 version = "0.15.18"
+
+[[deps.LatinOrthography]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "Orthography", "Test"]
+git-tree-sha1 = "d1c33e2385125a1dd2298a3863b7f23905a35e79"
+uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
+version = "0.6.0"
+
+[[deps.LatinSyntax]]
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -919,9 +984,9 @@ version = "0.18.2"
 
 [[deps.Parsers]]
 deps = ["Dates", "SnoopPrecompile"]
-git-tree-sha1 = "6466e524967496866901a78fca3f2e9ea445a559"
+git-tree-sha1 = "8175fc2b118a3755113c8e68084dc1a9e63c61ee"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.5.2"
+version = "2.5.3"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -1005,9 +1070,9 @@ version = "0.7.0"
 
 [[deps.SentinelArrays]]
 deps = ["Dates", "Random"]
-git-tree-sha1 = "efd23b378ea5f2db53a55ae53d3133de4e080aa9"
+git-tree-sha1 = "c02bd3c9c3fc8463d3591a62a378f90d2d8ab0f3"
 uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
-version = "1.3.16"
+version = "1.3.17"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1057,6 +1122,12 @@ deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missin
 git-tree-sha1 = "d1bf48bfcc554a3761a133fe3a9bb01488e06916"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 version = "0.33.21"
+
+[[deps.StringDistances]]
+deps = ["Distances", "StatsAPI"]
+git-tree-sha1 = "ceeef74797d961aee825aabf71446d6aba898acb"
+uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
+version = "0.11.2"
 
 [[deps.TOML]]
 deps = ["Dates"]
@@ -1159,6 +1230,7 @@ version = "17.4.0+0"
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
 # ╟─b9311908-9282-4658-95ab-6e1ff0ebb84f
 # ╟─d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
+# ╟─fc051aca-a5f2-42f8-82e1-a0505b13bad2
 # ╟─86d64b7d-e3f1-4346-96fa-fb166f7ceeea
 # ╟─176cfe71-a2a5-4fc6-940a-658495b470ac
 # ╟─255d6736-08d5-4565-baef-f3b6f4d433e1
@@ -1185,8 +1257,10 @@ version = "17.4.0+0"
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
 # ╟─74ec2148-dd53-4f54-9d92-327d5ba44eaf
 # ╟─69e9fc75-2d62-45ff-ad02-7bbf4ef7fa7c
-# ╠═dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
+# ╟─dc5ddf9d-f3c9-499c-9986-a12e219fa1e1
 # ╟─2439b90f-9082-4ab4-b37c-73215979d1d7
+# ╟─81038cf4-5f68-45ef-8fa1-50f993862b21
+# ╟─c644af1f-ea25-4630-a7b3-a5699f8ee96d
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
 # ╟─00000000-0000-0000-0000-000000000001
