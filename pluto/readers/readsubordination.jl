@@ -548,7 +548,7 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 [compat]
 CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
-GreekSyntax = "~0.13.6"
+GreekSyntax = "~0.13.8"
 Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
 LatinSyntax = "~0.3.0"
@@ -753,9 +753,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "8da3a4ba773e7fa10e25dfd128250bf776ecd0cb"
+git-tree-sha1 = "4f044cab8a69e2e0d1370e52dc130bc732e1174b"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.6"
+version = "0.13.8"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
