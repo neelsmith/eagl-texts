@@ -1,6 +1,6 @@
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.0"
+julia_version = "1.8.4"
 manifest_format = "2.0"
 project_hash = "8ac4d1bec1818fb6add1fe3e904dba797d057932"
 
@@ -105,7 +105,7 @@ version = "4.5.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "0.5.2+0"
+version = "1.0.1+0"
 
 [[deps.Crayons]]
 git-tree-sha1 = "249fe38abf76d48563e2f4556bebd215aa317e15"
@@ -203,9 +203,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "bc69f2437b2f1970eb7046461858605debaa956a"
+git-tree-sha1 = "2045c02b98ad5fb4c6e9228187ecbd782e953ae5"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.4"
+version = "0.13.5"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -315,9 +315,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "Test", "TestSetExtensions"]
-git-tree-sha1 = "1d3d5e9e44b8123a4bc7f3c162de6a4da3495d06"
+git-tree-sha1 = "e6bb115db0b75fc999971d05cf3a476f812ccc87"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.2.4"
+version = "0.2.5"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
@@ -623,7 +623,7 @@ version = "1.10.0"
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
-version = "1.10.0"
+version = "1.10.1"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]

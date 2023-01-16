@@ -74,7 +74,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
-nbversion = "0.8.1";
+nbversion = "0.9.0";
 
 # ╔═╡ 94bcdb73-7994-49ab-b9dd-449768dc2ebf
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,6 +82,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 # ╔═╡ e98cdbde-4b9b-4439-8ae2-dfed3d4879f4
 if history
 md"""
+- **0.9.0**: Incorporates language setting to determine cheat sheets.
 - **0.8.1**: Incorporates orthography to construct annotations correctly.
 - **0.8.0**: Validate user input
 - **0.7.1**: Redefine default data directory for new host site on aegl-texts.
@@ -389,6 +390,19 @@ function loadedok()
 	! isnothing(corpus)
 end
 
+# ╔═╡ 0d801a12-3410-4927-ab97-83eb713508c6
+"""Set language string based on user's choice of orthographic system.
+"""
+function language()
+	if ortho == "litgreek"
+		"Greek"
+	elseif ortho == "latin23"
+		"Latin"
+	else
+		nothing
+	end
+end
+
 # ╔═╡ 96156fef-fd1a-4ca1-83aa-c9f836f5f644
 """Instantiate `OrthographicSystem` for user's menu choice.
 """
@@ -669,8 +683,11 @@ end
 
 # ╔═╡ 637953de-ab10-4206-bb3e-b4ed54da1235
 if step1()
+
 	
-	vutips = """
+	vutips = 
+		if language() == "greek"
+		"""
 You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
 	
 *Syntactic type of verbal expression*
@@ -692,6 +709,9 @@ You may abbreviate any item with a minimum unique starting string (highlighted h
 	
 
 """
+		else
+			"Tips not yet available for Latin syntax"
+		end
 	Foldable("Cheat sheet for annotating verbal expressions",Markdown.parse(vutips)) |> aside
 end
 
@@ -1074,7 +1094,8 @@ if step3()
 	if nrow(vudf) == 0
 	md""
 else
-	syntaxtips = """
+	syntaxtips = if language() == "greek"
+	"""
 You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
 	
 *Syntactic type of token's relation*
@@ -1105,6 +1126,9 @@ You may abbreviate any item with a minimum unique starting string (highlighted h
 - **sc** == subordinate conjunction
 		
 """
+else
+	"Tips not yet available for Latin syntax."
+	end
 	
 	Foldable("Cheat sheet for annotating syntactic relations",aside(Markdown.parse(syntaxtips))) |> aside
 end
@@ -1532,6 +1556,7 @@ end
 # ╟─cced3ab8-d31c-4911-bda6-d393999e80ef
 # ╟─52225c55-ad48-4e1a-a521-fe4dc802e5c1
 # ╟─9742760a-d15c-4a85-b115-bc02d781a438
+# ╟─0d801a12-3410-4927-ab97-83eb713508c6
 # ╟─96156fef-fd1a-4ca1-83aa-c9f836f5f644
 # ╟─1db9ed09-5717-4a14-8b3e-d4e943300bf9
 # ╟─f9eb7ac5-0049-455a-b55b-33fdb5515dd7
