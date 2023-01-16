@@ -203,9 +203,9 @@ uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GreekSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "Kroki", "Orthography", "PolytonicGreek", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "2045c02b98ad5fb4c6e9228187ecbd782e953ae5"
+git-tree-sha1 = "4f044cab8a69e2e0d1370e52dc130bc732e1174b"
 uuid = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-version = "0.13.5"
+version = "0.13.8"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "Dates", "IniFile", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
@@ -314,10 +314,10 @@ uuid = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
 version = "0.6.0"
 
 [[deps.LatinSyntax]]
-deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "Test", "TestSetExtensions"]
-git-tree-sha1 = "e6bb115db0b75fc999971d05cf3a476f812ccc87"
+deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.2.5"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
