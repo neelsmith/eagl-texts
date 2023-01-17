@@ -8,7 +8,7 @@ parent: "Explore Annotated Greek and Latin texts"
 
 ## Reader
 
-- beginning at [section 6](./reader/1.6.1-1.6.46a.html)
+- *narratio*, [sections 6-24](./reader/1.6.1-1.6.46a.html)
 
 
 ## Syntactic overview
