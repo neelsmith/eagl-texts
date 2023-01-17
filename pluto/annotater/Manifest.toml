@@ -315,9 +315,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+git-tree-sha1 = "6bb004e33eaf23b25512b2de09932f3b72a89d48"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.3.0"
+version = "0.3.1"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]

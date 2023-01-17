@@ -27,7 +27,7 @@ begin
 end
 
 # ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
-nbversion = "0.2.0";
+nbversion = "0.2.1";
 
 # ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -35,6 +35,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
+- **0.2.1**: 	use version `0.13.8` of `GreekSyntax` package and `0.3.1` of `LatinSyntax`
 - **0.2.0**: 	add selection of language and orthography for corpus
 - **0.1.2**: 	use version `0.13.4` of `GreekSyntax` package
 - **0.1.1**: update internal package manifest
@@ -329,7 +330,7 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 CitableText = "~0.15.2"
 GreekSyntax = "~0.13.8"
 LatinOrthography = "~0.6.0"
-LatinSyntax = "~0.3.0"
+LatinSyntax = "~0.3.1"
 PlutoUI = "~0.7.49"
 PolytonicGreek = "~0.18.0"
 """
@@ -340,7 +341,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "dcc3624955c2c1427627ce5f2b7a95563bb8f593"
+project_hash = "0813cee97b68fd7f7bdbe1bf09cf14fc48dd3cfb"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -608,9 +609,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+git-tree-sha1 = "6bb004e33eaf23b25512b2de09932f3b72a89d48"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.3.0"
+version = "0.3.1"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
