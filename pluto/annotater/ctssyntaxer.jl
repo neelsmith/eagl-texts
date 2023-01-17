@@ -177,6 +177,42 @@ end
 # ╔═╡ 95fb9dbf-4a52-44e0-b76d-140846bfb8ce
 md"""*Title, output directory, source are all correct* $(@bind prereqsok CheckBox())"""
 
+# ╔═╡ 6ad58dc6-8b2e-4986-8450-6eb618f829c8
+greekvutips = """
+You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
+	
+*Syntactic type of verbal expression*
+
+- **ind**ependent clause
+- **s**ubordinate clause
+- **c**ircumstantial participle
+- **at**tributive participle
+- **inf**initive in indirect statement
+- **p**articiple in indirect statement
+- **q**uote
+- **as**ide
+
+*Semantic type of verbal expression*
+
+- **t**ransitive
+- **i**ntransitive
+- **l**inking
+	
+
+"""
+
+# ╔═╡ ef1a7af6-efbd-4a91-a86e-5235965119bb
+latinvutips = """
+ - **inde**pendent clause
+ - **sub**ordinate clause
+ - **indi**rect statement
+ - **p**articiple
+ - **g**erundive
+ - **sup**ine
+ - **q**uote
+ - **a**side
+"""
+
 # ╔═╡ e931ff8d-299e-419e-b991-4a9caa94734e
 html"""
 <br/><br/>
@@ -694,30 +730,10 @@ if step1()
 	
 	vutips = 
 		if language() == "Greek"
-		"""
-You may abbreviate any item with a minimum unique starting string (highlighted here in **bold-faced** letters).
-	
-*Syntactic type of verbal expression*
-
-- **ind**ependent clause
-- **s**ubordinate clause
-- **c**ircumstantial participle
-- **at**tributive participle
-- **inf**initive in indirect statement
-- **p**articiple in indirect statement
-- **q**uote
-- **as**ide
-
-*Semantic type of verbal expression*
-
-- **t**ransitive
-- **i**ntransitive
-- **l**inking
-	
-
-"""
-		else
-			"Tips not yet available for Latin syntax"
+			greekvutips
+		elseif language() == "Latin"
+			latinvutips
+			
 		end
 	Foldable("Cheat sheet for annotating verbal expressions",Markdown.parse(vutips)) |> aside
 end
@@ -1578,6 +1594,8 @@ end
 # ╟─908b20bc-fcf8-40d1-9a0b-a4efe2b2ffd8
 # ╟─9c3b5512-7e7c-42b2-81d3-6d43778c244d
 # ╟─edea857d-268d-418f-b08c-d78b088cdc44
+# ╟─ef1a7af6-efbd-4a91-a86e-5235965119bb
+# ╟─6ad58dc6-8b2e-4986-8450-6eb618f829c8
 # ╟─72d51241-9ca7-42be-81f6-9a961ab62fe0
 # ╟─d602d574-16a6-47c9-9bcf-b34bf7ac47ce
 # ╠═c140b87e-998b-435d-9c91-9babca73c5bf

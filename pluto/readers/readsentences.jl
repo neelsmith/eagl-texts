@@ -33,7 +33,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.5.0";
+nbversion = "0.5.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -41,6 +41,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.5.1**:	use version `0.3.1` of the `LatinSyntax` package	
 - **0.5.0**:	adds selection of language and orthography to use
 - **0.4.5**:	use version `0.13.5` of the `GreekSyntax` package
 - **0.4.4**:	use version `0.13.4` of the `GreekSyntax` package
@@ -511,7 +512,7 @@ CitableText = "~0.15.2"
 GreekSyntax = "~0.13.8"
 Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
-LatinSyntax = "~0.3.0"
+LatinSyntax = "~0.3.1"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
 PolytonicGreek = "~0.18.0"
@@ -820,9 +821,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
+git-tree-sha1 = "6bb004e33eaf23b25512b2de09932f3b72a89d48"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.3.0"
+version = "0.3.1"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
