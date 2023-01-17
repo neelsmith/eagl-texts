@@ -74,7 +74,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
-nbversion = "0.9.1";
+nbversion = "0.9.2";
 
 # ╔═╡ 94bcdb73-7994-49ab-b9dd-449768dc2ebf
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,6 +82,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 # ╔═╡ e98cdbde-4b9b-4439-8ae2-dfed3d4879f4
 if history
 md"""
+- **0.9.2**  Include tokens of class `LatinOrthography.EncliticToken` as lexical.
 - **0.9.1**  Fix display of cheat sheets.
 - **0.9.0**: Incorporates language setting to determine cheat sheets.
 - **0.8.1**: Incorporates orthography to construct annotations correctly.
@@ -576,11 +577,13 @@ function connectormenu()
 	idx2 = idx1 + ninitial - 1
 	slice =  orthotokens[idx1:idx2]
 	for (i,tkn) in enumerate(slice)
-		if tkn[2] != LexicalToken()
-			# omit: punctuation
-		else
+		if tkn[2] == LexicalToken() || tkn[2] == LatinOrthography.EncliticToken()
+	
+		
 			pr = (i => string(i, ". ", tkn[1].text))
 			push!(menu, pr)
+		else
+			# omit others
 		end
 	end
 	
@@ -628,7 +631,7 @@ function hl_connector(tknlist, idxlist)
 			push!(displaylines, " <span class=\"connector\">" * t[1].text *"</span>")
 		else
 		
-			if t[2] isa LexicalToken
+			if t[2] isa LexicalToken || t[2] isa LatinOrthography.EncliticToken
 				push!(displaylines, " " * t[1].text)
 			else
 				push!(displaylines, t[1].text)
@@ -944,7 +947,7 @@ md"""> ### UI for *assigning tokens to verbal expressions*
 tokengroupssrcdf = if step1()
 	local tokentuples = []
 	for (tkn, tkntype) in sentenceorthotokens
-		if typeof(tkntype) == LexicalToken
+		if typeof(tkntype) == LexicalToken || typeof(tkntype) == LatinOrthography.EncliticToken
 			push!(tokentuples, (passage = string(passagecomponent(tkn.urn)), token = string(tkn.text), group = 0))
 		end
 	end
@@ -975,7 +978,7 @@ intermediatetokens = if step1()
 
 		local lexcount = 0
 		for t in sentenceorthotokens
-			if t[2] isa LexicalToken
+			if t[2] isa LexicalToken || t[2] isa LatinOrthography.EncliticToken
 				lexcount = lexcount + 1
 				row = assignedtokensdf[lexcount, :]
 				
@@ -1043,7 +1046,7 @@ syntaxsrcdf = if isnothing(intermediatetokens)
 	nothing
 else
 	syntaxtuples = []
-	lexcount = 0
+	local lexcount = 0
 	for  t in intermediatetokens
 		if t.tokentype == "lexical"
 			lexcount = lexcount + 1
@@ -1057,15 +1060,6 @@ else
 			push!(syntaxtuples, tupl)
 		end
 	end
-
-	#=
-	if isempty(connectorlist) || isnothing(connectorlist[1])
-		psg = sentencerange(sentence) |> passagecomponent
-		deranged = replace(psg, "-" => "_")
-		extrarow = (passage = string( "_asyndeton_",deranged), reference = seq + 1, token = "asyndeton", node1 = missing, node1rel = missing, node2 = missing, node2rel = missing)
-		push!(syntaxstrings, extrarow)
-	end
-		=#
 	syntaxtuples |> DataFrame
 
 end;
@@ -1586,7 +1580,7 @@ end
 # ╟─edea857d-268d-418f-b08c-d78b088cdc44
 # ╟─72d51241-9ca7-42be-81f6-9a961ab62fe0
 # ╟─d602d574-16a6-47c9-9bcf-b34bf7ac47ce
-# ╟─c140b87e-998b-435d-9c91-9babca73c5bf
+# ╠═c140b87e-998b-435d-9c91-9babca73c5bf
 # ╟─45f62b20-de3e-4520-b568-ea93f498be2c
 # ╟─cf4c142e-3aad-46d4-be53-62292b779606
 # ╟─17fcc9f4-5d1a-483d-94ab-ac710b510cd9
