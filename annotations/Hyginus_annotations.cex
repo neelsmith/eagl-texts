@@ -130,7 +130,7 @@ vuid|syntactic_type|semantic_type|depth|sentence
 30pr.3.12-30pr.3.33a.3|independent clause|intransitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
 30pr.3.12-30pr.3.33a.4|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
 30pr.3.12-30pr.3.33a.5|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
-30pr.3.12-30pr.3.33a.6|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.6|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
 
 
 #!tokens
@@ -175,7 +175,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a|417|urn:cts:lat
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 30pr.3.34-30pr.3.45a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a
-30pr.3.34-30pr.3.45a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a
+30pr.3.34-30pr.3.45a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a
 30pr.3.34-30pr.3.45a.3|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a
 30pr.3.34-30pr.3.45a.4|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.34-30pr.3.45a
 
@@ -306,7 +306,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.6.1-30pr.6.12a|421|
 vuid|syntactic_type|semantic_type|depth|sentence
 30pr.6.1-30pr.6.12a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.6.1-30pr.6.12a
 30pr.6.1-30pr.6.12a.2|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.6.1-30pr.6.12a
-30pr.6.1-30pr.6.12a.3|circumstantial participle|transitive|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.6.1-30pr.6.12a
+30pr.6.1-30pr.6.12a.3|participle|transitive|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.6.1-30pr.6.12a
 
 
 #!tokens
@@ -341,7 +341,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.7.1-30pr.7.11a|422|
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 30pr.7.1-30pr.7.11a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.7.1-30pr.7.11a
-30pr.7.1-30pr.7.11a.2|circumstantial participle|linking|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.7.1-30pr.7.11a
+30pr.7.1-30pr.7.11a.2|participle|linking|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.7.1-30pr.7.11a
 
 
 #!tokens
@@ -475,8 +475,8 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a|459|urn:cts:lat
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 33pr.1.31-33pr.1.38a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a
-33pr.1.31-33pr.1.38a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a
-33pr.1.31-33pr.1.38a.3|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a
+33pr.1.31-33pr.1.38a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a
+33pr.1.31-33pr.1.38a.3|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.1.31-33pr.1.38a
 
 
 #!tokens
@@ -504,7 +504,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.2.1-33pr.2.7a|460|
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 33pr.2.1-33pr.2.7a.1|independent clause|intransitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.2.1-33pr.2.7a
-33pr.2.1-33pr.2.7a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.2.1-33pr.2.7a
+33pr.2.1-33pr.2.7a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:33pr.2.1-33pr.2.7a
 
 
 #!tokens
@@ -671,7 +671,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.1.15-34pr.1.21a|466|urn:cts:lat
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 34pr.1.15-34pr.1.21a.1|independent clause|intransitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.1.15-34pr.1.21a
-34pr.1.15-34pr.1.21a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.1.15-34pr.1.21a
+34pr.1.15-34pr.1.21a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.1.15-34pr.1.21a
 
 
 #!tokens
@@ -737,11 +737,11 @@ vuid|syntactic_type|semantic_type|depth|sentence
 34pr.2.1-34pr.2.23a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
 34pr.2.1-34pr.2.23a.2|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
 34pr.2.1-34pr.2.23a.3|indirect statement|linking|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
-34pr.2.1-34pr.2.23a.4|circumstantial participle|intransitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
-34pr.2.1-34pr.2.23a.5|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
+34pr.2.1-34pr.2.23a.4|participle|intransitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
+34pr.2.1-34pr.2.23a.5|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
 34pr.2.1-34pr.2.23a.6|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
 34pr.2.1-34pr.2.23a.7|indirect statement|transitive|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
-34pr.2.1-34pr.2.23a.8|circumstantial participle|transitive|4|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
+34pr.2.1-34pr.2.23a.8|participle|transitive|4|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.1-34pr.2.23a
 
 
 #!tokens
@@ -822,7 +822,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.35-34pr.2.40a|470|urn:cts:lat
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 34pr.2.35-34pr.2.40a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.35-34pr.2.40a
-34pr.2.35-34pr.2.40a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.35-34pr.2.40a
+34pr.2.35-34pr.2.40a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:34pr.2.35-34pr.2.40a
 
 
 #!tokens
@@ -1000,7 +1000,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:121a.3.33-121a.3.49a|1201|urn:cts:la
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 121a.3.33-121a.3.49a.1|Independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:121a.3.33-121a.3.49a
-121a.3.33-121a.3.49a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:121a.3.33-121a.3.49a
+121a.3.33-121a.3.49a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:121a.3.33-121a.3.49a
 121a.3.33-121a.3.49a.3|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:121a.3.33-121a.3.49a
 
 
@@ -1263,8 +1263,8 @@ vuid|syntactic_type|semantic_type|depth|sentence
 122a.3.19-122a.3.48a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
 122a.3.19-122a.3.48a.2|independent clause|intransitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
 122a.3.19-122a.3.48a.3|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
-122a.3.19-122a.3.48a.4|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
-122a.3.19-122a.3.48a.5|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
+122a.3.19-122a.3.48a.4|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
+122a.3.19-122a.3.48a.5|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
 122a.3.19-122a.3.48a.6|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
 122a.3.19-122a.3.48a.7|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.3.19-122a.3.48a
 
@@ -1319,8 +1319,8 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a|1210|urn:cts:lat
 #!verbal_units
 vuid|syntactic_type|semantic_type|depth|sentence
 122a.4.1-122a.4.12a.1|Independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a
-122a.4.1-122a.4.12a.2|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a
-122a.4.1-122a.4.12a.3|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a
+122a.4.1-122a.4.12a.2|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a
+122a.4.1-122a.4.12a.3|participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:122a.4.1-122a.4.12a
 
 
 #!tokens
@@ -1398,7 +1398,7 @@ urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a|1274|
 vuid|syntactic_type|semantic_type|depth|sentence
 126a.1.1-126a.1.29a.1|Independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
 126a.1.1-126a.1.29a.2|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
-126a.1.1-126a.1.29a.3|circumstantial participle|transitive|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
+126a.1.1-126a.1.29a.3|participle|transitive|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
 126a.1.1-126a.1.29a.4|subordinate clause|linking|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
 126a.1.1-126a.1.29a.5|aside|linking|3|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:126a.1.1-126a.1.29a
 
