@@ -33,7 +33,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.5.1";
+nbversion = "0.5.2";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -41,6 +41,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.5.2**:	use version `0.3.2` of the `LatinSyntax` package		
 - **0.5.1**:	use version `0.3.1` of the `LatinSyntax` package	
 - **0.5.0**:	adds selection of language and orthography to use
 - **0.4.5**:	use version `0.13.5` of the `GreekSyntax` package
@@ -512,7 +513,7 @@ CitableText = "~0.15.2"
 GreekSyntax = "~0.13.8"
 Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
-LatinSyntax = "~0.3.1"
+LatinSyntax = "~0.3.2"
 PlutoTeachingTools = "~0.2.5"
 PlutoUI = "~0.7.49"
 PolytonicGreek = "~0.18.0"
@@ -524,7 +525,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "9bf5a6c7edd6220f475c56d79713bc3285fca200"
+project_hash = "be3a8adb6047a298eb1e9bc6d7a5dafffdacbbfc"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -566,9 +567,9 @@ version = "0.10.9"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "e7ff6cadf743c098e08fca25c91103ee4303c9bb"
+git-tree-sha1 = "c6d890a52d2c4d55d326439580c3b8d0875a77d9"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.15.6"
+version = "1.15.7"
 
 [[deps.ChangesOfVariables]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -821,9 +822,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "6bb004e33eaf23b25512b2de09932f3b72a89d48"
+git-tree-sha1 = "802d0c45b6630e15bd7faa28233098cc88368cb6"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.3.1"
+version = "0.3.2"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
