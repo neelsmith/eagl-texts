@@ -507,16 +507,6 @@ LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
-
-[compat]
-CitableText = "~0.15.2"
-GreekSyntax = "~0.13.8"
-Kroki = "~0.2.0"
-LatinOrthography = "~0.6.0"
-LatinSyntax = "~0.3.2"
-PlutoTeachingTools = "~0.2.5"
-PlutoUI = "~0.7.49"
-PolytonicGreek = "~0.18.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -567,9 +557,9 @@ version = "0.10.9"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "c6d890a52d2c4d55d326439580c3b8d0875a77d9"
+git-tree-sha1 = "e7ff6cadf743c098e08fca25c91103ee4303c9bb"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.15.7"
+version = "1.15.6"
 
 [[deps.ChangesOfVariables]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -822,9 +812,9 @@ version = "0.6.0"
 
 [[deps.LatinSyntax]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "GreekSyntax", "LatinOrthography", "Orthography", "StringDistances", "Test", "TestSetExtensions"]
-git-tree-sha1 = "802d0c45b6630e15bd7faa28233098cc88368cb6"
+git-tree-sha1 = "64ea23d0e9b9f3037e4bcda9ef20b462bb535b45"
 uuid = "48187f9f-78ff-4060-b31e-d855612fbaec"
-version = "0.3.2"
+version = "0.3.0"
 
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]

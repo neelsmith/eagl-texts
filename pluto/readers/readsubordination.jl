@@ -458,7 +458,7 @@ if @isdefined(sentchoice) && sentchoice > 0 && diagram
 	    GreekSyntax.sentencerange(levelselection), sentence.sequence, sentence.connector
 	)
 	=#
-	diagramwarning = md"""Diagramming is currently turned off when viewing only selected selected levels of subordination because you can end up with diagrammed words connected to words that are excluded from the diagram.
+	diagramwarning = md"""Diagramming is currently turned off when viewing only selected levels of subordination because you can end up with diagrammed words connected to words that are excluded from the diagram.
 
 A future version of this notebook might try to address this.
 	"""
@@ -563,7 +563,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.4"
 manifest_format = "2.0"
-project_hash = "e61866a8724f40af25d004eae6b0f0ff925f3d28"
+project_hash = "beaa5ab47cf41a461466553cc627ee388bf0bc16"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
