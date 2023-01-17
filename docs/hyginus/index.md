@@ -10,7 +10,7 @@ parent: "Explore Annotated Greek and Latin texts"
 
 >  ⚠️ *indicates incomplete sections*
 
-- *Herculis athla duodecim ab Eurystheo imperata*, ⚠️  [section 30](./reader/30pr.1.1-30pr.1.15a.html)
+- *Herculis athla duodecim ab Eurystheo imperata*, [section 30](./reader/30pr.1.1-30pr.1.15a.html)
 - *Parerga eiusdem*, section 31
 - *Megara*, section 32
 - *Centauri*, complete, beginning at [section 33](./reader/33pr.1.1-33pr.1.30a.html)
