@@ -1,3 +1,277 @@
+// Sentence 413
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.9.2)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1-30pr.1.15a|413|
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+30pr.1.1-30pr.1.15a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1-30pr.1.15a
+30pr.1.1-30pr.1.15a.2|subordinate clause|linking|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1-30pr.1.15a
+30pr.1.1-30pr.1.15a.3|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1-30pr.1.15a
+30pr.1.1-30pr.1.15a.4|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1-30pr.1.15a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.1|lexical|Infans|30pr.1.1-30pr.1.15a.2|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.2|lexical|cum|30pr.1.1-30pr.1.15a.2|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.3|lexical|esset|30pr.1.1-30pr.1.15a.2|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.3a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.4|lexical|dracones|30pr.1.1-30pr.1.15a.1|8|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.5|lexical|duos|30pr.1.1-30pr.1.15a.1|4|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.6|lexical|duabus|30pr.1.1-30pr.1.15a.1|7|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.7|lexical|manibus|30pr.1.1-30pr.1.15a.1|16|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.8|lexical|necauit|30pr.1.1-30pr.1.15a.1|16|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.8a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.9|lexical|quos|30pr.1.1-30pr.1.15a.3|4|subordinate conjunction|11|object
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.10|lexical|Iuno|30pr.1.1-30pr.1.15a.3|11|subject|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.11|lexical|miserat|30pr.1.1-30pr.1.15a.3|9|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.11a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.12|lexical|unde|30pr.1.1-30pr.1.15a.4|8|subordinate conjunction|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.13|lexical|primigenius|30pr.1.1-30pr.1.15a.4|15|predicate|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.14|lexical|est|30pr.1.1-30pr.1.15a.4|12|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.15|lexical|dictus|30pr.1.1-30pr.1.15a.4|14|compound verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.1.15a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+// Sentence 414
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.9.2)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.1-30pr.2.15a|414|
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+30pr.2.1-30pr.2.15a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.1-30pr.2.15a
+30pr.2.1-30pr.2.15a.2|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.1-30pr.2.15a
+30pr.2.1-30pr.2.15a.3|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.1-30pr.2.15a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.1|lexical|Leonem|30pr.2.1-30pr.2.15a.1|10|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.2|lexical|Nemeum|30pr.2.1-30pr.2.15a.1|1|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.2a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.3|lexical|quem|30pr.2.1-30pr.2.15a.2|1|subordinate conjunction|5|object
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.4|lexical|Luna|30pr.2.1-30pr.2.15a.2|5|subject|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.5|lexical|nutrierat|30pr.2.1-30pr.2.15a.2|3|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.6|lexical|in|30pr.2.1-30pr.2.15a.2|5|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.7|lexical|antro|30pr.2.1-30pr.2.15a.2|6|object of preposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.8|lexical|amphistomo|30pr.2.1-30pr.2.15a.2|7|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.9|lexical|atrotum|30pr.2.1-30pr.2.15a.1|1|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.9a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.10|lexical|necauit|30pr.2.1-30pr.2.15a.1|1|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.10a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.11|lexical|cuius|30pr.2.1-30pr.2.15a.3|1|subordinate conjunction|12|genitive
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.12|lexical|pellem|30pr.2.1-30pr.2.15a.3|15|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.13|lexical|pro|30pr.2.1-30pr.2.15a.3|15|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.14|lexical|tegumento|30pr.2.1-30pr.2.15a.3|13|object of preposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.15|lexical|habuit|30pr.2.1-30pr.2.15a.3|11|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.2.15a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+// Sentence 415
+
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.9.2)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.1-30pr.3.11a|415|
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+30pr.3.1-30pr.3.11a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.1-30pr.3.11a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.1|lexical|Hydram|30pr.3.1-30pr.3.11a.1|11|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.2|lexical|Lernaeam|30pr.3.1-30pr.3.11a.1|1|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.3|lexical|Typhonis|30pr.3.1-30pr.3.11a.1|4|genitive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.4|lexical|filiam|30pr.3.1-30pr.3.11a.1|2|appositive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.5|lexical|cum|30pr.3.1-30pr.3.11a.1|1|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.6|lexical|capitibus|30pr.3.1-30pr.3.11a.1|5|object of preposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.7|lexical|nouem|30pr.3.1-30pr.3.11a.1|6|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.8|lexical|ad|30pr.3.1-30pr.3.11a.1|11|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.9|lexical|fontem|30pr.3.1-30pr.3.11a.1|8|object of preposition|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.10|lexical|Lernaeum|30pr.3.1-30pr.3.11a.1|9|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.11|lexical|interfecit|30pr.3.1-30pr.3.11a.1|12|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.11a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+
+// Sentence 416
+
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.9.2)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a|416|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+30pr.3.12-30pr.3.33a.1|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.2|independent clause|transitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.3|independent clause|intransitive|1|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.4|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.5|subordinate clause|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+30pr.3.12-30pr.3.33a.6|circumstantial participle|transitive|2|urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12-30pr.3.33a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.12|lexical|haec|30pr.3.12-30pr.3.33a.1|5|subject|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.13|lexical|tantam|30pr.3.12-30pr.3.33a.1|3|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.14|lexical|uim|30pr.3.12-30pr.3.33a.1|5|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.15|lexical|ueneni|30pr.3.12-30pr.3.33a.1|3|genitive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.16|lexical|habuit|30pr.3.12-30pr.3.33a.1|23|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.17|lexical|ut|30pr.3.12-30pr.3.33a.4|2|subordinate conjunction|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.18|lexical|afflatu|30pr.3.12-30pr.3.33a.4|9|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.19|lexical|homines|30pr.3.12-30pr.3.33a.4|9|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.20|lexical|necaret|30pr.3.12-30pr.3.33a.4|6|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.20a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.21|lexical|et|30pr.3.12-30pr.3.33a.2|18|conjunction|5|conjunction
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.22|lexical|si|30pr.3.12-30pr.3.33a.5|18|subordinate conjunction|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.23|lexical|quis|30pr.3.12-30pr.3.33a.5|15|subject|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.24|lexical|eam|30pr.3.12-30pr.3.33a.5|15|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.25|lexical|dormientem|30pr.3.12-30pr.3.33a.6|13|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.26|lexical|transierat|30pr.3.12-30pr.3.33a.5|11|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.26a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.27|lexical|uestigia|30pr.3.12-30pr.3.33a.2|18|object|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.28|lexical|eius|30pr.3.12-30pr.3.33a.2|16|genitive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.29|lexical|afflabat|30pr.3.12-30pr.3.33a.2|10|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.30|lexical|et|30pr.3.12-30pr.3.33a.3|22|conjunction|18|conjunction
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.31|lexical|maiori|30pr.3.12-30pr.3.33a.3|21|attributive|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.32|lexical|cruciatu|30pr.3.12-30pr.3.33a.3|22|adverbial|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.33|lexical|moriebatur|30pr.3.12-30pr.3.33a.3|19|unit verb|nothing|nothing
+urn:cts:latinLit:stoa1263.stoa001.hc_tokens:30pr.3.33a|ignore|.|0|nothing|nothing|nothing|nothing
+
+
+// Sentence 417
+// Sentence 418
+// Sentence 419
+
+// Sentence 420
+// Sentence 421
+// Sentence 422
+// Sentence 423
+// Sentence 424
+// Sentence 425
+// Sentence 426
+// Sentence 427
+// Sentence 428
+// Sentence 429
+
+
+// Sentence 430
+// Sentence 431
+// Sentence 432
+// Sentence 433
+// Sentence 434
+// Sentence 435
+// Sentence 436
+// Sentence 437
+// Sentence 438
+// Sentence 439
+
+
+// Sentence 440
+// Sentence 441
+// Sentence 442
+// Sentence 443
+// Sentence 444
+// Sentence 445
+// Sentence 446
+// Sentence 447
+// Sentence 448
+// Sentence 449
+
+
+
+
+// Sentence 450
+// Sentence 451
+// Sentence 452
+// Sentence 453
+// Sentence 454
+// Sentence 455
+// Sentence 456
+// Sentence 457
+// Sentence 458
+// Sentence 459
+
+// Sentence 460
+// Sentence 461
+// Sentence 462
+// Sentence 463
+// Sentence 464
+// Sentence 465
+// Sentence 466
+// Sentence 467
+// Sentence 468
+// Sentence 469
+
+
+// Sentence 470
+// Sentence 471
+// Sentence 472
+// Sentence 473
+// Sentence 474
+// Sentence 475
+// Sentence 476
+// Sentence 477
+// Sentence 478
+// Sentence 479
+
+
+// Sentence 480
+// Sentence 481
+// Sentence 482
+// Sentence 483
+// Sentence 484
+// Sentence 485
+// Sentence 486
+// Sentence 487
+// Sentence 488
+// Sentence 489
+
+
+// Sentence 490
+// Sentence 491
+// Sentence 492
+// Sentence 493
+// Sentence 494
+// Sentence 495
+// Sentence 496
+// Sentence 497
+// Sentence 498
+// Sentence 499
+
+// Sentence 500
+// Sentence 501
+// Sentence 502
+// Sentence 504
+// Sentence 504
+// Sentence 505
+// Sentence 506
+
+
+//////////////////////////////////
+
 
 //Sentence 1198
 //
