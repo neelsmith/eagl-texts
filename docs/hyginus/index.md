@@ -40,8 +40,7 @@ The *Odyssey*:
 
 Pandora:
 
-- *Pandora*, section 142
-    - (⚠️  selection from [section 142](./reader/142a.1.1-142a.1.8a.html))
+- *Pandora*, [section 142](./reader/142a.1.1-142a.1.8a.html)
 
 
 
