@@ -28,7 +28,7 @@ begin
 end
 
 # ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
-nbversion = "0.1.0";
+nbversion = "0.2.0";
 
 # ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -36,12 +36,10 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
-- **0.1.0**: initial release	
+- **0.2.0**:	adds navigation links.
+- **0.1.0**: initial release.
 	"""
 end
-
-# ╔═╡ e096bec1-dc36-4ba5-89b9-701f39ba6556
-md"""## ==> GET SENTENCES FOR URN <== """
 
 # ╔═╡ 93b49926-9104-11ed-19c6-df715bde3818
 md"""# Build a web site for syntactically annotated passages
@@ -98,12 +96,6 @@ if srctype == "file"
 	md"""*Choose a file* $(@bind dataset Select(datasets))"""
 end
 
-# ╔═╡ a50a769a-ee1a-4463-90d9-7aad0620c136
-htmls = ""#map(psglist) do psg
-	#@info("Composing page for $(psg)")
-	#htmltext(psg, sentences, tokens)
-#end
-
 # ╔═╡ ca9cc614-b1c3-4b31-a263-e80a09a978a0
 md"""*All settings correct: Go!* $(@bind runit CheckBox())"""
 
@@ -141,18 +133,14 @@ end
 
 
 # ╔═╡ 792a44c9-093d-431d-9277-a77163433570
-"""Make directory for syntax diagrams."""
-function mkpngdir(outdir)
-	imgdir = if startswith(outdir, "/")
-		joinpath(outdir, "pngs")
-	else
-		joinpath(pwd(), outdir, "pngs")
-	end
-	mkpath(imgdir)
+"""Make directory for HTML output."""
+function mkoutputdir(outdir)
+	resultsdir  = startswith(outdir, "/") ? outdir : joinpath(pwd(), outdir)
+	mkpath(resultsdir)
 end
 
 # ╔═╡ 3e11aa5f-f020-4229-95c6-3f64145738ed
-pngdir = mkpngdir(outputdir)
+pngdir = mkoutputdir(outputdir)
 
 # ╔═╡ cb126faf-7678-4087-999b-349e03ab929f
 """Instantiate `OrthographicSystem` for user's menu choice.
@@ -201,22 +189,6 @@ end
 # ╔═╡ d0e510b8-edab-4249-9609-fd082225def2
 md"""> Functions composing HTML"""
 
-# ╔═╡ 2f4f4048-3998-4743-aa5c-641e82e23c22
-#=
-"""Write HTML page for sentence `num` to HTML file.
-"""
-function publishsentence(num, sentences, groups, tokens, versionid; pngdir = pngdir, outdir = outputdir)
-    idx = findfirst(s -> s.sequence == num, sentences)
-    sentence = sentences[idx]
-    psg = passagecomponent(sentence.range)
-    pagehtml = webpage(idx, sentences, groups, tokens, versionid)
-    open(joinpath(outputdir, "$(psg).html"), "w") do io
-        write(io, pagehtml)
-    end
-    @info("Done: wrote HTML page for sentence $(num) in $(outputdir) as $(psg).html.")
-end
-=#
-
 # ╔═╡ 903326cf-c9eb-45fd-b6a9-d131bebab02a
 
 """Wrap page title and body content in HTML elements,
@@ -233,38 +205,73 @@ function wrap_page(title, content)
     </html>"""
 end
 
+# ╔═╡ 3faa116c-df96-4110-bf43-daef4b4ccdb1
+
+"""Compose navigation links for page with index `idx`.
+"""
+function navlinks(idx::Int, psglist::Vector{CtsUrn}, label)
+    nxt = ""
+    prev = ""
+    if idx == 1
+        nxtpsg = psglist[idx + 1] |> passagecomponent
+        nxt = "$(label), <a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+    
+        prev = ""
+        
+    elseif idx == length(psglist)
+        nxt = ""
+
+        prevpsg = psglist[idx - 1] |> passagecomponent
+        prev = "$(label), <a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+
+    else
+        nxtpsg = psglist[idx + 1] |> passagecomponent
+        nxt = "$(label), <a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+
+        prevpsg = psglist[idx - 1] |> passagecomponent
+        prev = "$(label), <a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+    end
+nav = "<p class=\"nav\">$(prev) | $(nxt)</p>"
+end
+
 # ╔═╡ 5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
 
-"""Compose HMTL page for passage `p`.
+"""Compose HMTL page for citable passage `p`.
 """
-function webpage(p, sentences, groups, tokens, versionid)
-    #sentence = sentences[idx]
+function webpage(p, idx, sentences, groups, tokens, versionid)
     @info("Writing page for $(p)")
 
     # Compose parts of page content:
 
     #  Heading and subheading
     psg = passagecomponent(p)
-    pagetitle = "$(textlabel),  $(p)"
+    pagetitle = "$(textlabel),  $(psg)"
     hdg = "<h1>$(pagetitle)</h1>"
-    subhead = "<p>$(psg):</p>"
-	guide = """<blockquote class="guide"><p>Indentation shows level of subordination; <span class="verb">verbs</span> are boxed, <span class="subject">subjects</span> marked with thick underline, and <span class="object">objects</span> with wavy underline.</p></blockquote><p>Syntactically highlighted:</p>"""
+
+	guide = """<blockquote class="guide"><p>Indentation shows level of subordination; <span class="verb">verbs</span> are boxed, <span class="subject">subjects</span> marked with thick underline, and <span class="object">objects</span> with wavy underline.</p></blockquote>"""
     # navigation links
-    nav = ""# navlinks(idx, sentences)
+    nav = navlinks(idx, psglist, textlabel)
 
     # Continuous text view:
     plaintext = htmltext(p, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
 
-    txtdisplay = "<div class=\"passage spaced\">" * htmltext_indented(sentence, groups, tokens, sov = true, vucolor = false) * "</div>"
+	sentenceindents = ["<div class=\"passage spaced\">"]
+	for s in sentencesforurn(p, sentences, tokens)
+		push!(sentenceindents,   htmltext_indented(s, groups, tokens, sov = true, vucolor = false) )
+	end
+	push!(sentenceindents, "</div>")
+
+
+    txtdisplay = join(sentenceindents, "\n\n")
 
     
     m = now() |> monthname
     d = now() |> day
     y = now() |> year
-    footer = "<footer>Site created by Pluto notebook <code>webpublisher.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
+    footer = "<footer>Site created by Pluto notebook <code>simplepassage.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
 
     # String all the parts together!
-    htmlparts = [hdg, nav, subhead, plaintext, guide, txtdisplay, footer]
+    htmlparts = [hdg, nav, plaintext, "<h3>Syntactically highlighted</h3>", guide, txtdisplay, footer]
     bodycontent = join(htmlparts, "\n\n")
     wrap_page(pagetitle, bodycontent)
 end
@@ -272,20 +279,21 @@ end
 
 # ╔═╡ c7ce7d2c-7011-41ba-b141-c0ca2857d586
 """Write HTML page for a citable passage to HTML file."""
-function publishpassage(psg, sentences, groups, tokens, versionid; outdir = outputdir)
-    pagehtml = webpage(psg, sentences, groups, tokens, versionid)
+function publishpassage(p, idx, sentences, groups, tokens, versionid; outdir = outputdir)
+	psg = passagecomponent(p)
+    pagehtml = webpage(p, idx, sentences, groups, tokens, versionid)
     open(joinpath(outputdir, "$(psg).html"), "w") do io
         write(io, pagehtml)
     end
-    @info("Done: wrote HTML page for sentence $(num) in $(outputdir) as $(psg).html.")
+    @info("Done: wrote HTML page for passage $(p) in $(outputdir) as $(psg).html.")
 end
 
 # ╔═╡ 94054ecf-5089-4f36-a94d-62de91ff022a
 """Write HTML pages for all sentences in `sentences`.
 """
 function publishall(sentences, groups, tokens, versionid)
-    for p in psglist
-		publishpassage(p, sentences, groups, tokens, versionid)   
+    for (index, p)  in enumerate(psglist)
+		publishpassage(p, index, sentences, groups, tokens, versionid)   
     end
     @info("Done: wrote $(length(sentences)) HTML pages linked to accompanying PNG file in $(outputdir). (Now in $(pwd()))")
 end
@@ -299,35 +307,6 @@ else
 	else
 		md"""*Please complete settings.*"""
 	end
-end
-
-# ╔═╡ 3faa116c-df96-4110-bf43-daef4b4ccdb1
-
-"""Compose navigation links for page with index `idx`.
-"""
-function navlinks(idx::Int, sentencelist::Vector{SentenceAnnotation})
-    nxt = ""
-    prev = ""
-    if idx == 1
-        nxtpsg = sentences[idx + 1].range |> passagecomponent
-        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
-    
-        prev = ""
-        
-    elseif idx == length(sentences)
-        nxt = ""
-
-        prevpsg = sentences[idx - 1].range |> passagecomponent
-        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
-
-    else
-        nxtpsg = sentences[idx + 1].range |> passagecomponent
-        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
-
-        prevpsg = sentences[idx - 1].range |> passagecomponent
-        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
-    end
-nav = "<p class=\"nav\">$(prev) | $(nxt)</p>"
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -950,7 +929,6 @@ version = "17.4.0+0"
 # ╟─4fa2c004-746d-448b-a163-fa6c396f1003
 # ╟─5ede902b-be5d-479a-9816-209b1adb7ce8
 # ╟─31d7e8b4-e4b3-450e-9401-f4256dfe8d53
-# ╟─e096bec1-dc36-4ba5-89b9-701f39ba6556
 # ╟─93b49926-9104-11ed-19c6-df715bde3818
 # ╟─24abee74-963f-465a-b889-b88ecddca4f3
 # ╟─3d38cad6-d10e-4eac-b33c-1cb15ac8f198
@@ -958,12 +936,11 @@ version = "17.4.0+0"
 # ╟─6f8812cd-5bcb-4db7-a431-bc7402b0d187
 # ╟─45bb7468-adfe-41c9-9ab9-d3c597e380f8
 # ╟─2fd228b9-1a78-49c9-862e-3e7e11a3b2e0
-# ╟─76688216-15d2-4a96-8f8f-eb947c254c41
-# ╟─a50a769a-ee1a-4463-90d9-7aad0620c136
 # ╟─ca9cc614-b1c3-4b31-a263-e80a09a978a0
-# ╠═f6337759-7c80-43db-b050-a7895e201542
+# ╟─f6337759-7c80-43db-b050-a7895e201542
 # ╟─60c5db9e-5185-42e1-a5cd-49ec516f07f3
 # ╟─d8df443c-44b0-4243-ae40-9ad1a684281f
+# ╟─76688216-15d2-4a96-8f8f-eb947c254c41
 # ╟─9447b4e0-e2e3-4c5f-9958-ede1549d0027
 # ╟─3e11aa5f-f020-4229-95c6-3f64145738ed
 # ╟─5f0898f7-bc7d-479c-a304-c84ded1a9a90
@@ -972,10 +949,9 @@ version = "17.4.0+0"
 # ╟─792a44c9-093d-431d-9277-a77163433570
 # ╟─cb126faf-7678-4087-999b-349e03ab929f
 # ╟─d0e510b8-edab-4249-9609-fd082225def2
-# ╠═94054ecf-5089-4f36-a94d-62de91ff022a
-# ╠═c7ce7d2c-7011-41ba-b141-c0ca2857d586
-# ╠═2f4f4048-3998-4743-aa5c-641e82e23c22
-# ╠═5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
+# ╟─94054ecf-5089-4f36-a94d-62de91ff022a
+# ╟─c7ce7d2c-7011-41ba-b141-c0ca2857d586
+# ╟─5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
 # ╟─903326cf-c9eb-45fd-b6a9-d131bebab02a
 # ╠═3faa116c-df96-4110-bf43-daef4b4ccdb1
 # ╟─00000000-0000-0000-0000-000000000001
