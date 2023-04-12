@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.19
+# v0.19.24
 
 using Markdown
 using InteractiveUtils
@@ -32,9 +32,12 @@ begin
 	using PlutoUI
 	import PlutoUI: combine
 	
-	Pkg.add("Kroki")
-	using Kroki
+	#Pkg.add("Kroki")
+	#using Kroki
 
+	Pkg.add("HypertextLiteral")
+	using HypertextLiteral
+	
 	Pkg.add("CitableBase")
 	using CitableBase
 	Pkg.add("CitableText")
@@ -74,7 +77,7 @@ end
 TableOfContents() 
 
 # ╔═╡ 0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
-nbversion = "0.9.2";
+nbversion = "0.10.0";
 
 # ╔═╡ 94bcdb73-7994-49ab-b9dd-449768dc2ebf
 md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind history CheckBox(false))"""
@@ -82,6 +85,7 @@ md"""(*Notebook version **$(nbversion)**.*) *See version history* $(@bind histor
 # ╔═╡ e98cdbde-4b9b-4439-8ae2-dfed3d4879f4
 if history
 md"""
+- **0.10.0**: Eliminate dependency on `Kroki`; use `HypertextLiteral` to render Mermaid text in wrapped HTML element instead.
 - **0.9.2**  Include tokens of class `LatinOrthography.EncliticToken` as lexical.
 - **0.9.1**  Fix display of cheat sheets.
 - **0.9.0**: Incorporates language setting to determine cheat sheets.
@@ -1190,16 +1194,6 @@ else
 	newtokens
 end
 
-# ╔═╡ 50820954-68ff-44df-9f07-e31af269f279
-if step3()
-	graphstr = mermaiddiagram(sentenceannotation, syntaxannotations)
-	mermaid"""$(graphstr)"""
-
-	
-else 
-	md""
-end
-
 # ╔═╡ 0c9bcdd2-7981-4292-b4e3-e68ad3a02e73
 """True if all values in DataFrame can be used to construct valid `VerbalUnitAnnotation`.
 """
@@ -1337,7 +1331,7 @@ if step3()
 end
 
 # ╔═╡ f12dfef3-7b61-485b-9142-fa9473313b7b
-md"""> ### Settings for visual formatting"""
+md"""> ### Settings and functions for visual formatting"""
 
 # ╔═╡ 3ed465c3-512b-4489-8d7e-3d7fdf565c0c
 """Format user instructions with Markdown admonition."""
@@ -1500,6 +1494,33 @@ Because it's fundamentally at odds with what Pluto is all about!
 	Foldable("Why is this notebook so complicated?", instructions("Using Pluto as for editing data", whysocomplicated)) 
 end
 
+# ╔═╡ 368b91f5-d060-4db5-b52a-657099561d3c
+"""Render Mermaid diagram in Pluto notebook."""
+function mermify(str)
+        @htl """
+        <html>
+            <body>
+                <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"/>
+                <script>
+                    mermaid.initialize({ startOnLoad: true });
+                </script>
+                <pre class="mermaid">
+                $str
+                </pre>
+            </body>
+        </html>"""
+end
+
+# ╔═╡ 50820954-68ff-44df-9f07-e31af269f279
+if step3()
+	graphstr = mermaiddiagram(sentenceannotation, syntaxannotations)
+	mermify(graphstr)
+
+	
+else 
+	md""
+end
+
 # ╔═╡ Cell order:
 # ╟─eae1988e-b0b0-4fb0-bd52-c1156e67149e
 # ╟─0025d7bb-fc66-4f98-9def-4adfe0aeaf3a
@@ -1598,7 +1619,7 @@ end
 # ╟─6ad58dc6-8b2e-4986-8450-6eb618f829c8
 # ╟─72d51241-9ca7-42be-81f6-9a961ab62fe0
 # ╟─d602d574-16a6-47c9-9bcf-b34bf7ac47ce
-# ╠═c140b87e-998b-435d-9c91-9babca73c5bf
+# ╟─c140b87e-998b-435d-9c91-9babca73c5bf
 # ╟─45f62b20-de3e-4520-b568-ea93f498be2c
 # ╟─cf4c142e-3aad-46d4-be53-62292b779606
 # ╟─17fcc9f4-5d1a-483d-94ab-ac710b510cd9
@@ -1621,3 +1642,4 @@ end
 # ╟─a9d2249b-243c-485b-b572-c0642950ab7f
 # ╟─f12dfef3-7b61-485b-9142-fa9473313b7b
 # ╟─3ed465c3-512b-4489-8d7e-3d7fdf565c0c
+# ╟─368b91f5-d060-4db5-b52a-657099561d3c

@@ -3,4 +3,7 @@ docs/_site/
 docs/Gemfile
 Gemfile.lock
 debug/
+scratch/
 scratchpad/
+.vscode/
+Manifest.toml
