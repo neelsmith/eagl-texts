@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.19
+# v0.19.24
 
 using Markdown
 using InteractiveUtils
@@ -21,7 +21,8 @@ begin
 	using PlutoUI
 	import PlutoUI: combine # For using `aside`, from PlutoTeachingTools
 	using PlutoTeachingTools
-	using Kroki
+	#using Kroki
+	using HypertextLiteral
 	using CitableText
 	using GreekSyntax
 	using LatinSyntax
@@ -34,7 +35,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.4.0";
+nbversion = "0.5.0";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -42,6 +43,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.5.0**: replace `Kroki` with `HyptertextLiteral` to render mermaid diagrams.
 - **0.4.0**  add selection of language and orthography	
 - **0.3.3**:	use version `0.13.4` of `GreekSyntax` package
 - **0.3.2**: Update internal package manifest	
@@ -53,6 +55,23 @@ if history
 - **0.1.1**: Change default URL for source data
 - **0.1.0**: initial release	
 	"""
+end
+
+# ╔═╡ ebcf6755-b244-4564-8cfd-93c085c841c0
+"""Render mermaid diagram as HTML"""
+function mermify(str)
+        @htl """
+        <html>
+            <body>
+                <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"/>
+                <script>
+                    mermaid.initialize({ startOnLoad: true });
+                </script>
+                <pre class="mermaid">
+                $str
+                </pre>
+            </body>
+        </html>"""
 end
 
 # ╔═╡ e7059fa0-82f2-11ed-3bfe-059070a00b1d
@@ -538,7 +557,7 @@ CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
-Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
+HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
 LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
@@ -549,7 +568,7 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 CitableCorpus = "~0.13.3"
 CitableText = "~0.15.2"
 GreekSyntax = "~0.13.8"
-Kroki = "~0.2.0"
+HypertextLiteral = "~0.9.4"
 LatinOrthography = "~0.6.0"
 LatinSyntax = "~0.3.0"
 PlutoTeachingTools = "~0.2.5"
@@ -561,9 +580,9 @@ PolytonicGreek = "~0.18.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.4"
+julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "beaa5ab47cf41a461466553cc627ee388bf0bc16"
+project_hash = "46a64f5b0e97b259c42c01c79893a10d447451b4"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1263,5 +1282,6 @@ version = "17.4.0+0"
 # ╟─c644af1f-ea25-4630-a7b3-a5699f8ee96d
 # ╟─20f31f23-9d89-47d3-85a3-b53b5bc67a9f
 # ╟─698f3062-02a4-48b5-955e-a8c3ee527872
+# ╟─ebcf6755-b244-4564-8cfd-93c085c841c0
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
