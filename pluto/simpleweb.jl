@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.19
+# v0.19.24
 
 using Markdown
 using InteractiveUtils
@@ -28,7 +28,7 @@ begin
 end
 
 # ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
-nbversion = "0.1.0";
+nbversion = "0.1.1";
 
 # ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -36,6 +36,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
+- **0.1.1**:  correct label in footer text
 - **0.1.0**: initial release	
 	"""
 end
@@ -255,7 +256,7 @@ function webpage(idx, sentences, groups, tokens, versionid)
     m = now() |> monthname
     d = now() |> day
     y = now() |> year
-    footer = "<footer>Site created by Pluto notebook <code>webpublisher.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
+    footer = "<footer>Site created by Pluto notebook <code>simplepage.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
 
     # String all the parts together!
     htmlparts = [hdg, nav, subhead, plaintext, guide, txtdisplay, footer]
@@ -325,7 +326,7 @@ PolytonicGreek = "~0.18.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.4"
+julia_version = "1.8.5"
 manifest_format = "2.0"
 project_hash = "684c789085c335d5238467d868a7e236be23c37a"
 
@@ -941,7 +942,7 @@ version = "17.4.0+0"
 # ╟─d0e510b8-edab-4249-9609-fd082225def2
 # ╠═94054ecf-5089-4f36-a94d-62de91ff022a
 # ╟─2f4f4048-3998-4743-aa5c-641e82e23c22
-# ╟─5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
+# ╠═5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
 # ╟─903326cf-c9eb-45fd-b6a9-d131bebab02a
 # ╟─3faa116c-df96-4110-bf43-daef4b4ccdb1
 # ╟─00000000-0000-0000-0000-000000000001
