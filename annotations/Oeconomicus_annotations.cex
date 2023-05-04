@@ -74,6 +74,95 @@ urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:1.1.b.22|lexical|τεκτο�
 urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:1.1.b.22a|ignore|;|0|nothing|nothing|nothing|nothing
 
 
+/// HUNDREDS OF SENTENCES
+
+
+// Sentence 160  == 3.11
+//
+// Automatically appended from Pluto notebook "Analyze syntax of Greek text from a CTS source" (version 0.10.0)
+//
+#!sentences
+sentence|sequence|connector
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.58-3.11.76a|160|urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.59
+
+
+#!verbal_units
+vuid|syntactic_type|semantic_type|depth|sentence
+3.11.58-3.11.76a.1|independent clause|transitive|1|urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.58-3.11.76a
+3.11.58-3.11.76a.2|subordinate clause|transitive|2|urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.58-3.11.76a
+3.11.58-3.11.76a.3|circumstantial participle|transitive|3|urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.58-3.11.76a
+
+
+#!tokens
+urn|tokentype|text|verbalunit|node1|node1relation|node2|node2relation
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.58|lexical|εἰ|3.11.58-3.11.76a.2|19|conjunction|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.59|lexical|δὲ|nothing|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.60|lexical|μὴ|3.11.58-3.11.76a.3|4|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.61|lexical|διδάσκων|3.11.58-3.11.76a.3|10|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.62|lexical|τὰ|3.11.58-3.11.76a.3|6|article|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.63|lexical|καλὰ|3.11.58-3.11.76a.3|4|object|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.64|lexical|κἀγαθὰ|3.11.58-3.11.76a.3|4|object|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.65|lexical|ἀνεπιστήμονι|3.11.58-3.11.76a.2|10|object|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.66|lexical|τούτων|3.11.58-3.11.76a.2|8|genitive|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.67|lexical|χρῷτο|3.11.58-3.11.76a.2|1|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.67a|ignore|,|0|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.68|lexical|ἆρ'|3.11.58-3.11.76a.1|nothing|nothing|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.69|lexical|οὐ|3.11.58-3.11.76a.1|19|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.70|lexical|δικαίως|3.11.58-3.11.76a.1|19|adverbial|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.71|lexical|ἂν|3.11.58-3.11.76a.1|19|modal particle|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.72|lexical|ὁ|3.11.58-3.11.76a.1|16|article|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.73|lexical|ἀνὴρ|3.11.58-3.11.76a.1|19|subject|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.74|lexical|τὴν|3.11.58-3.11.76a.1|18|article|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.75|lexical|αἰτίαν|3.11.58-3.11.76a.1|19|object|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.76|lexical|ἔχοι|3.11.58-3.11.76a.1|2|unit verb|nothing|nothing
+urn:cts:greekLit:tlg0032.tlg003.perseus-grc2_tokens:3.11.76a|ignore|;|0|nothing|nothing|nothing|nothing
+
+// Sentence 161
+// Sentence 162
+// Sentence 163
+// Sentence 164
+// Sentence 165
+// Sentence 166
+// Sentence 167
+// Sentence 168
+// Sentence 169
+
+// Sentence 170
+// Sentence 171
+// Sentence 172
+// Sentence 173
+// Sentence 174
+// Sentence 175
+// Sentence 176
+// Sentence 177
+// Sentence 178
+// Sentence 179
+
+// Sentence 180
+// Sentence 181
+// Sentence 182
+// Sentence 183
+// Sentence 184
+// Sentence 185
+// Sentence 186
+// Sentence 187
+// Sentence 188
+// Sentence 189
+
+// Sentence 190
+// Sentence 191
+// Sentence 192
+// Sentence 193
+// Sentence 194
+// Sentence 195
+// Sentence 196
+// Sentence 197
+// Sentence 198
+// Sentence 199
+
+
+
+
 
 // Sentence 276 == 6.1
 //
