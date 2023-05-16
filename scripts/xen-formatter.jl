@@ -9,10 +9,11 @@ end
 
 function formatspeakers(cols)
     u = CtsUrn(cols[1])
-    s = "\n\n*" * cols[3] * "*: " * cols[2]
-    s
+    spkr = cols[3]
+    body = ": " * cols[2]
+    s =  startswith(spkr, ">") ?  replace(spkr, r"([>]+)(.*)" => s"\1  *\2*") * body :  "*" * spkr  * "*" * body
+    "\n\n" * s
 end
-
 
 function writem(delimited)
     basedir = "/Users/neelsmith/Desktop/xenrevised/xenchaps"
@@ -49,3 +50,4 @@ txt = readem()
 readem() |> writem
 
 join(txt[end],"-")
+
