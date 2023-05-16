@@ -7,8 +7,6 @@ function readem()
     filter(row -> length(row) == 3, columnized)
 end
 
-
-
 function formatspeakers(cols)
     u = CtsUrn(cols[1])
     s = "\n\n*" * cols[3] * "*: " * cols[2]
@@ -22,6 +20,7 @@ function writem(delimited)
     pg = ""
     for cols in filter(row -> length(row) == 3, delimited)
         psg = collapsePassageBy(CtsUrn(cols[1]),1) |> passagecomponent
+        @info("Psg " * psg)
         if psg == currchap
             pg = pg * "\n\n" * formatspeakers(cols)
         else
@@ -32,16 +31,21 @@ function writem(delimited)
                     write(outfile, pg)
                 end
             end
-            println(currchap)
+            @info("Chapter " * currchap)
             # println(pg)
             currchap = psg
             pg = formatspeakers(cols)
         end
     end
+    outfile = joinpath(basedir, currchap * ".md")
+    @info("Write $(outfile)")
+    open(outfile,"w") do io
+        write(outfile, pg)
+    end
 end
 
 
 txt = readem()
-txt |> writem
+readem() |> writem
 
 join(txt[end],"-")
