@@ -58,16 +58,26 @@ citabletokens = tokenize(corpus, lg)
 # ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
 md"""## 3. Analyzed tokens"""
 
+# ╔═╡ 188a3b26-90bd-4764-882b-cdc43757b991
+md"""Use a delimited-text source to build a DFParser: can be either a URL or a local file."""
+
 # ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+# Alternative to local file: use a URL:
+begin
+	#parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+	#parser = dfParser(Downloads.download(parsersrc))
+end
+
+# ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
+parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
 
 # ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╠═╡ show_logs = false
-parser = dfParser(Downloads.download(parsersrc))
+parser = dfParser(read(parsersrc))
 
-# ╔═╡ fb0a83a6-5b64-4de9-ba80-9a115ddb3a54
+# ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
-analyzedtokens = parsecorpus(tokenizedcorpus(corpus,lg), parser)
+analyzedlexical = parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 # ╔═╡ ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 md"""##### Example applications"""
@@ -90,10 +100,10 @@ parsedlex = parses[1].lexeme
 lexstring =  string(parsedlex)
 
 # ╔═╡ 1dada4ae-8737-465a-942a-5fc9df4be1c4
-stringsforlexeme(analyzedtokens.analyses, lexstring)
+stringsforlexeme(analyzedlexical.analyses, lexstring)
 
 # ╔═╡ 5b3fbd77-d4e1-459b-9eec-a40d335d3c0e
-passagesforlexeme(analyzedtokens.analyses, lexstring)
+passagesforlexeme(analyzedlexical.analyses, lexstring)
 
 # ╔═╡ d030db85-f4a0-4729-b6d5-d1a3c1ea6057
 md""" ## 4. Indexing tokens and lexemes"""
@@ -103,7 +113,7 @@ tokenindex = corpusindex(corpus, lg)
 
 # ╔═╡ 7bbc9d70-5a54-4508-a27b-e49c8ece039c
 # ╠═╡ show_logs = false
-lexdict  = lexemedictionary(analyzedtokens.analyses, tokenindex)
+lexdict  = lexemedictionary(analyzedlexical.analyses, tokenindex)
 
 # ╔═╡ 50f7c7ce-c0d3-41de-906c-424371962547
 md""" ##### Example application"""
@@ -127,7 +137,7 @@ lexdict[lexstring][exampleform]
 tokenindex[exampleform] == lexdict[lexstring][exampleform]
 
 # ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
-md""" ## 5. Surveying morphology of a corpus"""
+md""" ## 5. Surveying morphology of a corpus: tokens and lexemes"""
 
 # ╔═╡ 3f42716a-4b5e-4983-b934-8892045eaf37
 md"""### Histograms of tokens and lexemes"""
@@ -135,15 +145,74 @@ md"""### Histograms of tokens and lexemes"""
 # ╔═╡ 17350592-8a0d-4db8-99a4-ae1f4a7dfba1
 histo = corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
 
+# ╔═╡ 4d3ca7ee-220c-430c-90c0-7d0827a7c974
+"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
+function lexemehisto(alist; labeller = string)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	lexflattened = map(at -> labeller(at.lexeme), flattened)
+	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ f804125e-2c78-4637-bea8-c816fadf4b4e
+md""" #### Find unanalyzed"""
+
+# ╔═╡ b7e4eab6-a986-4614-bde8-becfe1baff58
+failed = filter(at -> isempty(at.analyses), analyzedlexical.analyses)
+
+
+# ╔═╡ 4855b2b6-1a4b-4ded-b9fd-70315d25aa70
+"""Histogram of forms properly belongs in `CitableParserBuilder`."""
+function formshisto(alist)
+	flattened = map(at -> at.ctoken.passage.text, alist) |> collect
+	
+	sort!(OrderedDict(countmap(flattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ fc4dae2b-56f2-49c4-ae78-93229a5e4b44
+formshisto(failed)
+
 # ╔═╡ ab14c401-6b81-4f92-a76a-25fdfce303c4
 md""" ## 6. Label lexemes"""
+
+# ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
+# ╠═╡ show_logs = false
+ labeldict = Kanones.lsjdict()
 
 # ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╠═╡ show_logs = false
 labeldictx = Kanones.lsjxdict()
 
-# ╔═╡ cba2e310-f210-4edb-b3db-358829a6abde
+# ╔═╡ ec1037e5-33db-46f5-b7a9-93e23450ca11
+function hacklabel(lexurn)
+	s = string(lexurn)
+	if startswith(s, "lsjx.")
+		stripped = replace(s, "lsjx." => "")
+		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
+	elseif startswith(s, "lsj.")
+		stripped = replace(s, "lsj." => "")
+		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
+		string(s, "@labelmissing")
+	else
+		string(lexurn, "@nolabel")
+	end
+end
 
+# ╔═╡ 496e7221-f4c1-4088-a2f8-bf85b913ee55
+lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
+
+# ╔═╡ cba2e310-f210-4edb-b3db-358829a6abde
+md""" ### 7. Surveying morphology of Greek corpus: forms"""
+
+# ╔═╡ 4d3ffe24-75b1-41aa-8e08-b4e38fedf106
+md"""Forms to survey:
+
+- "part of speech" (analytical type)
+- all individual forms
+- verb analytical types (finite, participle, infinitive)
+- person-number combos of finite forms
+- tense-mood combos of finite forms
+- voice?
+"""
 
 # ╔═╡ 5407c0cd-e30c-4652-854a-11a27687b871
 html"""
@@ -217,31 +286,12 @@ end
 # ╔═╡ efa8ae03-b471-4d55-a842-ccbb09d5ff3a
 lexx = pulllexemes(parser)
 
-# ╔═╡ ec1037e5-33db-46f5-b7a9-93e23450ca11
-function hacklabel(lexurn)
-	s = string(lexurn)
-	if startswith(s, "lsjx.")
-		stripped = replace(s, "lsjx." => "")
-		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
-	elseif startswith(s, "lsj.")
-		stripped = replace(s, "lsj." => "")
-		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
-		string(s, "@labelmissing")
-	else
-		string(lexurn, "@nolabel")
-	end
-end
-
-# ╔═╡ 4d3ca7ee-220c-430c-90c0-7d0827a7c974
-"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
-function lexemehisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	lexflattened = map(at -> hacklabel(at.lexeme), flattened)
-	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
-end
-
-# ╔═╡ 496e7221-f4c1-4088-a2f8-bf85b913ee55
-lexemehisto(analyzedtokens.analyses)
+# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
+# ╠═╡ show_logs = false
+# ╠═╡ disabled = true
+#=╠═╡
+ labeldict = Kanones.lsjdict()
+  ╠═╡ =#
 
 # ╔═╡ fd6a733f-0f40-42a4-9482-6bb66659d070
 begin
@@ -363,17 +413,6 @@ typeof(xs1)
 
 # ╔═╡ 63b234f7-2559-47b2-b15f-1046d6a5fa0a
 surveyforms(analyses1)
-
-# ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
-# ╠═╡ show_logs = false
- labeldict = Kanones.lsjdict()
-
-# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
-# ╠═╡ show_logs = false
-# ╠═╡ disabled = true
-#=╠═╡
- labeldict = Kanones.lsjdict()
-  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1722,9 +1761,11 @@ version = "1.4.1+0"
 # ╠═66cef781-a849-4ff5-bc48-66d7dcd88c61
 # ╠═6dce46e6-b25b-49c5-a8ba-03c3953356c2
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
-# ╟─e5f799bf-ecc4-4ffa-a114-7391b98f8be6
+# ╟─188a3b26-90bd-4764-882b-cdc43757b991
+# ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
+# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
 # ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
-# ╠═fb0a83a6-5b64-4de9-ba80-9a115ddb3a54
+# ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╟─ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 # ╟─cd4584d5-278e-4115-9723-ac3e171f49ee
 # ╟─c84a16d7-ae9d-4e80-959f-5e20df34aed0
@@ -1748,11 +1789,16 @@ version = "1.4.1+0"
 # ╠═17350592-8a0d-4db8-99a4-ae1f4a7dfba1
 # ╟─4d3ca7ee-220c-430c-90c0-7d0827a7c974
 # ╠═496e7221-f4c1-4088-a2f8-bf85b913ee55
+# ╟─f804125e-2c78-4637-bea8-c816fadf4b4e
+# ╠═b7e4eab6-a986-4614-bde8-becfe1baff58
+# ╠═4855b2b6-1a4b-4ded-b9fd-70315d25aa70
+# ╠═fc4dae2b-56f2-49c4-ae78-93229a5e4b44
 # ╟─ab14c401-6b81-4f92-a76a-25fdfce303c4
 # ╠═7f7167f5-b401-4535-b530-708a142fb35c
 # ╠═cc58effb-d9a8-40ae-813f-dbda4eaa0caf
-# ╠═ec1037e5-33db-46f5-b7a9-93e23450ca11
-# ╠═cba2e310-f210-4edb-b3db-358829a6abde
+# ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
+# ╟─cba2e310-f210-4edb-b3db-358829a6abde
+# ╟─4d3ffe24-75b1-41aa-8e08-b4e38fedf106
 # ╠═5407c0cd-e30c-4652-854a-11a27687b871
 # ╟─24d33c4d-e59d-49c8-8fc8-459e0637f25e
 # ╟─96e13fbe-fe1d-4c12-b535-2a39926189b7
