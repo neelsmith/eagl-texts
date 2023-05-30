@@ -34,38 +34,39 @@ begin
 	using PlutoUI
 end
 
+# ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
+md"""*To see the Pluto environment, unhide the following cell.*"""
+
+# ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
+md"""## Profile the morphology of a citable text"""
+
+# ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
+md""" Analyzed tokens:"""
+
+# ╔═╡ 4b80d272-bddd-47ca-b919-d7e1c2ef2591
+html"""
+<br/>
+<br/><br/><br/><br/><br/><br/><br/><br/>
+<hr/>
+"""
+
+# ╔═╡ ed2b99fa-7138-4f2c-8fbc-7283445b9e52
+md"""> Parser, settings, labelling utilities"""
+
 # ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
 menu = ["" => "", 
 	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
 	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1"
 ]
 
-# ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
-md"""*To see the Pluto environment, unhide the following cell.*"""
-
-# ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
-md"""## 1. Citable text"""
-
 # ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
-md"""Choose a text: $(@bind src Select(menu))"""
+md"""*Choose a text to profile*: $(@bind src Select(menu))"""
 
 # ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
 corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 
-# ╔═╡ e06efadb-4dc7-463e-aad5-e6e198c72db2
-md"""## 2. Citable tokens"""
-
-# ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
-lg = literaryGreek()
-
-# ╔═╡ 6dce46e6-b25b-49c5-a8ba-03c3953356c2
-citabletokens = isnothing(corpus) ? nothing : tokenize(corpus, lg)
-
-# ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
-md"""## 3. Analyzed tokens"""
-
-# ╔═╡ 188a3b26-90bd-4764-882b-cdc43757b991
-md"""Use a delimited-text source to build a DFParser: can be either a URL or a local file."""
+# ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
+isnothing(corpus) ? nothing : md"""## Profile"""
 
 # ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # Alternative to local file: use a URL:
@@ -73,6 +74,9 @@ begin
 	#parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
 	#parser = dfParser(Downloads.download(parsersrc))
 end
+
+# ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
+lg = literaryGreek()
 
 # ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
 parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
@@ -85,109 +89,16 @@ parser = dfParser(read(parsersrc))
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
-# ╔═╡ ab586cf9-3cc0-456a-9ff1-c8650184d0fb
-md"""##### Example applications"""
-
-# ╔═╡ cd4584d5-278e-4115-9723-ac3e171f49ee
-exampleform = "ποιησαίμην"
-
-# ╔═╡ c84a16d7-ae9d-4e80-959f-5e20df34aed0
-md"""Parsing yields a vector of `Analysis` objects."""
-
-# ╔═╡ 8813b5a9-cc32-4ee7-9d39-02d92de8b37a
-parses = parsetoken(exampleform, parser)
-
-# ╔═╡ 8b4548b7-2565-4811-b9f0-eb234f6d26ac
-# This is crude. Need functions to extract lexemes from these analyses.
-# For this demo, we just take the lexeme member of the first parse. :-(
-parsedlex = parses[1].lexeme
-
-# ╔═╡ 97f0937d-ab49-4918-8f1d-99d9990e7ff4
-lexstring =  string(parsedlex)
-
-# ╔═╡ 1dada4ae-8737-465a-942a-5fc9df4be1c4
-isnothing(analyzedlexical) ? nothing : stringsforlexeme(analyzedlexical.analyses, lexstring)
-
-# ╔═╡ 5b3fbd77-d4e1-459b-9eec-a40d335d3c0e
-isnothing(analyzedlexical) ? nothing : passagesforlexeme(analyzedlexical.analyses, lexstring)
-
-# ╔═╡ d030db85-f4a0-4729-b6d5-d1a3c1ea6057
-md""" ## 4. Indexing tokens and lexemes"""
-
-# ╔═╡ bd270d84-da87-4fe5-bf33-11a6f695f71f
-tokenindex = isnothing(corpus) ? nothing : corpusindex(corpus, lg)
-
-# ╔═╡ 7bbc9d70-5a54-4508-a27b-e49c8ece039c
+# ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╠═╡ show_logs = false
-lexdict  =  isnothing(analyzedlexical) ? nothing :  lexemedictionary(analyzedlexical.analyses, tokenindex)
-
-# ╔═╡ 50f7c7ce-c0d3-41de-906c-424371962547
-md""" ##### Example application"""
-
-# ╔═╡ 2a97632e-2e83-448a-96d9-d933408fb31b
-md"The token index is a simple index of a token's string value to a vector of CTS URNs:"
-
-# ╔═╡ c378543b-5274-4d95-a758-d8961955f7f5
-isnothing(tokenindex) ? nothing : tokenindex[exampleform]
-
-# ╔═╡ dc373828-65cd-4585-a2c4-b9a12204df59
-md"""The lexical index is a two-tier index:  the string value of the lexeme URN yields a token index (that is, an index of token strings to CTS URNs."""
-
-# ╔═╡ 85faea2d-6083-4551-bce1-ae07a3b6546b
-isnothing(lexdict) ? nothing : lexdict[lexstring]
-
-# ╔═╡ 2c120b2c-15db-4834-af49-32a6d4971aba
-isnothing(lexdict) ? nothing : lexdict[lexstring][exampleform]
-
-# ╔═╡ 129c8993-113f-47a6-a31c-e4c3f3c87798
-isnothing(lexdict) ? nothing :  tokenindex[exampleform] == lexdict[lexstring][exampleform]
-
-# ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
-md""" ## 5. Surveying morphology of a corpus: tokens and lexemes"""
-
-# ╔═╡ 3f42716a-4b5e-4983-b934-8892045eaf37
-md"""### Histograms of tokens and lexemes"""
-
-# ╔═╡ 17350592-8a0d-4db8-99a4-ae1f4a7dfba1
-histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
-
-# ╔═╡ 4d3ca7ee-220c-430c-90c0-7d0827a7c974
-"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
-function lexemehisto(alist; labeller = string)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	lexflattened = map(at -> labeller(at.lexeme), flattened)
-	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
-end
-
-# ╔═╡ f804125e-2c78-4637-bea8-c816fadf4b4e
-md""" #### Find unanalyzed"""
-
-# ╔═╡ b7e4eab6-a986-4614-bde8-becfe1baff58
-failed = isnothing(analyzedlexical) ? nothing : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
-
-# ╔═╡ 4855b2b6-1a4b-4ded-b9fd-70315d25aa70
-"""Histogram of forms properly belongs in `CitableParserBuilder`."""
-function formshisto(alist)
-	flattened = map(at -> at.ctoken.passage.text, alist) |> collect
-	
-	sort!(OrderedDict(countmap(flattened)); byvalue=true, rev=true)
-end
-
-# ╔═╡ fc4dae2b-56f2-49c4-ae78-93229a5e4b44
-isnothing(failed) ? nothing :  formshisto(failed)
-
-# ╔═╡ ab14c401-6b81-4f92-a76a-25fdfce303c4
-md""" ## 6. Label lexemes"""
+labeldictx = Kanones.lsjxdict()
 
 # ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
 # ╠═╡ show_logs = false
  labeldict = Kanones.lsjdict()
 
-# ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
-# ╠═╡ show_logs = false
-labeldictx = Kanones.lsjxdict()
-
 # ╔═╡ ec1037e5-33db-46f5-b7a9-93e23450ca11
+"""Lexeme labelling function really belongs in `Kanones`."""
 function hacklabel(lexurn)
 	s = string(lexurn)
 	if startswith(s, "lsjx.")
@@ -202,14 +113,26 @@ function hacklabel(lexurn)
 	end
 end
 
-# ╔═╡ 496e7221-f4c1-4088-a2f8-bf85b913ee55
-isnothing(analyzedlexical) ? nothing : lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
+# ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
+md"""---
 
-# ╔═╡ cba2e310-f210-4edb-b3db-358829a6abde
-md""" ### 7. Surveying morphology of Greek corpus: forms"""
 
-# ╔═╡ 621da80b-5cce-4f79-9cd9-90ddd76bdf61
-md"""#### "Parts of speech" (analytical type)"""
+> Compute survey histograms"""
+
+# ╔═╡ 3b6e1948-48e4-4b1e-8f40-d93943fe0790
+md"Parts of speech:"
+
+# ╔═╡ e08cd624-11e1-4470-bdf7-344d80d91de7
+md"Person-number:"
+
+# ╔═╡ 012e4105-b5c0-4705-928f-3f2eb290acb7
+md"Tense-voice:"
+
+# ╔═╡ 63d27766-28c7-4b73-94f0-3218657114dd
+md"Mood:"
+
+# ╔═╡ b90b4326-5b47-456e-8fc7-c4091f1ed141
+md"Tense-mood-voice:"
 
 # ╔═╡ 8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
 "Compute histogram of morphological forms."
@@ -233,9 +156,6 @@ begin
 	end
 end
 
-# ╔═╡ bc805623-c0e6-4ff6-90a1-dff0fede62e6
-md"""#### All individual forms"""
-
 # ╔═╡ 91ed541a-05b5-400c-94cd-0544b11dcc06
 "Compute histogram of morphological forms."
 function morphhisto(alist)
@@ -247,9 +167,6 @@ end
 
 # ╔═╡ 17f35d7a-ebb7-45d4-877e-6665e9e3290e
 mh = isnothing(analyzedlexical) ? nothing : morphhisto(analyzedlexical)
-
-# ╔═╡ be561d1d-0cf6-4c89-ab15-4e733e2b712b
-md""" #### Person-number of finite verbs"""
 
 # ╔═╡ 551958f8-3284-487d-a25b-01a36b1c1013
 "Compute histogram of person-number combinations for finite verbs."
@@ -274,9 +191,6 @@ begin
 	end
 end
 
-# ╔═╡ 5aa2d5f1-8095-472b-b083-d76ea5c75052
-md""" #### Mood of finite verbs"""
-
 # ╔═╡ 597f3d08-e464-4cf1-9978-21e07bac0799
 "Compute histogram of person-number combinations for finite verbs."
 function moodhisto(alist)
@@ -299,9 +213,6 @@ begin
 	bar(moodlabels, moodvals, title = "Mood", xrotation = -45, xticks = :all, legend = false)
 	end
 end
-
-# ╔═╡ ec99f80f-56c8-4085-a487-8970b4325247
-md""" #### Tense-voice of all verbal forms"""
 
 # ╔═╡ 9875fcdd-facf-4204-b628-5b0574760bb7
 "Compute histogram of person-number combinations for finite verbs."
@@ -326,9 +237,6 @@ begin
 	end
 end
 
-# ╔═╡ d5934aed-1990-45b5-a1b6-4cdfe0bde7da
-md""" #### Tense-mood-voice combinations"""
-
 # ╔═╡ 7556409b-ee74-4f9f-9e02-d927ca1ae157
 "Compute histogram of person-number combinations for finite verbs."
 function tmvhisto(alist)
@@ -344,213 +252,13 @@ tmvh = isnothing(analyzedlexical) ? nothing : tmvhisto(analyzedlexical)
 
 # ╔═╡ a982c017-bd1a-4141-bebf-7385190a2ad3
 begin
-	if isnothing(tmvhisto)
+	if isnothing(tmvh)
 	else
 	tmvlabels  = keys(tmvh) |> collect
 	tmvvals = map(k -> tmvh[k], tmvlabels)
 	bar(tmvlabels, tmvvals, title = "Tense-mood-voice combinations", xrotation = -45, xticks = :all, legend = false)
 	end
 end
-
-# ╔═╡ 5407c0cd-e30c-4652-854a-11a27687b871
-html"""
-<br/>
-<br/>
-<br/>
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-"""
-
-# ╔═╡ 24d33c4d-e59d-49c8-8fc8-459e0637f25e
-md"""
----
-
-
-> Stuff to review
-"""
-
-# ╔═╡ 96e13fbe-fe1d-4c12-b535-2a39926189b7
-md"""### Core vocabulary: compare sets of tokens"""
-
-# ╔═╡ 0f14ab53-2da6-4287-8380-25fb428d2c4f
-vocab1 = keys(histo1) |> collect
-
-
-# ╔═╡ d68c208c-a234-475d-8702-55691ebf096a
-vocab2 = keys(histo2) |> collect
-
-# ╔═╡ dc7bee7b-b924-4ad9-8230-485f9c228bca
-md"""Compare top n vocabulary items: 
-
-*n* $(@bind vocabsize Slider(100:10:1000; default=100, show_value=true))"""
-
-# ╔═╡ 490e9116-fa5e-4f0f-ae4f-e15b3c2c3e87
-overlaps = filter(s -> s in vocab2[1:vocabsize], vocab1[1:vocabsize])
-
-
-# ╔═╡ 363d38e6-2116-49a3-94f0-721c941180fc
-missinglists = begin
-	
-
-	in1not2 = String[]
-	for s in vocab1[1:vocabsize]
-		if s in vocab2[1:vocabsize]
-		else
-			push!(in1not2, s)
-		end
-	end
-
-	in2not1 = String[]
-	for s in vocab2[1:vocabsize]
-		if s in vocab1[1:vocabsize]
-		else
-			push!(in2not1, s)
-		end
-	end
-	(missing1 = in2not1, missing2 = in1not2, )
-end
-
-# ╔═╡ 7b9429d1-932d-4dae-98a3-4101bfdbe7ef
-md"""## Vocabulary comparisons: lexemes"""
-
-# ╔═╡ a95e1a70-fda3-46a3-919e-7149fb30655c
-md"""Download current Kanones *core* data, and instantiate a parser:"""
-
-# ╔═╡ fb413fd7-557e-47fc-bbf0-f6f6440b293c
-# This is already in Kanones `dev` branch as `lexemes`
-function pulllexemes(dfp::DFParser)
-    DataFrames.select(dfp.df, :Lexeme) |> unique
-end
-
-# ╔═╡ efa8ae03-b471-4d55-a842-ccbb09d5ff3a
-lexx = pulllexemes(parser)
-
-# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
-# ╠═╡ show_logs = false
-# ╠═╡ disabled = true
-#=╠═╡
- labeldict = Kanones.lsjdict()
-  ╠═╡ =#
-
-# ╔═╡ fd6a733f-0f40-42a4-9482-6bb66659d070
-begin
-	labels = []
-	for l in Matrix{String}(lexx)
-		stripped = replace(l, "lsj." => "")
-	   if haskey(labeldict, stripped)
-	       push!(labels, "$(stripped) -> $(labeldict[stripped])")
-		   else
-		   push!(labels, "$(stripped) -> NOLABEL")
-	   end
-	end
-	labels
-end
-
-# ╔═╡ b4bf2388-429e-44f7-b918-5bcadb1a523a
-md"""Let's do some parsing..."""
-
-# ╔═╡ 5719d0da-9f69-4305-a3e1-ca3f0ab4c9a8
-wordlist1 = begin
-	wl1 = String[]
-	for k in keys(histo1)
-		push!(wl1, k)
-	end
-	wl1
-end
-
-# ╔═╡ aeb8fbb5-dc44-45bb-a90a-7e0710f25f6e
-wordlist2 = begin
-	wl2 = String[]
-	for k in keys(histo2)
-		push!(wl2, k)
-	end
-	wl2
-end
-
-# ╔═╡ 7287dc19-be34-4cb3-bc0e-d838f3565f8b
-# ╠═╡ show_logs = false
-parseresults1 = parselist(wordlist1, parser)
-
-# ╔═╡ b04fa238-dfcb-446e-b731-609dd05f65e9
-analyses1 = values(parseresults1) |> Iterators.flatten |> collect
-
-# ╔═╡ c273ab1f-437a-4b76-8b31-aff484f00a14
-# ╠═╡ show_logs = false
-parseresults2 = parselist(wordlist2, parser)
-
-# ╔═╡ 6a295c87-e06b-4129-8710-5227ca02167f
-eg = parseresults1["τοὺς"]
-
-# ╔═╡ 9830bb9d-90a4-44e9-9b70-ab9d5dfd0aab
-function lexlabel(u::LexemeUrn, dict)
-	stripped = replace(string(u), "lsj." => "")
-	if haskey(dict, stripped)
-		stripped * ": " * dict[stripped]
-	else
-		stripped * ": NO LABEL"
-	end
-end
-
-# ╔═╡ 0c1f1e66-215f-4db2-bddb-41df060e978e
-lexlabel(eg[1].lexeme, labeldict)
-
-# ╔═╡ 32bd7000-28aa-46dc-a49d-87d6fe21b80f
-eg[1].lexeme |> string
-
-# ╔═╡ 7dc70a52-bf32-4aea-9705-a251ae08c632
-md"""### Map tokens to analyses"""
-
-# ╔═╡ 27521a1c-c188-42aa-9c0d-384bf65ff15b
-tokens1 = tokenizedcorpus(corpus1, literaryGreek(), filterby = LexicalToken())
-
-# ╔═╡ 8d6da432-3110-41a6-aeb1-7a43c7e54d59
-c1analyses = map(t -> parseresults1[t.text], tokens1)
-
-# ╔═╡ 01605233-80e4-4d55-83a7-e0937db35630
-c1analyses |> length
-
-# ╔═╡ af2e70a3-a693-488e-b6a9-369a2ec30d41
-md""" ## Surveying analyses"""
-
-# ╔═╡ ce804e31-3e0e-4922-8a2b-86d4355d47cd
-lexemehisto(analyzedtokens.analyses)
-
-# ╔═╡ 02f60db8-9a87-4178-968a-54c1bc7931c6
-
-
-# ╔═╡ c7e8aaa2-a8ff-4268-a2f8-6eb77230b19a
-function surveyforms(alist)
-	map(a -> a.form, alist)
-end
-
-# ╔═╡ e45776ac-6db2-4da4-aa05-7e98c4da22be
-lexsurvey = surveylexemes(c1analyses, labeldict)
-
-# ╔═╡ 06c835b0-ba8f-42e8-a967-c1585db65155
-ys1 = lexsurvey |> values |> collect 
-
-# ╔═╡ 5d1e7f02-1fbe-455c-bffb-ef0fe6fcff25
-typeof(ys1)
-
-# ╔═╡ 53ab67da-3239-4c1b-bdab-a9745450f79e
-xs1 = lexsurvey |> keys |> collect 
-
-# ╔═╡ 4506c7b9-1734-4c40-83df-67cd808656ee
-bar(xs1, ys1, ticktext = ys1)
-
-# ╔═╡ 7c38ea51-c71c-4b78-8c36-a01d3c24c323
-begin
-	trace = bar(xs1, ys1, ticktext = ys1)
-
-
-	plot(trace)
-
-end
-
-# ╔═╡ b788cb5a-04f4-4d39-9ce8-1a723cc313bb
-typeof(xs1)
-
-# ╔═╡ 63b234f7-2559-47b2-b15f-1046d6a5fa0a
-surveyforms(analyses1)
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1890,115 +1598,46 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 # ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
 # ╟─92a2622f-5c83-4341-ba8d-dc864dd3c556
-# ╠═b5cbb1a9-ee3b-4236-af73-84fa9f278665
-# ╟─e06efadb-4dc7-463e-aad5-e6e198c72db2
-# ╠═66cef781-a849-4ff5-bc48-66d7dcd88c61
-# ╠═6dce46e6-b25b-49c5-a8ba-03c3953356c2
+# ╟─b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
-# ╟─188a3b26-90bd-4764-882b-cdc43757b991
-# ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
-# ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
-# ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
-# ╟─ab586cf9-3cc0-456a-9ff1-c8650184d0fb
-# ╠═cd4584d5-278e-4115-9723-ac3e171f49ee
-# ╟─c84a16d7-ae9d-4e80-959f-5e20df34aed0
-# ╟─8813b5a9-cc32-4ee7-9d39-02d92de8b37a
-# ╠═8b4548b7-2565-4811-b9f0-eb234f6d26ac
-# ╠═97f0937d-ab49-4918-8f1d-99d9990e7ff4
-# ╠═1dada4ae-8737-465a-942a-5fc9df4be1c4
-# ╠═5b3fbd77-d4e1-459b-9eec-a40d335d3c0e
-# ╟─d030db85-f4a0-4729-b6d5-d1a3c1ea6057
-# ╠═bd270d84-da87-4fe5-bf33-11a6f695f71f
-# ╠═7bbc9d70-5a54-4508-a27b-e49c8ece039c
-# ╟─50f7c7ce-c0d3-41de-906c-424371962547
-# ╟─2a97632e-2e83-448a-96d9-d933408fb31b
-# ╠═c378543b-5274-4d95-a758-d8961955f7f5
-# ╟─dc373828-65cd-4585-a2c4-b9a12204df59
-# ╠═85faea2d-6083-4551-bce1-ae07a3b6546b
-# ╠═2c120b2c-15db-4834-af49-32a6d4971aba
-# ╠═129c8993-113f-47a6-a31c-e4c3f3c87798
-# ╟─47791d64-2517-4625-8402-c9d16a07ba3e
-# ╟─3f42716a-4b5e-4983-b934-8892045eaf37
-# ╠═17350592-8a0d-4db8-99a4-ae1f4a7dfba1
-# ╟─4d3ca7ee-220c-430c-90c0-7d0827a7c974
-# ╠═496e7221-f4c1-4088-a2f8-bf85b913ee55
-# ╟─f804125e-2c78-4637-bea8-c816fadf4b4e
-# ╠═b7e4eab6-a986-4614-bde8-becfe1baff58
-# ╟─4855b2b6-1a4b-4ded-b9fd-70315d25aa70
-# ╠═fc4dae2b-56f2-49c4-ae78-93229a5e4b44
-# ╟─ab14c401-6b81-4f92-a76a-25fdfce303c4
-# ╠═7f7167f5-b401-4535-b530-708a142fb35c
-# ╠═cc58effb-d9a8-40ae-813f-dbda4eaa0caf
-# ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
-# ╟─cba2e310-f210-4edb-b3db-358829a6abde
+# ╟─8bc02373-164c-4b32-9cb8-6d41a37e2626
+# ╟─67b1e432-1a69-4744-ba26-c4c7b55ceea4
 # ╟─e19913c8-7c3c-440f-9395-3d9ce8d8e7a7
 # ╟─fb273b04-0497-4277-9e3b-d31c4edf96cb
 # ╟─92181982-74db-4c3e-adff-1f803f637d34
 # ╟─f49cc7d6-e2e2-45c9-a30c-fa3871a1b349
 # ╟─a982c017-bd1a-4141-bebf-7385190a2ad3
-# ╟─621da80b-5cce-4f79-9cd9-90ddd76bdf61
+# ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
+# ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
+# ╟─e871f548-3764-4c16-9a27-64fd1b603b86
+# ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
+# ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
+# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
+# ╟─e41f7627-bf49-4844-a49d-51714c1ee91d
+# ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
+# ╟─cc58effb-d9a8-40ae-813f-dbda4eaa0caf
+# ╟─7f7167f5-b401-4535-b530-708a142fb35c
+# ╟─47791d64-2517-4625-8402-c9d16a07ba3e
+# ╟─3b6e1948-48e4-4b1e-8f40-d93943fe0790
+# ╟─e08cd624-11e1-4470-bdf7-344d80d91de7
+# ╟─012e4105-b5c0-4705-928f-3f2eb290acb7
+# ╟─63d27766-28c7-4b73-94f0-3218657114dd
+# ╟─b90b4326-5b47-456e-8fc7-c4091f1ed141
 # ╟─8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
 # ╟─babe0667-4ff7-4511-9a0b-40f2d84ed48a
-# ╟─bc805623-c0e6-4ff6-90a1-dff0fede62e6
 # ╟─91ed541a-05b5-400c-94cd-0544b11dcc06
 # ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
-# ╟─be561d1d-0cf6-4c89-ab15-4e733e2b712b
 # ╟─551958f8-3284-487d-a25b-01a36b1c1013
 # ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
-# ╟─5aa2d5f1-8095-472b-b083-d76ea5c75052
 # ╟─597f3d08-e464-4cf1-9978-21e07bac0799
 # ╟─544ae06d-4266-4681-aaac-abe791658410
-# ╟─ec99f80f-56c8-4085-a487-8970b4325247
-# ╠═9875fcdd-facf-4204-b628-5b0574760bb7
-# ╠═2a570046-4851-4cd3-aa90-3020667359f1
-# ╟─d5934aed-1990-45b5-a1b6-4cdfe0bde7da
-# ╠═7556409b-ee74-4f9f-9e02-d927ca1ae157
+# ╟─9875fcdd-facf-4204-b628-5b0574760bb7
+# ╟─2a570046-4851-4cd3-aa90-3020667359f1
+# ╟─7556409b-ee74-4f9f-9e02-d927ca1ae157
 # ╟─aa56b89b-74a7-44d2-83bb-717235596664
-# ╠═5407c0cd-e30c-4652-854a-11a27687b871
-# ╟─24d33c4d-e59d-49c8-8fc8-459e0637f25e
-# ╟─96e13fbe-fe1d-4c12-b535-2a39926189b7
-# ╟─0f14ab53-2da6-4287-8380-25fb428d2c4f
-# ╟─d68c208c-a234-475d-8702-55691ebf096a
-# ╟─dc7bee7b-b924-4ad9-8230-485f9c228bca
-# ╟─490e9116-fa5e-4f0f-ae4f-e15b3c2c3e87
-# ╟─363d38e6-2116-49a3-94f0-721c941180fc
-# ╟─7b9429d1-932d-4dae-98a3-4101bfdbe7ef
-# ╟─a95e1a70-fda3-46a3-919e-7149fb30655c
-# ╟─fb413fd7-557e-47fc-bbf0-f6f6440b293c
-# ╟─efa8ae03-b471-4d55-a842-ccbb09d5ff3a
-# ╠═f73a608c-7c68-4528-b220-563ad32239a8
-# ╠═fd6a733f-0f40-42a4-9482-6bb66659d070
-# ╟─b4bf2388-429e-44f7-b918-5bcadb1a523a
-# ╠═5719d0da-9f69-4305-a3e1-ca3f0ab4c9a8
-# ╠═aeb8fbb5-dc44-45bb-a90a-7e0710f25f6e
-# ╠═7287dc19-be34-4cb3-bc0e-d838f3565f8b
-# ╠═b04fa238-dfcb-446e-b731-609dd05f65e9
-# ╠═c273ab1f-437a-4b76-8b31-aff484f00a14
-# ╠═6a295c87-e06b-4129-8710-5227ca02167f
-# ╠═0c1f1e66-215f-4db2-bddb-41df060e978e
-# ╠═9830bb9d-90a4-44e9-9b70-ab9d5dfd0aab
-# ╠═32bd7000-28aa-46dc-a49d-87d6fe21b80f
-# ╟─7dc70a52-bf32-4aea-9705-a251ae08c632
-# ╠═27521a1c-c188-42aa-9c0d-384bf65ff15b
-# ╠═8d6da432-3110-41a6-aeb1-7a43c7e54d59
-# ╠═01605233-80e4-4d55-83a7-e0937db35630
-# ╟─af2e70a3-a693-488e-b6a9-369a2ec30d41
-# ╠═ce804e31-3e0e-4922-8a2b-86d4355d47cd
-# ╠═02f60db8-9a87-4178-968a-54c1bc7931c6
-# ╠═c7e8aaa2-a8ff-4268-a2f8-6eb77230b19a
-# ╠═4506c7b9-1734-4c40-83df-67cd808656ee
-# ╠═7c38ea51-c71c-4b78-8c36-a01d3c24c323
-# ╠═06c835b0-ba8f-42e8-a967-c1585db65155
-# ╠═53ab67da-3239-4c1b-bdab-a9745450f79e
-# ╠═5d1e7f02-1fbe-455c-bffb-ef0fe6fcff25
-# ╠═b788cb5a-04f4-4d39-9ce8-1a723cc313bb
-# ╠═e45776ac-6db2-4da4-aa05-7e98c4da22be
-# ╠═63b234f7-2559-47b2-b15f-1046d6a5fa0a
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
