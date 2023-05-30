@@ -12,8 +12,24 @@ using DataFrames
 using Plots
 plotly()
 
+# Maybe this belongs in Kanones
+function hacklabel(lexurn)
+	s = string(lexurn)
+	if startswith(s, "lsjx.")
+		stripped = replace(s, "lsjx." => "")
+		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
+	elseif startswith(s, "lsj.")
+		stripped = replace(s, "lsj." => "")
+		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
+		string(s, "@labelmissing")
+	else
+		string(lexurn, "@nolabel")
+	end
+end
+
+
 # 1. Corpus
-src = joinpath(pwd() |> dirname, "eagl-texts", "texts", "oeconomicus.cex")
+src = joinpath(pwd() |> dirname,  "texts", "oeconomicus.cex")
 corpus = fromcex(src, CitableTextCorpus, FileReader)
 
 # 2. Citable tokens
@@ -23,7 +39,7 @@ citabletokens = tokenize(corpus, lg)
 # 3. Analyzed tokens
 parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
 parser = dfParser(read(parsersrc))
-analyzedtokens = parsecorpus(tokenizedcorpus(corpus,lg), parser)
+analyzedtokens = parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 
 # 4. Indexing tokens and lexemes
@@ -41,24 +57,24 @@ function lexemehisto(alist)
 	lexflattened = map(at -> hacklabel(at.lexeme), flattened)
 	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
 end
-lexemehisto(analyzedtokens.analyses)
+lexhisto = lexemehisto(analyzedtokens.analyses)
 
+
+# Find unanalyzed:
+failed = filter(at -> isempty(at.analyses), analyzedtokens.analyses)
+"""Histogram of forms properly belongs in `CitableParserBuilder`."""
+function formshisto(alist)
+	flattened = map(at -> at.ctoken.passage.text, alist) |> collect
+	
+	sort!(OrderedDict(countmap(flattened)); byvalue=true, rev=true)
+end
+
+failedhisto = formshisto(failed)
 
 # 6. Label lexemes
 labeldict = Kanones.lsjdict()
 labeldictx = Kanones.lsjxdict()
 
-function hacklabel(lexurn)
-	s = string(lexurn)
-	if startswith(s, "lsjx.")
-		stripped = replace(s, "lsjx." => "")
-		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
-	elseif startswith(s, "lsj.")
-		stripped = replace(s, "lsj." => "")
-		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
-		string(s, "@labelmissing")
-	else
-		string(lexurn, "@nolabel")
-	end
-end
+
+# 7. Surveying morphology of Greek forms
 
