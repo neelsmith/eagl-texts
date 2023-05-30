@@ -13,7 +13,9 @@ using Plots
 plotly()
 
 # Maybe this belongs in Kanones
-function hacklabel(lexurn)
+
+
+function hacklabel(lexurn; labeldict = Kanones.lsjdict(), 	labeldictx = Kanones.lsjxdict())
 	s = string(lexurn)
 	if startswith(s, "lsjx.")
 		stripped = replace(s, "lsjx." => "")
@@ -71,10 +73,25 @@ end
 
 failedhisto = formshisto(failed)
 
-# 6. Label lexemes
-labeldict = Kanones.lsjdict()
-labeldictx = Kanones.lsjxdict()
-
-
 # 7. Surveying morphology of Greek forms
 
+
+# In order to countmap on strings:
+#  analyzedtokens.analyses[1].analyses[1].form |> greekForm |> label
+
+
+function morphhisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	# analyzedtokens.analyses[1].analyses[1].form
+	morphflattened = map(at -> label(greekForm(at.form)), flattened)
+	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
+
+#greekForm(analyzedtokens.analyses[1].analyses[1].form) isa GMFFiniteVerb
+
+function poshisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	# analyzedtokens.analyses[1].analyses[1].form
+	morphflattened = map(at -> string(typeof(greekForm(at.form))), flattened)
+	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
