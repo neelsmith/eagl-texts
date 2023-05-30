@@ -9,13 +9,14 @@ using StatsBase
 using OrderedCollections
 using DataFrames
 
-using Plots
-plotly()
+#using Plots
+#plotly()
 
 # Maybe this belongs in Kanones
+lsjd = Kanones.lsjdict()
+lsjxd = Kanones.lsjxdict()
 
-
-function hacklabel(lexurn; labeldict = Kanones.lsjdict(), 	labeldictx = Kanones.lsjxdict())
+function hacklabel(lexurn; labeldict = lsjd, labeldictx = lsjxd)
 	s = string(lexurn)
 	if startswith(s, "lsjx.")
 		stripped = replace(s, "lsjx." => "")
@@ -31,7 +32,7 @@ end
 
 
 # 1. Corpus
-src = joinpath(pwd() |> dirname,  "texts", "oeconomicus.cex")
+src = joinpath(pwd(),  "texts", "oeconomicus.cex")
 corpus = fromcex(src, CitableTextCorpus, FileReader)
 
 # 2. Citable tokens
@@ -94,4 +95,13 @@ function poshisto(alist)
 	# analyzedtokens.analyses[1].analyses[1].form
 	morphflattened = map(at -> string(typeof(greekForm(at.form))), flattened)
 	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
+
+
+function pnhisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
+	pns = map(at -> label(gmpPerson(greekForm(at.form))) * " " * label(gmpNumber(greekForm(at.form))), finites)
+	
+	sort!(OrderedDict(countmap(pns)); byvalue=true, rev=true)
 end

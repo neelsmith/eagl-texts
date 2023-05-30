@@ -34,17 +34,23 @@ begin
 	using PlutoUI
 end
 
+# ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
+menu = ["" => "", 
+	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1"
+]
+
 # ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 md"""*To see the Pluto environment, unhide the following cell.*"""
 
 # ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
 md"""## 1. Citable text"""
 
-# ╔═╡ 1a6d272b-705d-4643-97f1-450d53acf819
-src = joinpath(dirname(pwd()), "texts", "oeconomicus.cex")
+# ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
+md"""Choose a text: $(@bind src Select(menu))"""
 
 # ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
-corpus = fromcex(src, CitableTextCorpus, FileReader)
+corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 
 # ╔═╡ e06efadb-4dc7-463e-aad5-e6e198c72db2
 md"""## 2. Citable tokens"""
@@ -53,7 +59,7 @@ md"""## 2. Citable tokens"""
 lg = literaryGreek()
 
 # ╔═╡ 6dce46e6-b25b-49c5-a8ba-03c3953356c2
-citabletokens = tokenize(corpus, lg)
+citabletokens = isnothing(corpus) ? nothing : tokenize(corpus, lg)
 
 # ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
 md"""## 3. Analyzed tokens"""
@@ -77,7 +83,7 @@ parser = dfParser(read(parsersrc))
 
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
-analyzedlexical = parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
+analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 # ╔═╡ ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 md"""##### Example applications"""
@@ -100,20 +106,20 @@ parsedlex = parses[1].lexeme
 lexstring =  string(parsedlex)
 
 # ╔═╡ 1dada4ae-8737-465a-942a-5fc9df4be1c4
-stringsforlexeme(analyzedlexical.analyses, lexstring)
+isnothing(analyzedlexical) ? nothing : stringsforlexeme(analyzedlexical.analyses, lexstring)
 
 # ╔═╡ 5b3fbd77-d4e1-459b-9eec-a40d335d3c0e
-passagesforlexeme(analyzedlexical.analyses, lexstring)
+isnothing(analyzedlexical) ? nothing : passagesforlexeme(analyzedlexical.analyses, lexstring)
 
 # ╔═╡ d030db85-f4a0-4729-b6d5-d1a3c1ea6057
 md""" ## 4. Indexing tokens and lexemes"""
 
 # ╔═╡ bd270d84-da87-4fe5-bf33-11a6f695f71f
-tokenindex = corpusindex(corpus, lg)
+tokenindex = isnothing(corpus) ? nothing : corpusindex(corpus, lg)
 
 # ╔═╡ 7bbc9d70-5a54-4508-a27b-e49c8ece039c
 # ╠═╡ show_logs = false
-lexdict  = lexemedictionary(analyzedlexical.analyses, tokenindex)
+lexdict  =  isnothing(analyzedlexical) ? nothing :  lexemedictionary(analyzedlexical.analyses, tokenindex)
 
 # ╔═╡ 50f7c7ce-c0d3-41de-906c-424371962547
 md""" ##### Example application"""
@@ -122,19 +128,19 @@ md""" ##### Example application"""
 md"The token index is a simple index of a token's string value to a vector of CTS URNs:"
 
 # ╔═╡ c378543b-5274-4d95-a758-d8961955f7f5
-tokenindex[exampleform]
+isnothing(tokenindex) ? nothing : tokenindex[exampleform]
 
 # ╔═╡ dc373828-65cd-4585-a2c4-b9a12204df59
 md"""The lexical index is a two-tier index:  the string value of the lexeme URN yields a token index (that is, an index of token strings to CTS URNs."""
 
 # ╔═╡ 85faea2d-6083-4551-bce1-ae07a3b6546b
-lexdict[lexstring]
+isnothing(lexdict) ? nothing : lexdict[lexstring]
 
 # ╔═╡ 2c120b2c-15db-4834-af49-32a6d4971aba
-lexdict[lexstring][exampleform]
+isnothing(lexdict) ? nothing : lexdict[lexstring][exampleform]
 
 # ╔═╡ 129c8993-113f-47a6-a31c-e4c3f3c87798
-tokenindex[exampleform] == lexdict[lexstring][exampleform]
+isnothing(lexdict) ? nothing :  tokenindex[exampleform] == lexdict[lexstring][exampleform]
 
 # ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
 md""" ## 5. Surveying morphology of a corpus: tokens and lexemes"""
@@ -143,7 +149,7 @@ md""" ## 5. Surveying morphology of a corpus: tokens and lexemes"""
 md"""### Histograms of tokens and lexemes"""
 
 # ╔═╡ 17350592-8a0d-4db8-99a4-ae1f4a7dfba1
-histo = corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
+histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
 
 # ╔═╡ 4d3ca7ee-220c-430c-90c0-7d0827a7c974
 """Histogram of lexemes properly belongs in `CitableParserBuilder`."""
@@ -157,8 +163,7 @@ end
 md""" #### Find unanalyzed"""
 
 # ╔═╡ b7e4eab6-a986-4614-bde8-becfe1baff58
-failed = filter(at -> isempty(at.analyses), analyzedlexical.analyses)
-
+failed = isnothing(analyzedlexical) ? nothing : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
 
 # ╔═╡ 4855b2b6-1a4b-4ded-b9fd-70315d25aa70
 """Histogram of forms properly belongs in `CitableParserBuilder`."""
@@ -169,7 +174,7 @@ function formshisto(alist)
 end
 
 # ╔═╡ fc4dae2b-56f2-49c4-ae78-93229a5e4b44
-formshisto(failed)
+isnothing(failed) ? nothing :  formshisto(failed)
 
 # ╔═╡ ab14c401-6b81-4f92-a76a-25fdfce303c4
 md""" ## 6. Label lexemes"""
@@ -198,7 +203,7 @@ function hacklabel(lexurn)
 end
 
 # ╔═╡ 496e7221-f4c1-4088-a2f8-bf85b913ee55
-lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
+isnothing(analyzedlexical) ? nothing : lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
 
 # ╔═╡ cba2e310-f210-4edb-b3db-358829a6abde
 md""" ### 7. Surveying morphology of Greek corpus: forms"""
@@ -206,13 +211,89 @@ md""" ### 7. Surveying morphology of Greek corpus: forms"""
 # ╔═╡ 4d3ffe24-75b1-41aa-8e08-b4e38fedf106
 md"""Forms to survey:
 
-- "part of speech" (analytical type)
-- all individual forms
-- verb analytical types (finite, participle, infinitive)
-- person-number combos of finite forms
-- tense-mood combos of finite forms
-- voice?
+- [x] "part of speech" (analytical type)
+- [x] all individual forms
+- [ ] verb analytical types (finite, participle, infinitive)
+- [x] person-number combos of finite forms
+- [ ] tense-mood combos of finite forms
+- [ ] voice?
 """
+
+# ╔═╡ 621da80b-5cce-4f79-9cd9-90ddd76bdf61
+md"""#### "Parts of speech" (analytical type)"""
+
+# ╔═╡ 8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
+"Compute histogram of morphological forms."
+function poshisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	# analyzedtokens.analyses[1].analyses[1].form
+	morphflattened = map(at -> string(typeof(greekForm(at.form))), flattened)
+	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ babe0667-4ff7-4511-9a0b-40f2d84ed48a
+posh = isnothing(analyzedlexical) ? nothing : poshisto(analyzedlexical)
+
+# ╔═╡ e19913c8-7c3c-440f-9395-3d9ce8d8e7a7
+begin
+	if isnothing(posh)
+	else
+	poslabels  = keys(posh) |> collect
+	poshvals = map(k -> posh[k], poslabels)
+	bar(poslabels, poshvals, title = "'Part of speech' (analytical type)", xrotation = -45, xticks = :all, legend = false)
+	end
+end
+
+# ╔═╡ bc805623-c0e6-4ff6-90a1-dff0fede62e6
+md"""#### All individual forms"""
+
+# ╔═╡ 91ed541a-05b5-400c-94cd-0544b11dcc06
+"Compute histogram of morphological forms."
+function morphhisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	# analyzedtokens.analyses[1].analyses[1].form
+	morphflattened = map(at -> label(greekForm(at.form)), flattened)
+	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ 17f35d7a-ebb7-45d4-877e-6665e9e3290e
+mh = isnothing(analyzedlexical) ? nothing : morphhisto(analyzedlexical)
+
+# ╔═╡ 93753b0d-c9fe-4dbb-a9bc-853b7f193e22
+begin
+	if isnothing(mh)
+	else
+	mhlabels  = keys(mh) |> collect
+	mhvals = map(k -> mh[k], mhlabels)
+	bar(mhlabels, mhvals, title = "Morphological forms", xrotation = -45, xticks = :all, legend = false)
+	end
+end
+
+# ╔═╡ be561d1d-0cf6-4c89-ab15-4e733e2b712b
+md""" #### Person-number of finite verbs"""
+
+# ╔═╡ 551958f8-3284-487d-a25b-01a36b1c1013
+"Compute histogram of person-number combinations for finite verbs."
+function pnhisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
+	pns = map(at -> label(gmpPerson(greekForm(at.form))) * " " * label(gmpNumber(greekForm(at.form))), finites)
+	
+	sort!(OrderedDict(countmap(pns)); byvalue=true, rev=true)
+end
+
+# ╔═╡ d64fe501-7e29-4e03-ad69-eb78891e4227
+pnh = isnothing(analyzedlexical) ? nothing : pnhisto(analyzedlexical)
+
+# ╔═╡ fb273b04-0497-4277-9e3b-d31c4edf96cb
+begin
+	if isnothing(pnh)
+	else
+	pnhlabels  = keys(pnh) |> collect
+	pnhvals = map(k -> pnh[k], pnhlabels)
+	bar(pnhlabels, pnhvals, title = "Person-number combinations", xrotation = -45, xticks = :all, legend = false)
+	end
+end
 
 # ╔═╡ 5407c0cd-e30c-4652-854a-11a27687b871
 html"""
@@ -1752,10 +1833,11 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
+# ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 # ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
-# ╟─1a6d272b-705d-4643-97f1-450d53acf819
+# ╟─92a2622f-5c83-4341-ba8d-dc864dd3c556
 # ╠═b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─e06efadb-4dc7-463e-aad5-e6e198c72db2
 # ╠═66cef781-a849-4ff5-bc48-66d7dcd88c61
@@ -1791,14 +1873,26 @@ version = "1.4.1+0"
 # ╠═496e7221-f4c1-4088-a2f8-bf85b913ee55
 # ╟─f804125e-2c78-4637-bea8-c816fadf4b4e
 # ╠═b7e4eab6-a986-4614-bde8-becfe1baff58
-# ╠═4855b2b6-1a4b-4ded-b9fd-70315d25aa70
+# ╟─4855b2b6-1a4b-4ded-b9fd-70315d25aa70
 # ╠═fc4dae2b-56f2-49c4-ae78-93229a5e4b44
 # ╟─ab14c401-6b81-4f92-a76a-25fdfce303c4
 # ╠═7f7167f5-b401-4535-b530-708a142fb35c
 # ╠═cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
 # ╟─cba2e310-f210-4edb-b3db-358829a6abde
-# ╟─4d3ffe24-75b1-41aa-8e08-b4e38fedf106
+# ╠═4d3ffe24-75b1-41aa-8e08-b4e38fedf106
+# ╟─e19913c8-7c3c-440f-9395-3d9ce8d8e7a7
+# ╟─fb273b04-0497-4277-9e3b-d31c4edf96cb
+# ╟─93753b0d-c9fe-4dbb-a9bc-853b7f193e22
+# ╟─621da80b-5cce-4f79-9cd9-90ddd76bdf61
+# ╟─8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
+# ╟─babe0667-4ff7-4511-9a0b-40f2d84ed48a
+# ╟─bc805623-c0e6-4ff6-90a1-dff0fede62e6
+# ╟─91ed541a-05b5-400c-94cd-0544b11dcc06
+# ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
+# ╟─be561d1d-0cf6-4c89-ab15-4e733e2b712b
+# ╟─551958f8-3284-487d-a25b-01a36b1c1013
+# ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
 # ╠═5407c0cd-e30c-4652-854a-11a27687b871
 # ╟─24d33c4d-e59d-49c8-8fc8-459e0637f25e
 # ╟─96e13fbe-fe1d-4c12-b535-2a39926189b7
