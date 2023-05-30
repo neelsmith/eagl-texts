@@ -135,6 +135,16 @@ md"""### Histograms of tokens and lexemes"""
 # ╔═╡ 17350592-8a0d-4db8-99a4-ae1f4a7dfba1
 histo = corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
 
+# ╔═╡ ab14c401-6b81-4f92-a76a-25fdfce303c4
+md""" ## 6. Label lexemes"""
+
+# ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
+# ╠═╡ show_logs = false
+labeldictx = Kanones.lsjxdict()
+
+# ╔═╡ cba2e310-f210-4edb-b3db-358829a6abde
+
+
 # ╔═╡ 5407c0cd-e30c-4652-854a-11a27687b871
 html"""
 <br/>
@@ -207,9 +217,31 @@ end
 # ╔═╡ efa8ae03-b471-4d55-a842-ccbb09d5ff3a
 lexx = pulllexemes(parser)
 
-# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
-# ╠═╡ show_logs = false
- labeldict = Kanones.lsjdict()
+# ╔═╡ ec1037e5-33db-46f5-b7a9-93e23450ca11
+function hacklabel(lexurn)
+	s = string(lexurn)
+	if startswith(s, "lsjx.")
+		stripped = replace(s, "lsjx." => "")
+		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
+	elseif startswith(s, "lsj.")
+		stripped = replace(s, "lsj." => "")
+		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
+		string(s, "@labelmissing")
+	else
+		string(lexurn, "@nolabel")
+	end
+end
+
+# ╔═╡ 4d3ca7ee-220c-430c-90c0-7d0827a7c974
+"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
+function lexemehisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	lexflattened = map(at -> hacklabel(at.lexeme), flattened)
+	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ 496e7221-f4c1-4088-a2f8-bf85b913ee55
+lexemehisto(analyzedtokens.analyses)
 
 # ╔═╡ fd6a733f-0f40-42a4-9482-6bb66659d070
 begin
@@ -291,15 +323,11 @@ c1analyses |> length
 # ╔═╡ af2e70a3-a693-488e-b6a9-369a2ec30d41
 md""" ## Surveying analyses"""
 
+# ╔═╡ ce804e31-3e0e-4922-8a2b-86d4355d47cd
+lexemehisto(analyzedtokens.analyses)
+
 # ╔═╡ 02f60db8-9a87-4178-968a-54c1bc7931c6
-function surveylexemes(alist, dict)
-	flattened = alist |> Iterators.flatten |> collect
-	flatlabels = map(a -> lexlabel(a.lexeme, dict), flattened)
-	#lexemelist = map(a -> replace(string(a.lexeme), "lsj." => ""), flattened)
-	#string(length(flatlabels) , ":" , length(lexemelist))
-	#flatlabels
-	sort!(OrderedDict(countmap(flatlabels)); byvalue=true, rev=true)
-end
+
 
 # ╔═╡ c7e8aaa2-a8ff-4268-a2f8-6eb77230b19a
 function surveyforms(alist)
@@ -335,6 +363,17 @@ typeof(xs1)
 
 # ╔═╡ 63b234f7-2559-47b2-b15f-1046d6a5fa0a
 surveyforms(analyses1)
+
+# ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
+# ╠═╡ show_logs = false
+ labeldict = Kanones.lsjdict()
+
+# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
+# ╠═╡ show_logs = false
+# ╠═╡ disabled = true
+#=╠═╡
+ labeldict = Kanones.lsjdict()
+  ╠═╡ =#
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1706,8 +1745,15 @@ version = "1.4.1+0"
 # ╠═129c8993-113f-47a6-a31c-e4c3f3c87798
 # ╟─47791d64-2517-4625-8402-c9d16a07ba3e
 # ╟─3f42716a-4b5e-4983-b934-8892045eaf37
-# ╟─17350592-8a0d-4db8-99a4-ae1f4a7dfba1
-# ╟─5407c0cd-e30c-4652-854a-11a27687b871
+# ╠═17350592-8a0d-4db8-99a4-ae1f4a7dfba1
+# ╟─4d3ca7ee-220c-430c-90c0-7d0827a7c974
+# ╠═496e7221-f4c1-4088-a2f8-bf85b913ee55
+# ╟─ab14c401-6b81-4f92-a76a-25fdfce303c4
+# ╠═7f7167f5-b401-4535-b530-708a142fb35c
+# ╠═cc58effb-d9a8-40ae-813f-dbda4eaa0caf
+# ╠═ec1037e5-33db-46f5-b7a9-93e23450ca11
+# ╠═cba2e310-f210-4edb-b3db-358829a6abde
+# ╠═5407c0cd-e30c-4652-854a-11a27687b871
 # ╟─24d33c4d-e59d-49c8-8fc8-459e0637f25e
 # ╟─96e13fbe-fe1d-4c12-b535-2a39926189b7
 # ╟─0f14ab53-2da6-4287-8380-25fb428d2c4f
@@ -1736,6 +1782,7 @@ version = "1.4.1+0"
 # ╠═8d6da432-3110-41a6-aeb1-7a43c7e54d59
 # ╠═01605233-80e4-4d55-83a7-e0937db35630
 # ╟─af2e70a3-a693-488e-b6a9-369a2ec30d41
+# ╠═ce804e31-3e0e-4922-8a2b-86d4355d47cd
 # ╠═02f60db8-9a87-4178-968a-54c1bc7931c6
 # ╠═c7e8aaa2-a8ff-4268-a2f8-6eb77230b19a
 # ╠═4506c7b9-1734-4c40-83df-67cd808656ee
