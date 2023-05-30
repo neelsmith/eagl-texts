@@ -35,7 +35,30 @@ lexdict  = lexemedictionary(analyzedtokens.analyses, tokenindex)
 histo = corpus_histo(corpus, lg, filterby = LexicalToken())#, normalizer =  knormal)
 
 
+"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
+function lexemehisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	lexflattened = map(at -> hacklabel(at.lexeme), flattened)
+	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
+end
+lexemehisto(analyzedtokens.analyses)
+
 
 # 6. Label lexemes
 labeldict = Kanones.lsjdict()
 labeldictx = Kanones.lsjxdict()
+
+function hacklabel(lexurn)
+	s = string(lexurn)
+	if startswith(s, "lsjx.")
+		stripped = replace(s, "lsjx." => "")
+		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
+	elseif startswith(s, "lsj.")
+		stripped = replace(s, "lsj." => "")
+		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
+		string(s, "@labelmissing")
+	else
+		string(lexurn, "@nolabel")
+	end
+end
+
