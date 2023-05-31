@@ -424,13 +424,6 @@ end
 # ╔═╡ efa8ae03-b471-4d55-a842-ccbb09d5ff3a
 lexx = pulllexemes(parser)
 
-# ╔═╡ f73a608c-7c68-4528-b220-563ad32239a8
-# ╠═╡ show_logs = false
-# ╠═╡ disabled = true
-#=╠═╡
- labeldict = Kanones.lsjdict()
-  ╠═╡ =#
-
 # ╔═╡ fd6a733f-0f40-42a4-9482-6bb66659d070
 begin
 	labels = []
@@ -1902,7 +1895,7 @@ version = "1.4.1+0"
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
 # ╟─188a3b26-90bd-4764-882b-cdc43757b991
 # ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
+# ╠═fdb04419-a763-498b-a28f-4e899b8bb5e2
 # ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╟─ab586cf9-3cc0-456a-9ff1-c8650184d0fb
@@ -1955,10 +1948,10 @@ version = "1.4.1+0"
 # ╟─597f3d08-e464-4cf1-9978-21e07bac0799
 # ╟─544ae06d-4266-4681-aaac-abe791658410
 # ╟─ec99f80f-56c8-4085-a487-8970b4325247
-# ╠═9875fcdd-facf-4204-b628-5b0574760bb7
+# ╟─9875fcdd-facf-4204-b628-5b0574760bb7
 # ╠═2a570046-4851-4cd3-aa90-3020667359f1
 # ╟─d5934aed-1990-45b5-a1b6-4cdfe0bde7da
-# ╠═7556409b-ee74-4f9f-9e02-d927ca1ae157
+# ╟─7556409b-ee74-4f9f-9e02-d927ca1ae157
 # ╟─aa56b89b-74a7-44d2-83bb-717235596664
 # ╠═5407c0cd-e30c-4652-854a-11a27687b871
 # ╟─24d33c4d-e59d-49c8-8fc8-459e0637f25e
