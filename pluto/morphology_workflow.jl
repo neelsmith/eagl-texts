@@ -15,12 +15,15 @@ macro bind(def, element)
 end
 
 # ╔═╡ 5b0aef6d-f725-4bb3-8145-883d2b1a47df
+# ╠═╡ show_logs = false
 begin
 	using CitableBase, CitableCorpus
 	using Orthography, PolytonicGreek
 	using CitableParserBuilder, Kanones
 
 	using DataFrames
+	using StatsBase
+	using OrderedCollections
 	using Downloads
 	using PlutoUI
 end
@@ -31,20 +34,57 @@ md"""*To see the Julia environment, unhide the following cell*."""
 # ╔═╡ 1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
 md"""## Morphology workflow"""
 
+# ╔═╡ c146e831-4b21-4a7c-80c9-a8c31f7523e4
+md"""### Need attention"""
+
+# ╔═╡ e9fb8266-5dbe-426a-89bc-dfbf3a981819
+md"Lexemes in `lsjx` namespace:"
+
+# ╔═╡ f6a1b581-aa74-4279-b986-d05fe1014af0
+md""" ### OK"""
+
 # ╔═╡ c156adec-f11f-400d-bab5-e482783aa821
 html"""
 
 <br/><br/><br/><br/><br/><br/><br/><br/><br/>
 """
 
+# ╔═╡ 310801c3-9f41-45ed-8691-d0f01990113e
+# ╠═╡ show_logs = false
+labeldictx = Kanones.lsjxdict()
+
+# ╔═╡ dba3dcfc-9b7e-415d-b0da-2b2e0cfc010a
+# ╠═╡ show_logs = false
+ labeldict = Kanones.lsjdict()
+
+# ╔═╡ 77d6d8d9-a495-4132-a4e7-6f1328fdf241
+"""Histogram of lexemes properly belongs in `CitableParserBuilder`."""
+function lexemehisto(alist; labeller = string)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	lexflattened = map(at -> labeller(at.lexeme), flattened)
+	sort!(OrderedDict(countmap(lexflattened)); byvalue=true, rev=true)
+end
+
+# ╔═╡ 561e9b61-bffb-468b-8c9b-971aacad56fa
+function hacklabel(lexurn)
+	s = string(lexurn)
+	if startswith(s, "lsjx.")
+		stripped = replace(s, "lsjx." => "")
+		haskey(labeldictx, stripped) ? string(s, "@", labeldictx[stripped]) : string(s, "@labelmissing")
+	elseif startswith(s, "lsj.")
+		stripped = replace(s, "lsj." => "")
+		haskey(labeldict, stripped) ? string(s, "@", labeldict[stripped]) : 
+		string(s, "@labelmissing")
+	else
+		string(lexurn, "@nolabel")
+	end
+end
+
 # ╔═╡ 104512af-c27e-47a3-8f03-a4ac7e9b5b50
 md"""---
 
 > Bunch of settings and background work
 """
-
-# ╔═╡ 6774c263-bb15-4384-83ca-016a7b4544ea
-fromcex("/Users/nsmith/Desktop/greek-work/eagl-texts/texts/h2.cex", CitableTextCorpus, FileReader)
 
 # ╔═╡ f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 md"""Menu of texts available for analysis:"""
@@ -82,7 +122,7 @@ parser = if parserchoice == "local"
 	dfParser(read(localfile))
 else
 	parserurl = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	dfParser(Downloads.download(parsersrc))
+	dfParser(Downloads.download(parserurl))
 end
 
 # ╔═╡ b99a1df3-6826-484d-9e0d-dacc45ec3869
@@ -98,6 +138,28 @@ histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = Le
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
 
+# ╔═╡ e2fca126-18d6-4c73-bd7a-55ade28d2af2
+xurns = begin
+	flattened = map(at -> at.analyses, analyzedlexical) |> Iterators.flatten |> collect
+	lexlist = map(a -> a.lexeme, flattened)
+	filter(lex -> startswith(string(lex), "lsjx."), lexlist) .|> hacklabel
+end
+
+# ╔═╡ 2acdc674-8ae3-46c6-9411-d1e76b63720e
+lexhist = lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
+
+# ╔═╡ 9d6c3db5-9427-4c55-b712-6aa381db5368
+
+if isempty(xurns)
+	md"*No URNs in `lsjx` namespace*."
+else
+	lsjxfreqs = filter(pr -> pr[1] in xurns, collect(lexhist))
+	join(map(pr -> string("1. ", pr[1], " (", pr[2], " occurrence(s))"), lsjxfreqs), "\n") |> Markdown.parse
+end
+
+# ╔═╡ ac158965-896c-4ad6-9067-52f72f45a41e
+lexcountcoll = lexhist |> collect
+
 # ╔═╡ 2e8afe7a-6001-4912-ada5-672346a0fe00
 failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
 
@@ -112,6 +174,17 @@ isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexic
 
 # ╔═╡ f61dfc7a-826f-4241-bffd-9e17153cdeb2
 maxn = isempty(failedstrs) ? 0 : length(failedfreqs)
+
+# ╔═╡ ca394b3f-89f2-4121-8fff-970cdbf399ef
+maxn > 0 ? md"""*Show `n` most frequent successes* where *`n` =* $(@bind goodn Slider(1:length(lexcountcoll); default = 5, show_value=true))""" : md""
+
+
+# ╔═╡ c31fc626-951c-49a2-ad56-1d2bbfbe207d
+begin
+		goodlns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), lexcountcoll[1:goodn])
+		Markdown.parse(join(goodlns, "\n"))
+end
+
 
 # ╔═╡ 2b789e11-4f6d-428b-91f4-6cbf92e7500f
 defaultn = maxn > 10 ? 10 : maxn
@@ -138,9 +211,11 @@ CitableParserBuilder = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 CitableBase = "~10.2.4"
@@ -148,9 +223,11 @@ CitableCorpus = "~0.13.3"
 CitableParserBuilder = "~0.24.0"
 DataFrames = "~1.5.0"
 Kanones = "~0.16.4"
+OrderedCollections = "~1.6.0"
 Orthography = "~0.21.1"
 PlutoUI = "~0.7.51"
 PolytonicGreek = "~0.18.2"
+StatsBase = "~0.33.21"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -159,7 +236,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "b65837ff4e87709287c4356393197409072d73ad"
+project_hash = "876fd8a5a8206e12f8efd5b47bd4333768fb20f9"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -864,21 +941,33 @@ version = "17.4.0+0"
 # ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
+# ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
 # ╟─e4409e78-d0c3-4655-97fd-483bb48ad339
 # ╟─14866e7c-9298-4c8c-9620-54e988875466
+# ╟─e9fb8266-5dbe-426a-89bc-dfbf3a981819
+# ╟─9d6c3db5-9427-4c55-b712-6aa381db5368
+# ╟─f6a1b581-aa74-4279-b986-d05fe1014af0
+# ╟─ca394b3f-89f2-4121-8fff-970cdbf399ef
+# ╟─c31fc626-951c-49a2-ad56-1d2bbfbe207d
 # ╟─c156adec-f11f-400d-bab5-e482783aa821
+# ╟─e2fca126-18d6-4c73-bd7a-55ade28d2af2
+# ╟─2acdc674-8ae3-46c6-9411-d1e76b63720e
+# ╠═ac158965-896c-4ad6-9067-52f72f45a41e
+# ╟─310801c3-9f41-45ed-8691-d0f01990113e
+# ╟─dba3dcfc-9b7e-415d-b0da-2b2e0cfc010a
+# ╟─77d6d8d9-a495-4132-a4e7-6f1328fdf241
+# ╟─561e9b61-bffb-468b-8c9b-971aacad56fa
 # ╟─104512af-c27e-47a3-8f03-a4ac7e9b5b50
-# ╠═6774c263-bb15-4384-83ca-016a7b4544ea
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
 # ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
 # ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
-# ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
-# ╟─d22ed420-bfcc-48be-a77d-6b180cc45b53
+# ╠═d86b185e-17c6-4ec9-80da-dda0c5d8b24d
+# ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
-# ╟─dcaca2e5-38c0-4e7c-ad06-12f9a4936824
+# ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
 # ╠═2e8afe7a-6001-4912-ada5-672346a0fe00
 # ╟─231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
 # ╠═eaa833c1-44e0-46da-89d4-11841783e142

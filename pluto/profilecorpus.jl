@@ -55,8 +55,10 @@ md"""> Parser, settings, labelling utilities"""
 
 # ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
 menu = ["" => "", 
+	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
 	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
-	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1"
+	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus",
+	
 ]
 
 # ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
@@ -1633,7 +1635,7 @@ version = "1.4.1+0"
 # ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
 # ╟─551958f8-3284-487d-a25b-01a36b1c1013
 # ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
-# ╟─597f3d08-e464-4cf1-9978-21e07bac0799
+# ╠═597f3d08-e464-4cf1-9978-21e07bac0799
 # ╟─544ae06d-4266-4681-aaac-abe791658410
 # ╟─9875fcdd-facf-4204-b628-5b0574760bb7
 # ╟─2a570046-4851-4cd3-aa90-3020667359f1
