@@ -43,13 +43,17 @@ md"""---
 > Bunch of settings and background work
 """
 
+# ╔═╡ 6774c263-bb15-4384-83ca-016a7b4544ea
+fromcex("/Users/nsmith/Desktop/greek-work/eagl-texts/texts/h2.cex", CitableTextCorpus, FileReader)
+
 # ╔═╡ f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 md"""Menu of texts available for analysis:"""
 
 # ╔═╡ aac8f110-a052-4052-a726-701d4c7e0cda
 menu = ["" => "", 
 	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
-	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus"
+	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus"
 	
 ]
 
@@ -101,24 +105,28 @@ failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), an
 failedstrs = map(psg -> psg.ctoken.passage.text, failed)
 
 # ╔═╡ eaa833c1-44e0-46da-89d4-11841783e142
-failedfreqs = filter(pr -> pr[1] in failedstrs, collect(histo))
+failedfreqs = isempty(failedstrs) ? nothing : filter(pr -> pr[1] in failedstrs, collect(histo))
 
 # ╔═╡ 89fa448a-250c-4a26-aad1-68d036627f5b
 isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  Failed to analyze **$(length(failedfreqs))** forms."
 
 # ╔═╡ f61dfc7a-826f-4241-bffd-9e17153cdeb2
-maxn = length(failedfreqs)
+maxn = isempty(failedstrs) ? 0 : length(failedfreqs)
 
 # ╔═╡ 2b789e11-4f6d-428b-91f4-6cbf92e7500f
 defaultn = maxn > 10 ? 10 : maxn
 
 # ╔═╡ e4409e78-d0c3-4655-97fd-483bb48ad339
-md"""*Show `n` most frequent failures* where *`n` =* $(@bind n Slider(1:length(failedfreqs); default=defaultn, show_value=true))"""
+maxn > 0 ? md"""*Show `n` most frequent failures* where *`n` =* $(@bind n Slider(1:maxn; default=defaultn, show_value=true))""" : md""
 
 # ╔═╡ 14866e7c-9298-4c8c-9620-54e988875466
 begin
-	lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), failedfreqs[1:n])
-	Markdown.parse(join(lns, "\n"))
+	if maxn > 0
+		lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), failedfreqs[1:n])
+		Markdown.parse(join(lns, "\n"))
+	else
+		nothing
+	end
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -860,6 +868,7 @@ version = "17.4.0+0"
 # ╟─14866e7c-9298-4c8c-9620-54e988875466
 # ╟─c156adec-f11f-400d-bab5-e482783aa821
 # ╟─104512af-c27e-47a3-8f03-a4ac7e9b5b50
+# ╠═6774c263-bb15-4384-83ca-016a7b4544ea
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
 # ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
