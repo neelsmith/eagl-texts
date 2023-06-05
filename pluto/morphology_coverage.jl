@@ -34,13 +34,10 @@ end
 md"""*To see the Julia environment, unhide the following cell*."""
 
 # ╔═╡ 1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
-md"""## Morphology workflow"""
+md"""## Morphologỵ: coverage"""
 
 # ╔═╡ c146e831-4b21-4a7c-80c9-a8c31f7523e4
 md"""### Need attention"""
-
-# ╔═╡ a40eaf57-c5c2-4994-830d-271c9e4ba71e
-md""">  ->> **CHANGE TO FILTER BY NUMBER OF OCCURRENCES**"""
 
 # ╔═╡ e9fb8266-5dbe-426a-89bc-dfbf3a981819
 md"Lexemes in `lsjx` namespace:"
@@ -105,19 +102,19 @@ menu = ["" => "",
 
 # ╔═╡ e1216411-d56e-4d12-ab2f-0ef58e387333
 parsermenu = [
-	"online" => "Online core parser",
-	"local" => "Local copy of comprehensive parser (in personal Dropbox)"
+	"core" => "Core parser (manually validated entries)",
+	"all" => "Comprehensive parser (includes inferred entries)"
 	
 ]
 
 # ╔═╡ 771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 md""" *Text*: $(@bind src Select(menu)) *Parser to use*: $(@bind parserchoice Select(parsermenu))"""
 
-# ╔═╡ cb543bcb-0882-44d8-bc2d-d6570e259647
-ortho = literaryGreek()
-
 # ╔═╡ 98d5b50b-7892-42c6-81d0-5e84379d4a0d
 md"> Text and parser"
+
+# ╔═╡ cb543bcb-0882-44d8-bc2d-d6570e259647
+ortho = literaryGreek()
 
 # ╔═╡ d86b185e-17c6-4ec9-80da-dda0c5d8b24d
 corpus = if isempty(src) 
@@ -132,15 +129,12 @@ else
 	fromcex(src, CitableTextCorpus, FileReader)
 end
 
+# ╔═╡ 1fdde7ba-2ccb-4ac9-a855-d59974ed3831
+parserurl = parserchoice == "all" ? "http://shot.holycross.edu/morphology/literarygreek-current.csv" : "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+
 # ╔═╡ d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╠═╡ show_logs = false
-parser = if parserchoice == "local"
-	localfile =  "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
-	dfParser(read(localfile))
-else
-	parserurl = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	dfParser(Downloads.download(parserurl))
-end
+parser = dfParser(Downloads.download(parserurl))
 
 # ╔═╡ b99a1df3-6826-484d-9e0d-dacc45ec3869
 isnothing(corpus) ? md"**Text**: *none selected*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*." :  md"**Text**: *citable corpus with $(length(corpus)) passages*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*."
@@ -190,11 +184,41 @@ failedstrs = map(psg -> psg.ctoken.passage.text, failed)
 # ╔═╡ eaa833c1-44e0-46da-89d4-11841783e142
 failedfreqs = isempty(failedstrs) ? nothing : filter(pr -> pr[1] in failedstrs, collect(histo))
 
+# ╔═╡ bbb97994-15e6-44bb-82a7-072230e24f42
+biggestfail = map(pr -> pr[2], failedfreqs) |> maximum
+
+# ╔═╡ 04382e55-f26e-4981-bdb8-17feafdc312f
+totalbad = map(pr -> pr[2], failedfreqs) |> sum
+
 # ╔═╡ 89fa448a-250c-4a26-aad1-68d036627f5b
-isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  Failed to analyze **$(length(failedfreqs))** forms."
+isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  
+
+Failed on **$(length(failedfreqs))** forms occurring a total of **$(totalbad)** times."
+
+# ╔═╡ c2fc6c97-8165-4579-baa6-a7a92d84b9fb
+cvg = (length(analyzedlexical) - totalbad) / length(analyzedlexical) * 100 |> round
+
+# ╔═╡ b3733f65-aa78-485f-82f7-01eff55cc7dd
+md"""Coverage: **$(cvg)**%"""
 
 # ╔═╡ f61dfc7a-826f-4241-bffd-9e17153cdeb2
 maxn = isempty(failedstrs) ? 0 : length(failedfreqs)
+
+# ╔═╡ e4409e78-d0c3-4655-97fd-483bb48ad339
+maxn > 0 ? md"""*Show list of failures occuring `n` or more times where`n` =* $(@bind n Slider(1:biggestfail; default=biggestfail, show_value=true))""" : md""
+
+# ╔═╡ b2f5b731-e723-43e3-b656-8c511b723722
+begin
+	candidates = filter(pr -> pr[2] >= n, failedfreqs)
+	lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), candidates)	
+
+	msg = """**$(length(lns))** failures occur **$(n)** or more times:
+
+
+	$(join(lns, "\n"))
+	"""
+	Markdown.parse(msg)
+end
 
 # ╔═╡ ca394b3f-89f2-4121-8fff-970cdbf399ef
 maxn > 0 ? md"""*Show `n` most frequent successes* where *`n` =* $(@bind goodn Slider(1:length(lexcountcoll); default = 5, show_value=true))""" : md""
@@ -213,19 +237,6 @@ end
 
 # ╔═╡ 2b789e11-4f6d-428b-91f4-6cbf92e7500f
 defaultn = maxn > 10 ? 10 : maxn
-
-# ╔═╡ e4409e78-d0c3-4655-97fd-483bb48ad339
-maxn > 0 ? md"""*Show `n` most frequent failures* where *`n` =* $(@bind n Slider(1:maxn; default=defaultn, show_value=true))""" : md""
-
-# ╔═╡ 14866e7c-9298-4c8c-9620-54e988875466
-begin
-	if maxn > 0
-		lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), failedfreqs[1:n])
-		Markdown.parse(join(lns, "\n"))
-	else
-		nothing
-	end
-end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1647,10 +1658,12 @@ version = "17.4.0+0"
 # ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
+# ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
+# ╟─c2fc6c97-8165-4579-baa6-a7a92d84b9fb
 # ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
-# ╟─a40eaf57-c5c2-4994-830d-271c9e4ba71e
 # ╟─e4409e78-d0c3-4655-97fd-483bb48ad339
-# ╟─14866e7c-9298-4c8c-9620-54e988875466
+# ╟─b2f5b731-e723-43e3-b656-8c511b723722
+# ╟─bbb97994-15e6-44bb-82a7-072230e24f42
 # ╟─e9fb8266-5dbe-426a-89bc-dfbf3a981819
 # ╟─9d6c3db5-9427-4c55-b712-6aa381db5368
 # ╟─f6a1b581-aa74-4279-b986-d05fe1014af0
@@ -1668,16 +1681,18 @@ version = "17.4.0+0"
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
 # ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
-# ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
+# ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
-# ╟─d22ed420-bfcc-48be-a77d-6b180cc45b53
+# ╟─1fdde7ba-2ccb-4ac9-a855-d59974ed3831
+# ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 # ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
 # ╠═2e8afe7a-6001-4912-ada5-672346a0fe00
-# ╟─231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
+# ╠═231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
 # ╠═eaa833c1-44e0-46da-89d4-11841783e142
+# ╠═04382e55-f26e-4981-bdb8-17feafdc312f
 # ╠═f61dfc7a-826f-4241-bffd-9e17153cdeb2
 # ╠═2b789e11-4f6d-428b-91f4-6cbf92e7500f
 # ╟─00000000-0000-0000-0000-000000000001
