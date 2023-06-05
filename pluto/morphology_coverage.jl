@@ -212,7 +212,9 @@ begin
 	candidates = filter(pr -> pr[2] >= n, failedfreqs)
 	lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), candidates)	
 
-	msg = """**$(length(lns))** failures occur **$(n)** or more times:
+	abovethresh = map(pr -> pr[2], candidates) |> sum
+	threshcvg = (abovethresh) / length(analyzedlexical) * 100
+	msg = """**$(length(lns))** failures occur **$(n)** or more times (**$(abovethresh)** occurrences, or **$(threshcvg)**%)
 
 
 	$(join(lns, "\n"))
@@ -1658,11 +1660,11 @@ version = "17.4.0+0"
 # ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
-# ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
-# ╟─c2fc6c97-8165-4579-baa6-a7a92d84b9fb
+# ╠═b3733f65-aa78-485f-82f7-01eff55cc7dd
+# ╠═c2fc6c97-8165-4579-baa6-a7a92d84b9fb
 # ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
 # ╟─e4409e78-d0c3-4655-97fd-483bb48ad339
-# ╟─b2f5b731-e723-43e3-b656-8c511b723722
+# ╠═b2f5b731-e723-43e3-b656-8c511b723722
 # ╟─bbb97994-15e6-44bb-82a7-072230e24f42
 # ╟─e9fb8266-5dbe-426a-89bc-dfbf3a981819
 # ╟─9d6c3db5-9427-4c55-b712-6aa381db5368
