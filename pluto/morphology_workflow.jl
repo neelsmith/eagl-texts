@@ -99,6 +99,7 @@ menu = ["" => "",
 	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
 	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
 	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus",
+	joinpath(dirname(pwd()), "texts", "apollodorus.cex") => "Apollodorus, Library",
 	"scholia" => "Scholia to the Iliad"
 	
 ]
@@ -245,27 +246,27 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-CitableBase = "~10.2.4"
-CitableCorpus = "~0.13.3"
-CitableParserBuilder = "~0.24.0"
-CitableText = "~0.15.2"
+CitableBase = "~10.3.0"
+CitableCorpus = "~0.13.4"
+CitableParserBuilder = "~0.24.1"
+CitableText = "~0.16.0"
 DataFrames = "~1.5.0"
-HmtArchive = "~0.11.4"
-Kanones = "~0.16.5"
+HmtArchive = "~0.11.6"
+Kanones = "~0.16.7"
 OrderedCollections = "~1.6.0"
-Orthography = "~0.21.1"
+Orthography = "~0.21.2"
 PlutoUI = "~0.7.51"
 PolytonicGreek = "~0.18.3"
-StatsBase = "~0.33.21"
+StatsBase = "~0.34.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.0"
+julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "59ae65535ba5c425e2e5359e078e5902acb6a634"
+project_hash = "8f869d78f1e0670f883a093565b7a65e48a5009a"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -350,9 +351,9 @@ version = "0.4.2"
 
 [[deps.CSV]]
 deps = ["CodecZlib", "Dates", "FilePathsBase", "InlineStrings", "Mmap", "Parsers", "PooledArrays", "PrecompileTools", "SentinelArrays", "Tables", "Unicode", "WeakRefStrings", "WorkerUtilities"]
-git-tree-sha1 = "ed28c86cbde3dc3f53cf76643c2e9bc11d56acc7"
+git-tree-sha1 = "44dbf560808d49041989b8a96cae4cffbeb7966a"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.10.10"
+version = "0.10.11"
 
 [[deps.CatIndices]]
 deps = ["CustomUnitRanges", "OffsetArrays"]
@@ -386,63 +387,63 @@ version = "1.16.0"
 
 [[deps.CitableAnnotations]]
 deps = ["CitableBase", "CitableObject", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "Test"]
-git-tree-sha1 = "b3d6eddca64b57ce9479ff88136ed6a63a9ea975"
+git-tree-sha1 = "1a94f639595936e8cba58112572a5325b6e77f17"
 uuid = "63f90415-d3ea-41a7-8107-8cc186a9b888"
-version = "0.4.3"
+version = "0.4.4"
 
 [[deps.CitableBase]]
-deps = ["DocStringExtensions", "Documenter", "HTTP", "Test"]
-git-tree-sha1 = "80afb8990f22cb3602aacce4c78f9300f67fdaae"
+deps = ["DocStringExtensions", "Documenter", "Test", "TestSetExtensions"]
+git-tree-sha1 = "f6d5a0fa5a98895d06a805e09505988496da56ea"
 uuid = "d6f014bd-995c-41bd-9893-703339864534"
-version = "10.2.4"
+version = "10.3.0"
 
 [[deps.CitableCollection]]
 deps = ["CSV", "CitableBase", "CitableObject", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "Tables", "Test", "TypedTables"]
-git-tree-sha1 = "7f57b8fbd93ab382291f61d1c58292c4cf815765"
+git-tree-sha1 = "a5c3841ac1d3c44c87d689d193bafe95469eaf42"
 uuid = "7b95b006-44c5-4794-afff-00ccebff52d7"
-version = "0.4.4"
+version = "0.4.5"
 
 [[deps.CitableCorpus]]
 deps = ["CitableBase", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "Tables", "Test"]
-git-tree-sha1 = "57d761843bd930006d2563f43455db6eb756186c"
+git-tree-sha1 = "4a330dfda89fd43fe9f70827fb143695be64c42f"
 uuid = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
-version = "0.13.3"
+version = "0.13.4"
 
 [[deps.CitableImage]]
 deps = ["CitableBase", "CitableObject", "CiteEXchange", "DocStringExtensions", "Documenter", "Downloads", "FileIO", "ImageIO", "Images", "Test", "TestImages"]
-git-tree-sha1 = "1ec13de5fdf95dda10fea62c86ec119fe00bc109"
+git-tree-sha1 = "d5c8fcd35426e9e78d00058a49c8fa10a87486a8"
 uuid = "17ccb2e5-db19-44b3-b354-4fd16d92c74e"
-version = "0.6.5"
+version = "0.6.6"
 
 [[deps.CitableObject]]
-deps = ["CitableBase", "CiteEXchange", "DocStringExtensions", "Documenter", "Downloads", "Test"]
-git-tree-sha1 = "e147d2fa5fd4c036fd7b0ba0d14bf60d26dfefd2"
+deps = ["CitableBase", "CiteEXchange", "DocStringExtensions", "Documenter", "Downloads", "Test", "TestSetExtensions"]
+git-tree-sha1 = "9e4e1ef92111c9148aac1ae76d9b6658443bbec1"
 uuid = "e2b2f5ea-1cd8-4ce8-9b2b-05dad64c2a57"
-version = "0.15.1"
+version = "0.16.0"
 
 [[deps.CitableParserBuilder]]
-deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
-git-tree-sha1 = "bc50aed21a98a00d9e50e43ebb8682c06d759037"
+deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "Dictionaries", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
+git-tree-sha1 = "658ef12b0512e13755c94f02a1efb5985c0231d1"
 uuid = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
-version = "0.24.0"
+version = "0.24.1"
 
 [[deps.CitablePhysicalText]]
 deps = ["CitableBase", "CitableImage", "CitableObject", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "SplitApplyCombine", "Test", "TestSetExtensions"]
-git-tree-sha1 = "7946749c2b568b02f1aced9185643982f6d8e2d9"
+git-tree-sha1 = "7a6025537582726dbe6509d1ce1a79278cacdb69"
 uuid = "e38a874e-a7c2-4ff3-8dea-81ae2e5c9b07"
-version = "0.9.7"
+version = "0.9.8"
 
 [[deps.CitableTeiReaders]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "EzXML", "HTTP", "Test"]
-git-tree-sha1 = "bb4b0b835722305bb4516f9891acd0edd7d514cd"
+git-tree-sha1 = "3a2094f7a03897505b563bb5fa9cebeb7431d85f"
 uuid = "b4325aa9-906c-402e-9c3f-19ab8a88308e"
-version = "0.10.1"
+version = "0.10.2"
 
 [[deps.CitableText]]
-deps = ["CitableBase", "DocStringExtensions", "Documenter", "Test"]
-git-tree-sha1 = "87c096e67162faf21c0983a29396270cca168b4e"
+deps = ["CitableBase", "DocStringExtensions", "Documenter", "Test", "TestSetExtensions"]
+git-tree-sha1 = "79b2268cf41f03087e9fc9cd71f7e7cf9397cc90"
 uuid = "41e66566-473b-49d4-85b7-da83b66615d8"
-version = "0.15.2"
+version = "0.16.0"
 
 [[deps.CiteEXchange]]
 deps = ["CSV", "CitableBase", "DocStringExtensions", "Documenter", "HTTP", "Test"]
@@ -611,15 +612,15 @@ version = "1.6.0"
 
 [[deps.EditionBuilders]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "DocStringExtensions", "Documenter", "EzXML", "Test"]
-git-tree-sha1 = "00efdd0ff85cfad741144dadf146bfc849025a80"
+git-tree-sha1 = "cc4e1b7a9a6bfccb897e5fdebed14e56ed9d4333"
 uuid = "2fb66cca-c1f8-4a32-85dd-1a01a9e8cd8f"
-version = "0.8.2"
+version = "0.8.3"
 
 [[deps.EditorsRepo]]
 deps = ["CSV", "CitableBase", "CitableCorpus", "CitableImage", "CitableObject", "CitablePhysicalText", "CitableTeiReaders", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "EditionBuilders", "ManuscriptOrthography", "Orthography", "PolytonicGreek", "Tables", "Test", "TypedTables"]
-git-tree-sha1 = "51788b96fb923e2dfb8bac98f2bee114d92b6127"
+git-tree-sha1 = "ede66743a0827b97247bd78b6a96d22d514cd9ee"
 uuid = "3fa2051c-bcb6-4d65-8a68-41ff86d56437"
-version = "0.18.5"
+version = "0.18.7"
 
 [[deps.EzXML]]
 deps = ["Printf", "XML2_jll"]
@@ -713,9 +714,9 @@ version = "1.9.6"
 
 [[deps.HmtArchive]]
 deps = ["CitableAnnotations", "CitableBase", "CitableCollection", "CitableCorpus", "CitableImage", "CitableObject", "CitableParserBuilder", "CitablePhysicalText", "CitableTeiReaders", "CitableText", "CiteEXchange", "Compat", "DocStringExtensions", "Documenter", "Downloads", "EditionBuilders", "EditorsRepo", "EzXML", "FileIO", "FreqTables", "HTTP", "Pkg", "PolytonicGreek", "Query", "SplitApplyCombine", "StatsBase", "Tables", "Test", "TestSetExtensions", "TypedTables", "ZipFile"]
-git-tree-sha1 = "152750f2f2fdd9ca8fbab471ad68728503793d12"
+git-tree-sha1 = "9ef0a5c1f10a7a950104349683efeccf041acc71"
 uuid = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
-version = "0.11.4"
+version = "0.11.6"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -897,9 +898,9 @@ uuid = "92d709cd-6900-40b7-9082-c6be49f344b6"
 version = "0.2.2"
 
 [[deps.IterTools]]
-git-tree-sha1 = "fa6287a4469f5e048d763df38279ee729fbd44e5"
+git-tree-sha1 = "4ced6667f9974fc5c5943fa5e2ef1ca43ea9e450"
 uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
-version = "1.4.0"
+version = "1.8.0"
 
 [[deps.IterableTables]]
 deps = ["DataValues", "IteratorInterfaceExtensions", "Requires", "TableTraits", "TableTraitsUtils"]
@@ -944,9 +945,9 @@ version = "2.1.91+0"
 
 [[deps.Kanones]]
 deps = ["AtticGreek", "BenchmarkTools", "CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableParserBuilder", "CitableText", "Compat", "DataFrames", "Dates", "DelimitedFiles", "DocStringExtensions", "Documenter", "Downloads", "Glob", "HTTP", "Orthography", "PolytonicGreek", "Query", "SplitApplyCombine", "Test", "TestSetExtensions", "Unicode"]
-git-tree-sha1 = "4db5b33e9747d3013a0d9a083941d9ea8628b76b"
+git-tree-sha1 = "3e1099911e5a6947e3c4ce109114c66dfbc71d01"
 uuid = "107500f9-53d4-4696-8485-0747242ad8bc"
-version = "0.16.5"
+version = "0.16.7"
 
 [[deps.LERC_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1180,9 +1181,9 @@ version = "1.6.0"
 
 [[deps.Orthography]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "OrderedCollections", "StatsBase", "Test", "TestSetExtensions", "TypedTables", "Unicode"]
-git-tree-sha1 = "5b611d8ce62d1ccbaae9488b32b5a6d437f5eed8"
+git-tree-sha1 = "2c7ad8379d41a57687b95d8e21a48a7145c6b77a"
 uuid = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
-version = "0.21.1"
+version = "0.21.2"
 
 [[deps.PNGFiles]]
 deps = ["Base64", "CEnum", "ImageCore", "IndirectArrays", "OffsetArrays", "libpng_jll"]
@@ -1308,9 +1309,9 @@ version = "0.3.2"
 
 [[deps.Ratios]]
 deps = ["Requires"]
-git-tree-sha1 = "6d7bb727e76147ba18eed998700998e17b8e4911"
+git-tree-sha1 = "1342a47bf3260ee108163042310d26f2be5ec90b"
 uuid = "c84ed2f1-dad5-54f0-aa8e-dbefe2724439"
-version = "0.4.4"
+version = "0.4.5"
 weakdeps = ["FixedPointNumbers"]
 
     [deps.Ratios.extensions]
@@ -1428,9 +1429,9 @@ version = "0.1.1"
 
 [[deps.StaticArrays]]
 deps = ["LinearAlgebra", "Random", "StaticArraysCore", "Statistics"]
-git-tree-sha1 = "8982b3607a212b070a5e46eea83eb62b4744ae12"
+git-tree-sha1 = "832afbae2a45b4ae7e831f86965469a24d1d8a83"
 uuid = "90137ffa-7385-5640-81b9-e52037218182"
-version = "1.5.25"
+version = "1.5.26"
 
 [[deps.StaticArraysCore]]
 git-tree-sha1 = "6b7ba252635a5eff6a0b0664a41ee140a1c9e72a"
@@ -1450,9 +1451,9 @@ version = "1.6.0"
 
 [[deps.StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "d1bf48bfcc554a3761a133fe3a9bb01488e06916"
+git-tree-sha1 = "75ebe04c5bed70b91614d684259b661c9e6274a4"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.33.21"
+version = "0.34.0"
 
 [[deps.StringDistances]]
 deps = ["Distances", "StatsAPI"]
@@ -1615,7 +1616,7 @@ version = "1.5.5+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.7.0+0"
+version = "5.8.0+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1667,11 +1668,11 @@ version = "17.4.0+0"
 # ╟─104512af-c27e-47a3-8f03-a4ac7e9b5b50
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
-# ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
+# ╠═e1216411-d56e-4d12-ab2f-0ef58e387333
 # ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
 # ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
-# ╟─d22ed420-bfcc-48be-a77d-6b180cc45b53
+# ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 # ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
