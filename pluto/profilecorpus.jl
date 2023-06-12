@@ -43,6 +43,18 @@ md"""## Profile the morphology of a citable text"""
 # ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
 md""" Analyzed tokens:"""
 
+# ╔═╡ 97483a0d-8383-454f-80ee-f6a40f5efe41
+md"""## Inflectional types"""
+
+# ╔═╡ 7b758f86-e435-4f45-a7bf-73642c6f4f5e
+"Compute histogram of inflectional types for nouns."
+function nountypeshisto(alist)
+	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
+	nouns = filter(a -> greekForm(a.form) isa GMFNoun, flattened)
+	#morphflattened = map(at -> string(typeof(greekForm(at.form))), flattened)
+	#sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
+end
+
 # ╔═╡ 4b80d272-bddd-47ca-b919-d7e1c2ef2591
 html"""
 <br/>
@@ -70,26 +82,41 @@ corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 # ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
 isnothing(corpus) ? nothing : md"""## Profile"""
 
-# ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# Alternative to local file: use a URL:
-begin
-	#parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	#parser = dfParser(Downloads.download(parsersrc))
-end
-
 # ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
 lg = literaryGreek()
 
-# ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
-parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
+# ╔═╡ 2dcb5e7b-c58d-4c10-80ce-0a1907219c61
+parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
 
-# ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
-# ╠═╡ show_logs = false
-parser = dfParser(read(parsersrc))
+# ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
+parser = dfParser(Downloads.download(parsersrc))
+
 
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
+
+# ╔═╡ 2932e181-20cf-4fee-9a53-5f9676767470
+nountypeshisto(analyzedlexical)[3]
+
+# ╔═╡ 15840f08-b92e-4c34-a6a6-e8a2bac70dd4
+aeg = analyzedlexical.analyses[99]
+
+# ╔═╡ e69a4366-dc3c-462d-ab40-f60e6abfdbd3
+rslt = aeg.analyses[1]
+
+# ╔═╡ cffd8164-692e-454b-9716-3c75bf8ed8b7
+rslt.form |> greekForm |> typeof
+
+# ╔═╡ 18a45ebb-dc76-4cbf-bb39-992a8344f31a
+r = rslt.rule
+
+# ╔═╡ a1c750f0-89ed-4b4f-897b-de71d76c7edc
+r.collection
+
+# ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
+# ╠═╡ show_logs = false
+#parser = dfParser(read(parsersrc))
 
 # ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╠═╡ show_logs = false
@@ -121,23 +148,8 @@ md"""---
 
 > Compute survey histograms"""
 
-# ╔═╡ 3b6e1948-48e4-4b1e-8f40-d93943fe0790
-md"Parts of speech:"
-
-# ╔═╡ e08cd624-11e1-4470-bdf7-344d80d91de7
-md"Person-number:"
-
-# ╔═╡ 012e4105-b5c0-4705-928f-3f2eb290acb7
-md"Tense-voice:"
-
-# ╔═╡ 63d27766-28c7-4b73-94f0-3218657114dd
-md"Mood:"
-
-# ╔═╡ b90b4326-5b47-456e-8fc7-c4091f1ed141
-md"Tense-mood-voice:"
-
 # ╔═╡ 8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
-"Compute histogram of morphological forms."
+"Compute histogram of analytical types ('part of speech')."
 function poshisto(alist)
 	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
 	# analyzedtokens.analyses[1].analyses[1].form
@@ -194,7 +206,7 @@ begin
 end
 
 # ╔═╡ 597f3d08-e464-4cf1-9978-21e07bac0799
-"Compute histogram of person-number combinations for finite verbs."
+"Compute histogram of moods for finite verbs."
 function moodhisto(alist)
 	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
 	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
@@ -217,7 +229,7 @@ begin
 end
 
 # ╔═╡ 9875fcdd-facf-4204-b628-5b0574760bb7
-"Compute histogram of person-number combinations for finite verbs."
+"Compute histogram of tense-voice combinations for finite verbs."
 function tvhisto(alist)
 	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
 	verbs = filter(a -> greekForm(a.form) isa GMFFiniteVerb || greekForm(a.form) isa GMFInfinitive || greekForm(a.form) isa GMFParticiple , flattened)
@@ -240,8 +252,8 @@ begin
 end
 
 # ╔═╡ 7556409b-ee74-4f9f-9e02-d927ca1ae157
-"Compute histogram of person-number combinations for finite verbs."
-function tmvhisto(alist)
+"Compute histogram of tense-voice-mood combinations for finite verbs."
+function tvmhisto(alist)
 	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
 	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
 	tmvs = map(at -> label(gmpTense(greekForm(at.form))) * " " *  label(gmpMood(greekForm(at.form))) * " " * label(gmpVoice(greekForm(at.form))), finites)
@@ -250,15 +262,15 @@ function tmvhisto(alist)
 end
 
 # ╔═╡ aa56b89b-74a7-44d2-83bb-717235596664
-tmvh = isnothing(analyzedlexical) ? nothing : tmvhisto(analyzedlexical)
+tvmh = isnothing(analyzedlexical) ? nothing : tvmhisto(analyzedlexical)
 
 # ╔═╡ a982c017-bd1a-4141-bebf-7385190a2ad3
 begin
-	if isnothing(tmvh)
+	if isnothing(tvmh)
 	else
-	tmvlabels  = keys(tmvh) |> collect
-	tmvvals = map(k -> tmvh[k], tmvlabels)
-	bar(tmvlabels, tmvvals, title = "Tense-mood-voice combinations", xrotation = -45, xticks = :all, legend = false)
+	tvmlabels  = keys(tvmh) |> collect
+	tvmvals = map(k -> tvmh[k], tvmlabels)
+	bar(tvmlabels, tvmvals, title = "Tense-mood-voice combinations", xrotation = -45, xticks = :all, legend = false)
 	end
 end
 
@@ -281,19 +293,19 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
-CitableBase = "~10.2.4"
-CitableCorpus = "~0.13.3"
-CitableParserBuilder = "~0.24.0"
-CitableText = "~0.15.2"
+CitableBase = "~10.3.0"
+CitableCorpus = "~0.13.4"
+CitableParserBuilder = "~0.24.2"
+CitableText = "~0.16.0"
 DataFrames = "~1.5.0"
 Dictionaries = "~0.3.25"
-Kanones = "~0.16.4"
+Kanones = "~0.16.7"
 OrderedCollections = "~1.6.0"
-Orthography = "~0.21.0"
+Orthography = "~0.21.2"
 Plots = "~1.38.12"
 PlutoUI = "~0.7.51"
-PolytonicGreek = "~0.18.2"
-StatsBase = "~0.33.21"
+PolytonicGreek = "~0.18.3"
+StatsBase = "~0.34.0"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -302,7 +314,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "97854bbc9d4f12dabe2a7fb533cd6c0c0fa0b2ca"
+project_hash = "0047f46e8bcf49eff1bc126eec76e5268c9fd893"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -362,9 +374,9 @@ version = "1.0.8+0"
 
 [[deps.CSV]]
 deps = ["CodecZlib", "Dates", "FilePathsBase", "InlineStrings", "Mmap", "Parsers", "PooledArrays", "PrecompileTools", "SentinelArrays", "Tables", "Unicode", "WeakRefStrings", "WorkerUtilities"]
-git-tree-sha1 = "ed28c86cbde3dc3f53cf76643c2e9bc11d56acc7"
+git-tree-sha1 = "44dbf560808d49041989b8a96cae4cffbeb7966a"
 uuid = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
-version = "0.10.10"
+version = "0.10.11"
 
 [[deps.Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "CompilerSupportLibraries_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
@@ -373,34 +385,34 @@ uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
 version = "1.16.1+1"
 
 [[deps.CitableBase]]
-deps = ["DocStringExtensions", "Documenter", "HTTP", "Test"]
-git-tree-sha1 = "80afb8990f22cb3602aacce4c78f9300f67fdaae"
+deps = ["DocStringExtensions", "Documenter", "Test", "TestSetExtensions"]
+git-tree-sha1 = "f6d5a0fa5a98895d06a805e09505988496da56ea"
 uuid = "d6f014bd-995c-41bd-9893-703339864534"
-version = "10.2.4"
+version = "10.3.0"
 
 [[deps.CitableCorpus]]
 deps = ["CitableBase", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "Tables", "Test"]
-git-tree-sha1 = "57d761843bd930006d2563f43455db6eb756186c"
+git-tree-sha1 = "4a330dfda89fd43fe9f70827fb143695be64c42f"
 uuid = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
-version = "0.13.3"
+version = "0.13.4"
 
 [[deps.CitableObject]]
-deps = ["CitableBase", "CiteEXchange", "DocStringExtensions", "Documenter", "Downloads", "Test"]
-git-tree-sha1 = "e147d2fa5fd4c036fd7b0ba0d14bf60d26dfefd2"
+deps = ["CitableBase", "CiteEXchange", "DocStringExtensions", "Documenter", "Downloads", "Test", "TestSetExtensions"]
+git-tree-sha1 = "9e4e1ef92111c9148aac1ae76d9b6658443bbec1"
 uuid = "e2b2f5ea-1cd8-4ce8-9b2b-05dad64c2a57"
-version = "0.15.1"
+version = "0.16.0"
 
 [[deps.CitableParserBuilder]]
-deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
-git-tree-sha1 = "bc50aed21a98a00d9e50e43ebb8682c06d759037"
+deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "Dictionaries", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
+git-tree-sha1 = "9e71c5e2741974c8dba980e6ab9a98e8dbe7fc64"
 uuid = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
-version = "0.24.0"
+version = "0.24.2"
 
 [[deps.CitableText]]
-deps = ["CitableBase", "DocStringExtensions", "Documenter", "Test"]
-git-tree-sha1 = "87c096e67162faf21c0983a29396270cca168b4e"
+deps = ["CitableBase", "DocStringExtensions", "Documenter", "Test", "TestSetExtensions"]
+git-tree-sha1 = "79b2268cf41f03087e9fc9cd71f7e7cf9397cc90"
 uuid = "41e66566-473b-49d4-85b7-da83b66615d8"
-version = "0.15.2"
+version = "0.16.0"
 
 [[deps.CiteEXchange]]
 deps = ["CSV", "CitableBase", "DocStringExtensions", "Documenter", "HTTP", "Test"]
@@ -662,9 +674,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "ba9eca9f8bdb787c6f3cf52cb4a404c0e349a0d1"
+git-tree-sha1 = "5e77dbf117412d4f164a464d610ee6050cc75272"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.9.5"
+version = "1.9.6"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll", "Pkg"]
@@ -751,10 +763,10 @@ uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "2.1.91+0"
 
 [[deps.Kanones]]
-deps = ["AtticGreek", "BenchmarkTools", "CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableParserBuilder", "CitableText", "Compat", "DataFrames", "DelimitedFiles", "DocStringExtensions", "Documenter", "Downloads", "Glob", "HTTP", "Orthography", "PolytonicGreek", "Query", "SplitApplyCombine", "Test", "TestSetExtensions", "Unicode"]
-git-tree-sha1 = "6884f62d66f9b2b279219925592df8b0a579e560"
+deps = ["AtticGreek", "BenchmarkTools", "CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableParserBuilder", "CitableText", "Compat", "DataFrames", "Dates", "DelimitedFiles", "DocStringExtensions", "Documenter", "Downloads", "Glob", "HTTP", "Orthography", "PolytonicGreek", "Query", "SplitApplyCombine", "Test", "TestSetExtensions", "Unicode"]
+git-tree-sha1 = "3e1099911e5a6947e3c4ce109114c66dfbc71d01"
 uuid = "107500f9-53d4-4696-8485-0747242ad8bc"
-version = "0.16.4"
+version = "0.16.7"
 
 [[deps.LAME_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -767,6 +779,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
 uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
 version = "3.0.0+1"
+
+[[deps.LLVMOpenMP_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "f689897ccbe049adb19a065c495e75f372ecd42b"
+uuid = "1d63c593-3942-5779-bab2-d838dc0a180e"
+version = "15.0.4+0"
 
 [[deps.LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -781,9 +799,9 @@ version = "1.3.0"
 
 [[deps.Latexify]]
 deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Printf", "Requires"]
-git-tree-sha1 = "099e356f267354f46ba65087981a77da23a279b7"
+git-tree-sha1 = "f428ae552340899a935973270b8d98e5a31c49fe"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.0"
+version = "0.16.1"
 
     [deps.Latexify.extensions]
     DataFramesExt = "DataFrames"
@@ -869,9 +887,9 @@ uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
-git-tree-sha1 = "0a1b7c2863e44523180fdb3146534e265a91870b"
+git-tree-sha1 = "c3ce8e7420b3a6e071e0fe4745f5d4300e37b13f"
 uuid = "2ab3a3ac-af41-5b50-aa03-7779005ae688"
-version = "0.3.23"
+version = "0.3.24"
 
     [deps.LogExpFunctions.extensions]
     LogExpFunctionsChainRulesCoreExt = "ChainRulesCore"
@@ -969,10 +987,10 @@ uuid = "4d8831e6-92b7-49fb-bdf8-b643e874388c"
 version = "1.4.1"
 
 [[deps.OpenSSL_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "9ff31d101d987eb9d66bd8b176ac7c277beccd09"
+deps = ["Artifacts", "JLLWrappers", "Libdl"]
+git-tree-sha1 = "1aa4b74f80b01c6bc2b89992b861b5f210e665b5"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
-version = "1.1.20+0"
+version = "1.1.21+0"
 
 [[deps.OpenSpecFun_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -993,9 +1011,9 @@ version = "1.6.0"
 
 [[deps.Orthography]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "OrderedCollections", "StatsBase", "Test", "TestSetExtensions", "TypedTables", "Unicode"]
-git-tree-sha1 = "1577210e4841afc80338a4b6a8d9939410a4cdb1"
+git-tree-sha1 = "2c7ad8379d41a57687b95d8e21a48a7145c6b77a"
 uuid = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
-version = "0.21.0"
+version = "0.21.2"
 
 [[deps.PCRE2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1004,9 +1022,9 @@ version = "10.42.0+0"
 
 [[deps.Parsers]]
 deps = ["Dates", "PrecompileTools", "UUIDs"]
-git-tree-sha1 = "a5aef8d4a6e8d81f171b2bd4be5265b01384c74c"
+git-tree-sha1 = "b32107a634205cdcc64e2a3070c3eb0d56d54181"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.5.10"
+version = "2.6.0"
 
 [[deps.Pipe]]
 git-tree-sha1 = "6842804e7867b115ca9de748a0cf6b364523c16d"
@@ -1014,10 +1032,10 @@ uuid = "b98c9c47-44ae-5843-9183-064241ee97a0"
 version = "1.3.0"
 
 [[deps.Pixman_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "b4f5d02549a10e20780a24fce72bea96b6329e29"
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "LLVMOpenMP_jll", "Libdl"]
+git-tree-sha1 = "64779bc4c9784fee475689a1752ef4d5747c5e87"
 uuid = "30392449-352a-5448-841d-b1acce4e97dc"
-version = "0.40.1+0"
+version = "0.42.2+0"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -1038,9 +1056,9 @@ version = "1.3.5"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "JLFzf", "JSON", "LaTeXStrings", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "PrecompileTools", "Preferences", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "RelocatableFolders", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "UnitfulLatexify", "Unzip"]
-git-tree-sha1 = "3c5106dc6beba385fd1d37b9bf504271f8bfa916"
+git-tree-sha1 = "75ca67b2c6512ad2d0c767a7cfc55e75075f8bbc"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.38.13"
+version = "1.38.16"
 
     [deps.Plots.extensions]
     FileIOExt = "FileIO"
@@ -1064,9 +1082,9 @@ version = "0.7.51"
 
 [[deps.PolytonicGreek]]
 deps = ["Compat", "DocStringExtensions", "Documenter", "Orthography", "Test", "TestSetExtensions", "Unicode"]
-git-tree-sha1 = "074c271af405e0885031efe0622b78c36840ad4a"
+git-tree-sha1 = "0915606f601128264489dc23c7a35605774bcf7d"
 uuid = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
-version = "0.18.2"
+version = "0.18.3"
 
 [[deps.PooledArrays]]
 deps = ["DataAPI", "Future"]
@@ -1076,9 +1094,9 @@ version = "1.4.2"
 
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
-git-tree-sha1 = "259e206946c293698122f63e2b513a7c99a244e8"
+git-tree-sha1 = "9673d39decc5feece56ef3940e5dafba15ba0f81"
 uuid = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
-version = "1.1.1"
+version = "1.1.2"
 
 [[deps.Preferences]]
 deps = ["TOML"]
@@ -1167,9 +1185,9 @@ version = "1.2.0"
 
 [[deps.SentinelArrays]]
 deps = ["Dates", "Random"]
-git-tree-sha1 = "77d3c4726515dca71f6d80fbb5e251088defe305"
+git-tree-sha1 = "04bdff0b09c65ff3e06a05e3eb7b120223da3d39"
 uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
-version = "1.3.18"
+version = "1.4.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -1235,9 +1253,9 @@ version = "1.6.0"
 
 [[deps.StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "d1bf48bfcc554a3761a133fe3a9bb01488e06916"
+git-tree-sha1 = "75ebe04c5bed70b91614d684259b661c9e6274a4"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.33.21"
+version = "0.34.0"
 
 [[deps.StringManipulation]]
 git-tree-sha1 = "46da2434b41f41ac3594ee9816ce5541c6096123"
@@ -1613,29 +1631,32 @@ version = "1.4.1+0"
 # ╟─92181982-74db-4c3e-adff-1f803f637d34
 # ╟─f49cc7d6-e2e2-45c9-a30c-fa3871a1b349
 # ╟─a982c017-bd1a-4141-bebf-7385190a2ad3
+# ╟─97483a0d-8383-454f-80ee-f6a40f5efe41
+# ╠═7b758f86-e435-4f45-a7bf-73642c6f4f5e
+# ╠═2932e181-20cf-4fee-9a53-5f9676767470
+# ╠═15840f08-b92e-4c34-a6a6-e8a2bac70dd4
+# ╠═e69a4366-dc3c-462d-ab40-f60e6abfdbd3
+# ╠═cffd8164-692e-454b-9716-3c75bf8ed8b7
+# ╠═18a45ebb-dc76-4cbf-bb39-992a8344f31a
+# ╠═a1c750f0-89ed-4b4f-897b-de71d76c7edc
 # ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
 # ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
-# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
+# ╟─2dcb5e7b-c58d-4c10-80ce-0a1907219c61
 # ╟─e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
 # ╟─cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╟─7f7167f5-b401-4535-b530-708a142fb35c
 # ╟─47791d64-2517-4625-8402-c9d16a07ba3e
-# ╟─3b6e1948-48e4-4b1e-8f40-d93943fe0790
-# ╟─e08cd624-11e1-4470-bdf7-344d80d91de7
-# ╟─012e4105-b5c0-4705-928f-3f2eb290acb7
-# ╟─63d27766-28c7-4b73-94f0-3218657114dd
-# ╟─b90b4326-5b47-456e-8fc7-c4091f1ed141
-# ╟─8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
+# ╠═8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
 # ╟─babe0667-4ff7-4511-9a0b-40f2d84ed48a
 # ╟─91ed541a-05b5-400c-94cd-0544b11dcc06
 # ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
 # ╟─551958f8-3284-487d-a25b-01a36b1c1013
 # ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
-# ╠═597f3d08-e464-4cf1-9978-21e07bac0799
+# ╟─597f3d08-e464-4cf1-9978-21e07bac0799
 # ╟─544ae06d-4266-4681-aaac-abe791658410
 # ╟─9875fcdd-facf-4204-b628-5b0574760bb7
 # ╟─2a570046-4851-4cd3-aa90-3020667359f1
