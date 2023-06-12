@@ -75,26 +75,22 @@ md"""## 3. Analyzed tokens"""
 # ╔═╡ 188a3b26-90bd-4764-882b-cdc43757b991
 md"""Use a delimited-text source to build a DFParser: can be either a URL or a local file."""
 
+# ╔═╡ 554890aa-1e30-4133-b848-1eaceb661376
+parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+
+# ╔═╡ ee2c55f7-a39e-47eb-a992-244a216becfd
+newsrc = Downloads.download(parsersrc)
+
 # ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# Alternative to local file: use a URL:
-begin
-	#parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	#parser = dfParser(Downloads.download(parsersrc))
-end
-
-# ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
-parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
-
-# ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╠═╡ show_logs = false
-parser = dfParser(read(parsersrc))
-
-# ╔═╡ c8338d62-d1ac-40e6-82d1-3e5c537ac33d
-
+parser = dfParser(newsrc)
 
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
+
+# ╔═╡ 9c07a686-9f30-4fbd-ab74-01447d24aac7
+parsetoken("κακῷ", parser)
 
 # ╔═╡ ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 md"""##### Example applications"""
@@ -196,7 +192,7 @@ Dictionaries = "~0.3.25"
 Kanones = "~0.16.7"
 OrderedCollections = "~1.6.0"
 Orthography = "~0.21.2"
-Plots = "~1.38.12"
+Plots = "~1.38.15"
 PlutoUI = "~0.7.51"
 PolytonicGreek = "~0.18.3"
 StatsBase = "~0.34.0"
@@ -206,9 +202,9 @@ StatsBase = "~0.34.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.1"
+julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "59ab0db2f7bb06428e04ace1ff6315b6d6505861"
+project_hash = "c052aa63ed7ab4f9d74ed397bfec4df8052207dc"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -674,6 +670,12 @@ git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
 uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
 version = "3.0.0+1"
 
+[[deps.LLVMOpenMP_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "f689897ccbe049adb19a065c495e75f372ecd42b"
+uuid = "1d63c593-3942-5779-bab2-d838dc0a180e"
+version = "15.0.4+0"
+
 [[deps.LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "e5b909bcf985c5e2605737d2ce278ed791b89be6"
@@ -687,9 +689,9 @@ version = "1.3.0"
 
 [[deps.Latexify]]
 deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Printf", "Requires"]
-git-tree-sha1 = "099e356f267354f46ba65087981a77da23a279b7"
+git-tree-sha1 = "f428ae552340899a935973270b8d98e5a31c49fe"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.0"
+version = "0.16.1"
 
     [deps.Latexify.extensions]
     DataFramesExt = "DataFrames"
@@ -920,10 +922,10 @@ uuid = "b98c9c47-44ae-5843-9183-064241ee97a0"
 version = "1.3.0"
 
 [[deps.Pixman_jll]]
-deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "b4f5d02549a10e20780a24fce72bea96b6329e29"
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "LLVMOpenMP_jll", "Libdl"]
+git-tree-sha1 = "64779bc4c9784fee475689a1752ef4d5747c5e87"
 uuid = "30392449-352a-5448-841d-b1acce4e97dc"
-version = "0.40.1+0"
+version = "0.42.2+0"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -1456,7 +1458,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+0"
+version = "5.7.0+0"
 
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1518,11 +1520,11 @@ version = "1.4.1+0"
 # ╠═6dce46e6-b25b-49c5-a8ba-03c3953356c2
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
 # ╟─188a3b26-90bd-4764-882b-cdc43757b991
+# ╠═554890aa-1e30-4133-b848-1eaceb661376
+# ╠═ee2c55f7-a39e-47eb-a992-244a216becfd
 # ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# ╠═fdb04419-a763-498b-a28f-4e899b8bb5e2
-# ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
-# ╠═c8338d62-d1ac-40e6-82d1-3e5c537ac33d
 # ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
+# ╠═9c07a686-9f30-4fbd-ab74-01447d24aac7
 # ╟─ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 # ╠═cd4584d5-278e-4115-9723-ac3e171f49ee
 # ╟─c84a16d7-ae9d-4e80-959f-5e20df34aed0

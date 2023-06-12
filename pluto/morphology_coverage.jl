@@ -179,9 +179,6 @@ end
 # ╔═╡ ac158965-896c-4ad6-9067-52f72f45a41e
 lexcountcoll = isnothing(lexhist) ? nothing : lexhist |> collect
 
-# ╔═╡ 138136e3-3c3e-4f44-a513-03ad236cec8a
-analyzedlexical.analyses[4]
-
 # ╔═╡ 2e8afe7a-6001-4912-ada5-672346a0fe00
 failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
 
@@ -192,10 +189,10 @@ failedstrs = map(psg -> psg.ctoken.passage.text, failed)
 failedfreqs = isempty(failedstrs) ? nothing : filter(pr -> pr[1] in failedstrs, collect(histo))
 
 # ╔═╡ bbb97994-15e6-44bb-82a7-072230e24f42
-biggestfail = map(pr -> pr[2], failedfreqs) |> maximum
+biggestfail = isnothing(failedfreqs) ? nothing : map(pr -> pr[2], failedfreqs) |> maximum
 
 # ╔═╡ 04382e55-f26e-4981-bdb8-17feafdc312f
-totalbad = map(pr -> pr[2], failedfreqs) |> sum
+totalbad = isnothing(failedfreqs) ? nothing : map(pr -> pr[2], failedfreqs) |> sum
 
 # ╔═╡ 89fa448a-250c-4a26-aad1-68d036627f5b
 isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  
@@ -203,7 +200,7 @@ isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexic
 Failed on **$(length(failedfreqs))** forms occurring a total of **$(totalbad)** times."
 
 # ╔═╡ c2fc6c97-8165-4579-baa6-a7a92d84b9fb
-cvg = (length(analyzedlexical) - totalbad) / length(analyzedlexical) * 100 |> round
+cvg = isnothing(analyzedlexical) ? "TBA" : (length(analyzedlexical) - totalbad) / length(analyzedlexical) * 100 |> round
 
 # ╔═╡ b3733f65-aa78-485f-82f7-01eff55cc7dd
 md"""Coverage: **$(cvg)**%"""
@@ -216,17 +213,21 @@ maxn > 0 ? md"""*Show list of failures occuring `n` or more times where`n` =* $(
 
 # ╔═╡ b2f5b731-e723-43e3-b656-8c511b723722
 begin
-	candidates = filter(pr -> pr[2] >= n, failedfreqs)
-	lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), candidates)	
-
-	abovethresh = map(pr -> pr[2], candidates) |> sum
-	threshcvg = (abovethresh) / length(analyzedlexical) * 100
-	msg = """**$(length(lns))** failures occur **$(n)** or more times (**$(abovethresh)** occurrences, or **$(threshcvg)**%)
-
-
-	$(join(lns, "\n"))
-	"""
-	Markdown.parse(msg)
+	if isnothing(failedfreqs)
+		md""
+	else
+		candidates = filter(pr -> pr[2] >= n, failedfreqs)
+		lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), candidates)	
+	
+		abovethresh = map(pr -> pr[2], candidates) |> sum
+		threshcvg = (abovethresh) / length(analyzedlexical) * 100
+		msg = """**$(length(lns))** failures occur **$(n)** or more times (**$(abovethresh)** occurrences, or **$(threshcvg)**%)
+	
+	
+		$(join(lns, "\n"))
+		"""
+		Markdown.parse(msg)
+	end
 end
 
 # ╔═╡ ca394b3f-89f2-4121-8fff-970cdbf399ef
@@ -267,7 +268,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 [compat]
 CitableBase = "~10.3.0"
 CitableCorpus = "~0.13.4"
-CitableParserBuilder = "~0.24.1"
+CitableParserBuilder = "~0.24.2"
 CitableText = "~0.16.0"
 DataFrames = "~1.5.0"
 HmtArchive = "~0.11.6"
@@ -283,9 +284,9 @@ StatsBase = "~0.34.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.1"
+julia_version = "1.9.0"
 manifest_format = "2.0"
-project_hash = "8f869d78f1e0670f883a093565b7a65e48a5009a"
+project_hash = "96b26ea0177861fb863ee1cae463f3ea559044f5"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -442,9 +443,9 @@ version = "0.16.0"
 
 [[deps.CitableParserBuilder]]
 deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "Dictionaries", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
-git-tree-sha1 = "658ef12b0512e13755c94f02a1efb5985c0231d1"
+git-tree-sha1 = "9e71c5e2741974c8dba980e6ab9a98e8dbe7fc64"
 uuid = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
-version = "0.24.1"
+version = "0.24.2"
 
 [[deps.CitablePhysicalText]]
 deps = ["CitableBase", "CitableImage", "CitableObject", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "SplitApplyCombine", "Test", "TestSetExtensions"]
@@ -655,9 +656,9 @@ version = "0.3.2"
 
 [[deps.FFTW]]
 deps = ["AbstractFFTs", "FFTW_jll", "LinearAlgebra", "MKL_jll", "Preferences", "Reexport"]
-git-tree-sha1 = "f9818144ce7c8c41edf5c4c179c684d92aa4d9fe"
+git-tree-sha1 = "06bf20fcecd258eccf9a6ef7b99856a4dfe7b64c"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-version = "1.6.0"
+version = "1.7.0"
 
 [[deps.FFTW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1635,7 +1636,7 @@ version = "1.5.5+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+0"
+version = "5.7.0+0"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1668,7 +1669,7 @@ version = "17.4.0+0"
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
 # ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
-# ╠═c2fc6c97-8165-4579-baa6-a7a92d84b9fb
+# ╟─c2fc6c97-8165-4579-baa6-a7a92d84b9fb
 # ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
 # ╟─e4409e78-d0c3-4655-97fd-483bb48ad339
 # ╟─b2f5b731-e723-43e3-b656-8c511b723722
@@ -1697,7 +1698,6 @@ version = "17.4.0+0"
 # ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 # ╠═f0c87b60-97a8-4714-860f-c452efe95768
-# ╠═138136e3-3c3e-4f44-a513-03ad236cec8a
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 # ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
 # ╠═2e8afe7a-6001-4912-ada5-672346a0fe00
