@@ -40,13 +40,18 @@ md"""## Morphology workflow"""
 md"""### Need attention"""
 
 # ╔═╡ a40eaf57-c5c2-4994-830d-271c9e4ba71e
-md""">  ->> **CHANGE TO FILTER BY NUMBER OF OCCURRENCES**"""
+md""">  ->> **CHANGE TO FILTER BY NUMBER OF OCCURRENCES**
+> and compute percentage of coverage
+"""
 
 # ╔═╡ e9fb8266-5dbe-426a-89bc-dfbf3a981819
 md"Lexemes in `lsjx` namespace:"
 
 # ╔═╡ f6a1b581-aa74-4279-b986-d05fe1014af0
 md""" ### OK"""
+
+# ╔═╡ 2b37745e-ec91-494c-9569-b13d3c086649
+md"""> Show percentage coverage as list expands"""
 
 # ╔═╡ c156adec-f11f-400d-bab5-e482783aa821
 html"""
@@ -248,7 +253,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 [compat]
 CitableBase = "~10.3.0"
 CitableCorpus = "~0.13.4"
-CitableParserBuilder = "~0.24.1"
+CitableParserBuilder = "~0.24.2"
 CitableText = "~0.16.0"
 DataFrames = "~1.5.0"
 HmtArchive = "~0.11.6"
@@ -266,7 +271,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "8f869d78f1e0670f883a093565b7a65e48a5009a"
+project_hash = "96b26ea0177861fb863ee1cae463f3ea559044f5"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -423,9 +428,9 @@ version = "0.16.0"
 
 [[deps.CitableParserBuilder]]
 deps = ["CSV", "CitableBase", "CitableCorpus", "CitableObject", "CitableText", "Compat", "DataStructures", "Dictionaries", "DocStringExtensions", "Documenter", "HTTP", "OrderedCollections", "Orthography", "StatsBase", "Test", "TestSetExtensions", "TypedTables"]
-git-tree-sha1 = "658ef12b0512e13755c94f02a1efb5985c0231d1"
+git-tree-sha1 = "9e71c5e2741974c8dba980e6ab9a98e8dbe7fc64"
 uuid = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
-version = "0.24.1"
+version = "0.24.2"
 
 [[deps.CitablePhysicalText]]
 deps = ["CitableBase", "CitableImage", "CitableObject", "CitableText", "CiteEXchange", "DocStringExtensions", "Documenter", "HTTP", "SplitApplyCombine", "Test", "TestSetExtensions"]
@@ -636,9 +641,9 @@ version = "0.3.2"
 
 [[deps.FFTW]]
 deps = ["AbstractFFTs", "FFTW_jll", "LinearAlgebra", "MKL_jll", "Preferences", "Reexport"]
-git-tree-sha1 = "f9818144ce7c8c41edf5c4c179c684d92aa4d9fe"
+git-tree-sha1 = "06bf20fcecd258eccf9a6ef7b99856a4dfe7b64c"
 uuid = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-version = "1.6.0"
+version = "1.7.0"
 
 [[deps.FFTW_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1643,7 +1648,7 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─2e12e74f-c2bc-49c6-9d10-660808ce874a
-# ╟─5b0aef6d-f725-4bb3-8145-883d2b1a47df
+# ╠═5b0aef6d-f725-4bb3-8145-883d2b1a47df
 # ╟─1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
 # ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
@@ -1655,6 +1660,7 @@ version = "17.4.0+0"
 # ╟─e9fb8266-5dbe-426a-89bc-dfbf3a981819
 # ╟─9d6c3db5-9427-4c55-b712-6aa381db5368
 # ╟─f6a1b581-aa74-4279-b986-d05fe1014af0
+# ╟─2b37745e-ec91-494c-9569-b13d3c086649
 # ╟─ca394b3f-89f2-4121-8fff-970cdbf399ef
 # ╟─c31fc626-951c-49a2-ad56-1d2bbfbe207d
 # ╟─c156adec-f11f-400d-bab5-e482783aa821
@@ -1668,7 +1674,7 @@ version = "17.4.0+0"
 # ╟─104512af-c27e-47a3-8f03-a4ac7e9b5b50
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
-# ╠═e1216411-d56e-4d12-ab2f-0ef58e387333
+# ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
 # ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
 # ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
@@ -1677,7 +1683,7 @@ version = "17.4.0+0"
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 # ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
 # ╠═2e8afe7a-6001-4912-ada5-672346a0fe00
-# ╟─231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
+# ╠═231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
 # ╠═eaa833c1-44e0-46da-89d4-11841783e142
 # ╠═f61dfc7a-826f-4241-bffd-9e17153cdeb2
 # ╠═2b789e11-4f6d-428b-91f4-6cbf92e7500f
