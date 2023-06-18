@@ -111,8 +111,8 @@ menu = ["" => "",
 
 # ╔═╡ e1216411-d56e-4d12-ab2f-0ef58e387333
 parsermenu = [
-	"online" => "Online core parser",
-	"local" => "Local copy of comprehensive parser (in personal Dropbox)"
+	"core" => "Core parser (manually vetted vocabulary only)",
+	"all" => "Core  parser augmented with vocabulary extractd from LSJ"
 	
 ]
 
@@ -138,15 +138,25 @@ else
 	fromcex(src, CitableTextCorpus, FileReader)
 end
 
+# ╔═╡ 16c8155e-2229-4bd7-8cb7-c13d8abe1a8e
+parserurl  = if parserchoice == "core"
+	"https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+else
+	"http://shot.holycross.edu/morphology/literarygreek-current.csv"
+end
+
+# ╔═╡ 94c55628-9b30-4664-9d82-36940e8e1c7a
+function getparser()
+	f = Downloads.download(parserurl)
+	p = dfParser(f)
+	rm(f)
+	p
+end
+
 # ╔═╡ d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╠═╡ show_logs = false
-parser = if parserchoice == "local"
-	localfile =  "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
-	dfParser(read(localfile))
-else
-	parserurl = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	dfParser(Downloads.download(parserurl))
-end
+parser = getparser()
+
 
 # ╔═╡ b99a1df3-6826-484d-9e0d-dacc45ec3869
 isnothing(corpus) ? md"**Text**: *none selected*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*." :  md"**Text**: *citable corpus with $(length(corpus)) passages*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*."
@@ -1678,6 +1688,8 @@ version = "17.4.0+0"
 # ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
 # ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
+# ╟─16c8155e-2229-4bd7-8cb7-c13d8abe1a8e
+# ╠═94c55628-9b30-4664-9d82-36940e8e1c7a
 # ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
