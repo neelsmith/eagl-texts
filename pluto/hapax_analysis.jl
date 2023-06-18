@@ -37,7 +37,7 @@ md"""*To see the Julia environment, unhide the following cell*."""
 md""">
 > # TBD: focus on lexical *hapax legomena*
 >
-> 1. color code lexical. *hapax legomena* in continuous text passages
+> 1. color code lexical *hapax legomena* in continuous text passages
 > 2. find missing tokens occuring > 1 time, and resolve them
 > 3. find missing tokens occurring 1 time, and review for lexical overlap
 """
@@ -1695,7 +1695,7 @@ version = "17.4.0+0"
 # ╟─5b0aef6d-f725-4bb3-8145-883d2b1a47df
 # ╟─33b3a5f3-ee50-46e1-9c50-0641202c6874
 # ╟─1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
-# ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
+# ╠═771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
 # ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
