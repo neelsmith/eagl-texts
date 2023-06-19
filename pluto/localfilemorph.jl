@@ -18,20 +18,34 @@ end
 begin
 	using PlutoUI
 	using CSV, DataFrames
+	using Orthography, PolytonicGreek
+	using CitableBase, CitableCorpus
 	using Kanones
 end
 
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
-md"""## Load a parser"""
+md"""## Load data"""
 
 # ╔═╡ 38ce0b39-e616-4225-99fc-f1f7cc6f470b
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
+
+# ╔═╡ bd40d2ca-2f22-4784-888b-0a38c726fe0b
+md"""### Unanalyzed singletons"""
+
+# ╔═╡ 04cdea60-5458-460a-83f1-db2769576a5b
+md"""### Unanalyzed forms occurring multiple times"""
 
 # ╔═╡ 7b803068-4345-4c5d-915f-c159336ae12f
 html"""
 <br/><br/><br/><br/><br/><br/><br/>
 <hr/>
 """
+
+# ╔═╡ f53b222d-ef12-47ab-bd6c-e80131f94f8f
+md"""> Counting"""
+
+# ╔═╡ f7c3c9a3-e602-4877-94ec-5e6842348f2d
+md"> Parser"
 
 # ╔═╡ b12a3713-f896-41bc-bc36-96db576d8c95
 """Construct a `DataFrameParser` from a local `.csv` file."""
@@ -53,21 +67,219 @@ end
 parser = fromfile(file_data)
 
 # ╔═╡ 6405375f-061d-483f-bf3c-a4a2414c3625
-isnothing(parser) ? md"" : md"""Loaded parser capable of analyzing **$(nrow(parser.df))** forms."""
+isnothing(parser) ? md"**Parser**: no parser loaded." : md"""**Parser**: loaded parser capable of analyzing **$(nrow(parser.df))** forms."""
+
+# ╔═╡ aed560de-ffe3-4b26-8b66-41e0cb54beea
+md"> Analyzed corpus"
+
+# ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+ortho = literaryGreek()
+
+# ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
+md"> Frequencies"
+
+# ╔═╡ 8738131f-7849-4d58-b1b6-a741ca1c5fef
+md"> UI"
+
+# ╔═╡ dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
+menu = ["" => "", 
+	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
+	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus",
+	joinpath(dirname(pwd()), "texts", "apollodorus.cex") => "Apollodorus, Library",
+	"scholia" => "Scholia to the Iliad"
+	
+]
+
+# ╔═╡ ce4fd422-9900-4838-b04b-c74dcbaef1e4
+md""" *Load a text to analyze*: $(@bind src Select(menu))"""
+
+# ╔═╡ bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
+corpus = if isempty(src) 
+	nothing 
+elseif src == "scholia"
+	scholiaurnstr = "urn:cts:greekLit:tlg5026:"
+	allnormed = hmt_normalized()
+	#filter(p -> startswith(string(p.urn), scholiaurnstr), allnormed.passages) |> CitableTextCorpus
+
+	filter(p -> startswith(string(p.urn), "urn:cts:greekLit:tlg5026."), allnormed.passages) |> CitableTextCorpus
+else
+	fromcex(src, CitableTextCorpus, FileReader)
+end
+
+# ╔═╡ 63414fa1-5484-4361-9bbc-7c5221c86817
+isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpus with **$(length(corpus))** citable passages."
+
+
+# ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╠═╡ show_logs = false
+analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
+
+# ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
+analyzedcount = if isnothing(analyzedlexical)
+	nothing
+else
+	filter(at -> ! isempty(at.analyses), analyzedlexical.analyses) |> length
+end
+
+# ╔═╡ e33764ef-c482-47c3-a9f5-cd7509aeb292
+analyzedpct = if isnothing(analyzedlexical)
+	nothing
+else
+round(analyzedcount / length(analyzedlexical) * 100)
+end
+
+# ╔═╡ da178dfa-9e59-42ea-b873-4953518f48c2
+if isnothing(analyzedlexical)
+	md""
+else
+	
+	md"""
+Lexical tokens in corpus: **$(length(analyzedlexical))**
+
+Analyzed tokens: **$(analyzedcount)** tokens, **$(analyzedpct)**%
+
+"""
+end
+
+# ╔═╡ 3120740a-d34c-487b-b4ff-f16db52d5594
+failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
+
+# ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
+failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
+
+# ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
+histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
+
+# ╔═╡ 8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
+failedsolos = filter(failedstrs) do s
+	if ! haskey(histo, s)
+		true
+	else
+		histo[s] == 1
+	end
+end
+
+# ╔═╡ 95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
+hapaxfailedcount = length(failedsolos)
+
+# ╔═╡ 909e3e41-a20e-4b4d-a4c9-be18480de049
+hapaxfailedpct = if isnothing(analyzedlexical)
+	nothing
+else
+	round(hapaxfailedcount / length(analyzedlexical) * 100)
+end
+	
+
+# ╔═╡ bdf28d17-9446-42f3-9a6b-71874e7ffa73
+if isnothing(analyzedlexical)
+	md""
+	else
+md"""
+Unanalyzed singletons: **$(hapaxfailedcount)** == **$(hapaxfailedpct)**%
+
+	"""
+	end
+
+# ╔═╡ 4a8d9f9a-9e66-4fd4-8040-18320608ad3f
+multifails = begin
+	filter(failedstrs) do s
+		if ! haskey(histo, s)
+			true
+		else
+			histo[s] >= 2
+		end
+	end
+end
+
+# ╔═╡ 2287e93e-cb85-4be8-b856-517ea4fd8d21
+isempty(failed) ? md"" : md"""*Show top `n` most frequent unanalyzed =* $(@bind multin NumberField(1:length(multifails)))"""
+
+# ╔═╡ a87082dc-7247-4619-a16e-bf32fbab3223
+failcounts = begin
+	failnums = []
+	for s in unique(multifails)
+		push!(failnums, (s, histo[s]))
+	end
+	sort(failnums, by = pr -> pr[2], rev = true)
+end
+
+
+# ╔═╡ 723fb4bb-326d-4342-baf2-aa5751457f27
+isempty(failed) ? md"" : md"""*Show list of failures occuring `n` or more times where`n` =* $(@bind n NumberField(1:length(failcounts)))"""
+
+# ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
+if isnothing(analyzedlexical)
+	md""
+else
+	failedlist = map(failedsolos[1:n]) do s
+		"1. " * s	
+	end
+	Markdown.parse(join(failedlist, "\n"))
+	
+end
+
+# ╔═╡ d46bce7d-abd8-4e78-b217-252495291c2a
+if isnothing(analyzedlexical)
+	md""
+else
+	mdlist = map(failcounts[1:multin]) do pr
+		
+		string("1. ", pr[1], " **", pr[2], "** occurrences")
+	end
+	
+	Markdown.parse(join(mdlist, "\n"))
+	
+end
+
+# ╔═╡ 626ee6a5-10eb-4d6c-ae37-fc5f7890fd14
+multisum = if isnothing(analyzedlexical)
+	nothing
+else
+	map(pr -> pr[2], failcounts) |> sum
+end
+
+# ╔═╡ 1b4bdd33-0a95-40e5-8c5a-80428646d602
+multipct = if isnothing(analyzedlexical)
+	nothing
+else
+	round(multisum / length(analyzedlexical) * 100)
+end
+
+# ╔═╡ fe286d8c-8f6b-4db6-b7bb-6281fb3500d8
+if isnothing(analyzedlexical)
+	md""
+else
+md"""**$(length(failcounts))** unanalyzed tokens occur multiple times
+
+Total tokens: **$(multisum)**  (**$(multipct)**% of corpus)
+"""
+end
+
+# ╔═╡ 3b745855-bcb6-43a8-9e55-e3732240b784
+failcounts
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CitableBase = "d6f014bd-995c-41bd-9893-703339864534"
+CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
+Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 
 [compat]
 CSV = "~0.10.11"
+CitableBase = "~10.3.0"
+CitableCorpus = "~0.13.4"
 DataFrames = "~1.5.0"
 Kanones = "~0.18.0"
+Orthography = "~0.21.2"
 PlutoUI = "~0.7.51"
+PolytonicGreek = "~0.18.3"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -76,7 +288,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "649c10e95585b1f32cf6bbdb1de1881e6e1c4faa"
+project_hash = "2a47a9b3b2c2200299a8e2faa4023f99bb3dbaf7"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -778,9 +990,42 @@ version = "17.4.0+0"
 # ╠═b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
+# ╟─ce4fd422-9900-4838-b04b-c74dcbaef1e4
 # ╟─6405375f-061d-483f-bf3c-a4a2414c3625
+# ╟─63414fa1-5484-4361-9bbc-7c5221c86817
+# ╟─da178dfa-9e59-42ea-b873-4953518f48c2
+# ╟─bd40d2ca-2f22-4784-888b-0a38c726fe0b
+# ╟─bdf28d17-9446-42f3-9a6b-71874e7ffa73
+# ╟─723fb4bb-326d-4342-baf2-aa5751457f27
+# ╟─518991c3-b390-4cfe-8b28-f7cdcd9824c4
+# ╟─04cdea60-5458-460a-83f1-db2769576a5b
+# ╟─fe286d8c-8f6b-4db6-b7bb-6281fb3500d8
+# ╟─2287e93e-cb85-4be8-b856-517ea4fd8d21
+# ╟─d46bce7d-abd8-4e78-b217-252495291c2a
 # ╟─7b803068-4345-4c5d-915f-c159336ae12f
+# ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
+# ╟─909e3e41-a20e-4b4d-a4c9-be18480de049
+# ╟─95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
+# ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
+# ╟─e33764ef-c482-47c3-a9f5-cd7509aeb292
+# ╟─626ee6a5-10eb-4d6c-ae37-fc5f7890fd14
+# ╟─1b4bdd33-0a95-40e5-8c5a-80428646d602
+# ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
 # ╟─e5433a82-4221-4b73-8a58-69567ad40713
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
+# ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
+# ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
+# ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+# ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╠═3120740a-d34c-487b-b4ff-f16db52d5594
+# ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
+# ╟─a87082dc-7247-4619-a16e-bf32fbab3223
+# ╟─84e4da1d-4082-4393-af39-3c2f828efd94
+# ╟─8806f333-9486-4a81-be60-8a94a49862c1
+# ╟─8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
+# ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
+# ╠═3b745855-bcb6-43a8-9e55-e3732240b784
+# ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
+# ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
