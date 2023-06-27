@@ -206,7 +206,7 @@ end
 
 
 # ╔═╡ 723fb4bb-326d-4342-baf2-aa5751457f27
-isempty(failed) ? md"" : md"""*Show list of failures occuring `n` or more times where`n` =* $(@bind n NumberField(1:length(failcounts)))"""
+isempty(failed) ? md"" : md"""*Show first `n` from alphabetical list of failures* $(@bind n NumberField(1:length(failcounts)))"""
 
 # ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
 if isnothing(analyzedlexical)
@@ -1011,7 +1011,7 @@ version = "17.4.0+0"
 # ╟─626ee6a5-10eb-4d6c-ae37-fc5f7890fd14
 # ╟─1b4bdd33-0a95-40e5-8c5a-80428646d602
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
-# ╟─e5433a82-4221-4b73-8a58-69567ad40713
+# ╠═e5433a82-4221-4b73-8a58-69567ad40713
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
