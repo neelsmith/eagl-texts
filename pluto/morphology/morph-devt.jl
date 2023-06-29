@@ -83,10 +83,10 @@ md"> UI"
 
 # ╔═╡ dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
 menu = ["" => "", 
-	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
-	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
-	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus",
-	joinpath(dirname(pwd()), "texts", "apollodorus.cex") => "Apollodorus, Library",
+	joinpath(dirname(dirname(pwd())), "texts", "lysias1.cex") => "Lysias 1",
+	joinpath(dirname(dirname(pwd())), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(dirname(pwd())), "texts", "herodotus.cex") => "Herodotus",
+	joinpath(dirname(dirname(pwd())), "texts", "apollodorus.cex") => "Apollodorus, Library",
 	"scholia" => "Scholia to the Iliad"
 	
 ]
@@ -987,7 +987,7 @@ version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
-# ╠═b299ef3e-0d10-11ee-1c90-cdb43d1046f1
+# ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
 # ╟─ce4fd422-9900-4838-b04b-c74dcbaef1e4
