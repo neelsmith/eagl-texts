@@ -118,14 +118,6 @@ r.collection
 # ╠═╡ show_logs = false
 #parser = dfParser(read(parsersrc))
 
-# ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
-# ╠═╡ show_logs = false
-labeldictx = Kanones.lsjxdict()
-
-# ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
-# ╠═╡ show_logs = false
- labeldict = Kanones.lsjdict()
-
 # ╔═╡ ec1037e5-33db-46f5-b7a9-93e23450ca11
 """Lexeme labelling function really belongs in `Kanones`."""
 function hacklabel(lexurn)
@@ -141,6 +133,14 @@ function hacklabel(lexurn)
 		string(lexurn, "@nolabel")
 	end
 end
+
+# ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
+# ╠═╡ show_logs = false
+labeldictx = Kanones.lsjxdict()
+
+# ╔═╡ 7f7167f5-b401-4535-b530-708a142fb35c
+# ╠═╡ show_logs = false
+ labeldict = Kanones.lsjdict()
 
 # ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
 md"""---

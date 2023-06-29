@@ -34,24 +34,16 @@ end
 md"""*To see the Julia environment, unhide the following cell*."""
 
 # ╔═╡ 1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
-md"""## Morphology workflow"""
+md"""## Morphologỵ: coverage"""
 
 # ╔═╡ c146e831-4b21-4a7c-80c9-a8c31f7523e4
 md"""### Need attention"""
-
-# ╔═╡ a40eaf57-c5c2-4994-830d-271c9e4ba71e
-md""">  ->> **CHANGE TO FILTER BY NUMBER OF OCCURRENCES**
-> and compute percentage of coverage
-"""
 
 # ╔═╡ e9fb8266-5dbe-426a-89bc-dfbf3a981819
 md"Lexemes in `lsjx` namespace:"
 
 # ╔═╡ f6a1b581-aa74-4279-b986-d05fe1014af0
 md""" ### OK"""
-
-# ╔═╡ 2b37745e-ec91-494c-9569-b13d3c086649
-md"""> Show percentage coverage as list expands"""
 
 # ╔═╡ c156adec-f11f-400d-bab5-e482783aa821
 html"""
@@ -111,19 +103,19 @@ menu = ["" => "",
 
 # ╔═╡ e1216411-d56e-4d12-ab2f-0ef58e387333
 parsermenu = [
-	"core" => "Core parser (manually vetted vocabulary only)",
-	"all" => "Core  parser augmented with vocabulary extractd from LSJ"
+	"core" => "Core parser (manually validated entries)",
+	"all" => "Comprehensive parser (includes inferred entries)"
 	
 ]
 
 # ╔═╡ 771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 md""" *Text*: $(@bind src Select(menu)) *Parser to use*: $(@bind parserchoice Select(parsermenu))"""
 
-# ╔═╡ cb543bcb-0882-44d8-bc2d-d6570e259647
-ortho = literaryGreek()
-
 # ╔═╡ 98d5b50b-7892-42c6-81d0-5e84379d4a0d
 md"> Text and parser"
+
+# ╔═╡ cb543bcb-0882-44d8-bc2d-d6570e259647
+ortho = literaryGreek()
 
 # ╔═╡ d86b185e-17c6-4ec9-80da-dda0c5d8b24d
 corpus = if isempty(src) 
@@ -138,14 +130,10 @@ else
 	fromcex(src, CitableTextCorpus, FileReader)
 end
 
-# ╔═╡ 16c8155e-2229-4bd7-8cb7-c13d8abe1a8e
-parserurl  = if parserchoice == "core"
-	"https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-else
-	"http://shot.holycross.edu/morphology/literarygreek-current.csv"
-end
+# ╔═╡ 1fdde7ba-2ccb-4ac9-a855-d59974ed3831
+parserurl = parserchoice == "all" ? "http://shot.holycross.edu/morphology/literarygreek-current.csv" : "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
 
-# ╔═╡ 94c55628-9b30-4664-9d82-36940e8e1c7a
+# ╔═╡ fc42a3bf-2e0e-47f7-9c2f-ffe700e8fbec
 function getparser()
 	f = Downloads.download(parserurl)
 	p = dfParser(f)
@@ -157,12 +145,14 @@ end
 # ╠═╡ show_logs = false
 parser = getparser()
 
-
 # ╔═╡ b99a1df3-6826-484d-9e0d-dacc45ec3869
 isnothing(corpus) ? md"**Text**: *none selected*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*." :  md"**Text**: *citable corpus with $(length(corpus)) passages*. **Parser**: *$(parserchoice) source capable of analyzing  $(parser.df |> nrow) forms*."
 
 # ╔═╡ fc1e049a-47ae-4e66-90cc-84a6dc9ed767
 md"> Analyses"
+
+# ╔═╡ f0c87b60-97a8-4714-860f-c452efe95768
+parsetoken( "καὶ", parser)
 
 # ╔═╡ 1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
@@ -182,17 +172,18 @@ xurns = begin
 	end
 end
 
-# ╔═╡ 2acdc674-8ae3-46c6-9411-d1e76b63720e
-lexhist = isnothing(analyzedlexical) ? nothing : lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
-
 # ╔═╡ 9d6c3db5-9427-4c55-b712-6aa381db5368
 
 if isnothing(xurns)
 	md"*No URNs in `lsjx` namespace*."
 else
-	lsjxfreqs = filter(pr -> pr[1] in xurns, collect(lexhist))
-	join(map(pr -> string("1. ", pr[1], " (", pr[2], " occurrence(s))"), lsjxfreqs), "\n") |> Markdown.parse
+	md"*Too many URNs in `lsjx` namespace*."
+	#lsjxfreqs = filter(pr -> pr[1] in xurns, collect(lexhist))
+	#join(map(pr -> string("1. ", pr[1], " (", pr[2], " occurrence(s))"), #lsjxfreqs), "\n") |> Markdown.parse
 end
+
+# ╔═╡ 2acdc674-8ae3-46c6-9411-d1e76b63720e
+lexhist = isnothing(analyzedlexical) ? nothing : lexemehisto(analyzedlexical.analyses, labeller = hacklabel)
 
 # ╔═╡ ac158965-896c-4ad6-9067-52f72f45a41e
 lexcountcoll = isnothing(lexhist) ? nothing : lexhist |> collect
@@ -206,11 +197,50 @@ failedstrs = map(psg -> psg.ctoken.passage.text, failed)
 # ╔═╡ eaa833c1-44e0-46da-89d4-11841783e142
 failedfreqs = isempty(failedstrs) ? nothing : filter(pr -> pr[1] in failedstrs, collect(histo))
 
-# ╔═╡ 89fa448a-250c-4a26-aad1-68d036627f5b
-isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  Failed to analyze **$(length(failedfreqs))** forms."
+# ╔═╡ bbb97994-15e6-44bb-82a7-072230e24f42
+biggestfail = isnothing(failedfreqs) ? nothing : map(pr -> pr[2], failedfreqs) |> maximum
 
-# ╔═╡ f61dfc7a-826f-4241-bffd-9e17153cdeb2
-maxn = isempty(failedstrs) ? 0 : length(failedfreqs)
+# ╔═╡ 681dc957-923c-4b0c-b7a1-7737427924a3
+isnothing(biggestfail) ? md"" : md"""*Show list of failures occuring `n` or more times where`n` =* $(@bind n NumberField(0:biggestfail, default=biggestfail))"""
+
+# ╔═╡ b2f5b731-e723-43e3-b656-8c511b723722
+begin
+	if isnothing(failedfreqs)
+		md""
+	else
+		candidates = filter(pr -> pr[2] >= n, failedfreqs)
+		lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), candidates)	
+	
+		abovethresh = map(pr -> pr[2], candidates) |> sum
+		threshcvg = (abovethresh) / length(analyzedlexical) * 100
+		msg = """**$(length(lns))** failures occur **$(n)** or more times (**$(abovethresh)** occurrences, or **$(threshcvg)**%)
+	
+	
+		$(join(lns, "\n"))
+		"""
+		Markdown.parse(msg)
+	end
+end
+
+# ╔═╡ 04382e55-f26e-4981-bdb8-17feafdc312f
+totalbad = isnothing(failedfreqs) ? nothing : map(pr -> pr[2], failedfreqs) |> sum
+
+# ╔═╡ 89fa448a-250c-4a26-aad1-68d036627f5b
+isnothing(corpus) ? nothing : md"**Analyses**: analyzed **$(length(analyzedlexical))** lexical tokens.  
+
+Failed on **$(length(failedfreqs))** forms occurring a total of **$(totalbad)** times."
+
+# ╔═╡ c2fc6c97-8165-4579-baa6-a7a92d84b9fb
+cvg = isnothing(analyzedlexical) ? "TBA" : (length(analyzedlexical) - totalbad) / length(analyzedlexical) * 100 |> round
+
+# ╔═╡ b3733f65-aa78-485f-82f7-01eff55cc7dd
+md"""Coverage: **$(cvg)**%"""
+
+# ╔═╡ f68c60a0-5a2f-4c11-9e8d-678a5f819539
+maxn = isempty(failedstrs) ? 0 : length(failedstrs)
+
+# ╔═╡ 69574493-2ca5-4d2f-9a84-d608b51abb57
+maxn
 
 # ╔═╡ ca394b3f-89f2-4121-8fff-970cdbf399ef
 maxn > 0 ? md"""*Show `n` most frequent successes* where *`n` =* $(@bind goodn Slider(1:length(lexcountcoll); default = 5, show_value=true))""" : md""
@@ -221,27 +251,22 @@ begin
 	if isnothing(lexcountcoll)
 		md""
 	else
-		goodlns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), lexcountcoll[1:goodn])
+		#goodlns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), lexcountcoll[1:goodn])
+		goodlns = map(lexcountcoll[1:goodn]) do pr
+			if startswith(pr[1], "lsjx")
+				 string("1. **", pr[1], " (", pr[2], "** occurrences)\n")
+			else
+				 string("1. ", pr[1], " (**", pr[2], "** occurrences)\n")
+			end
+		end
 		Markdown.parse(join(goodlns, "\n"))
+
 	end
 end
 
 
 # ╔═╡ 2b789e11-4f6d-428b-91f4-6cbf92e7500f
 defaultn = maxn > 10 ? 10 : maxn
-
-# ╔═╡ e4409e78-d0c3-4655-97fd-483bb48ad339
-maxn > 0 ? md"""*Show `n` most frequent failures* where *`n` =* $(@bind n Slider(1:maxn; default=defaultn, show_value=true))""" : md""
-
-# ╔═╡ 14866e7c-9298-4c8c-9620-54e988875466
-begin
-	if maxn > 0
-		lns  = map(pr -> string("1. ", pr[1], " (**", pr[2], "** occurrences)\n"), failedfreqs[1:n])
-		Markdown.parse(join(lns, "\n"))
-	else
-		nothing
-	end
-end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -800,7 +825,7 @@ uuid = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 version = "1.2.1"
 
 [[deps.ImageMagick_jll]]
-deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
+deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "OpenJpeg_jll", "Pkg", "Zlib_jll", "libpng_jll"]
 git-tree-sha1 = "124626988534986113cfd876e3093e4a03890f58"
 uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
 version = "6.9.12+3"
@@ -1022,6 +1047,12 @@ version = "4.4.0+0"
 deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
+[[deps.LittleCMS_jll]]
+deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg"]
+git-tree-sha1 = "110897e7db2d6836be22c18bffd9422218ee6284"
+uuid = "d3a379c0-f9a3-5b72-a4c0-6bf4d2e8af0f"
+version = "2.12.0+0"
+
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
 git-tree-sha1 = "c3ce8e7420b3a6e071e0fe4745f5d4300e37b13f"
@@ -1165,6 +1196,12 @@ deps = ["Artifacts", "Imath_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
 git-tree-sha1 = "a4ca623df1ae99d09bc9868b008262d0c0ac1e4f"
 uuid = "18a262bb-aa17-5467-a713-aee519bc75cb"
 version = "3.1.4+0"
+
+[[deps.OpenJpeg_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Libtiff_jll", "LittleCMS_jll", "Pkg", "libpng_jll"]
+git-tree-sha1 = "76374b6e7f632c130e78100b166e5a48464256f8"
+uuid = "643b3616-a352-519d-856d-80112ee9badc"
+version = "2.4.0+0"
 
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1658,24 +1695,26 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─2e12e74f-c2bc-49c6-9d10-660808ce874a
-# ╠═5b0aef6d-f725-4bb3-8145-883d2b1a47df
+# ╟─5b0aef6d-f725-4bb3-8145-883d2b1a47df
 # ╟─1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
 # ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
+# ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
+# ╟─c2fc6c97-8165-4579-baa6-a7a92d84b9fb
 # ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
-# ╟─a40eaf57-c5c2-4994-830d-271c9e4ba71e
-# ╟─e4409e78-d0c3-4655-97fd-483bb48ad339
-# ╟─14866e7c-9298-4c8c-9620-54e988875466
+# ╟─681dc957-923c-4b0c-b7a1-7737427924a3
+# ╠═69574493-2ca5-4d2f-9a84-d608b51abb57
+# ╟─b2f5b731-e723-43e3-b656-8c511b723722
+# ╠═bbb97994-15e6-44bb-82a7-072230e24f42
 # ╟─e9fb8266-5dbe-426a-89bc-dfbf3a981819
 # ╟─9d6c3db5-9427-4c55-b712-6aa381db5368
 # ╟─f6a1b581-aa74-4279-b986-d05fe1014af0
-# ╟─2b37745e-ec91-494c-9569-b13d3c086649
 # ╟─ca394b3f-89f2-4121-8fff-970cdbf399ef
 # ╟─c31fc626-951c-49a2-ad56-1d2bbfbe207d
 # ╟─c156adec-f11f-400d-bab5-e482783aa821
 # ╟─e2fca126-18d6-4c73-bd7a-55ade28d2af2
-# ╟─2acdc674-8ae3-46c6-9411-d1e76b63720e
+# ╠═2acdc674-8ae3-46c6-9411-d1e76b63720e
 # ╠═ac158965-896c-4ad6-9067-52f72f45a41e
 # ╟─310801c3-9f41-45ed-8691-d0f01990113e
 # ╟─dba3dcfc-9b7e-415d-b0da-2b2e0cfc010a
@@ -1685,19 +1724,21 @@ version = "17.4.0+0"
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
 # ╟─aac8f110-a052-4052-a726-701d4c7e0cda
 # ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
-# ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
+# ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
 # ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
-# ╟─16c8155e-2229-4bd7-8cb7-c13d8abe1a8e
-# ╠═94c55628-9b30-4664-9d82-36940e8e1c7a
+# ╟─1fdde7ba-2ccb-4ac9-a855-d59974ed3831
 # ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
+# ╠═fc42a3bf-2e0e-47f7-9c2f-ffe700e8fbec
 # ╟─fc1e049a-47ae-4e66-90cc-84a6dc9ed767
+# ╠═f0c87b60-97a8-4714-860f-c452efe95768
 # ╠═1fa45aeb-7eaf-4cb6-95bf-2111a41b2ad6
 # ╠═dcaca2e5-38c0-4e7c-ad06-12f9a4936824
 # ╠═2e8afe7a-6001-4912-ada5-672346a0fe00
 # ╠═231a6b66-0fb7-4b7a-b89a-ce4373f76dcd
 # ╠═eaa833c1-44e0-46da-89d4-11841783e142
-# ╠═f61dfc7a-826f-4241-bffd-9e17153cdeb2
+# ╠═04382e55-f26e-4981-bdb8-17feafdc312f
 # ╠═2b789e11-4f6d-428b-91f4-6cbf92e7500f
+# ╠═f68c60a0-5a2f-4c11-9e8d-678a5f819539
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
