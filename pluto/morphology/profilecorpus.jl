@@ -40,6 +40,9 @@ md"""*To see the Pluto environment, unhide the following cell.*"""
 # ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
 md"""## Profile the morphology of a citable text"""
 
+# ╔═╡ a96f7a32-9f45-44dc-bcc5-1204d41c70f2
+md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
+
 # ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
 md""" Analyzed tokens:"""
 
@@ -55,9 +58,10 @@ md"""> Parser, settings, labelling utilities"""
 
 # ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
 menu = ["" => "", 
-	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
-	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
-	joinpath(dirname(pwd()), "texts", "herodotus.cex") => "Herodotus",
+	joinpath(dirname(dirname(pwd())), "texts", "lysias1.cex") => "Lysias 1",
+	joinpath(dirname(dirname(pwd())), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(dirname(pwd())), "texts", "herodotus.cex") => "Herodotus",
+	joinpath(dirname(dirname(pwd())), "texts", "apollodorus-filtered.cex") => "Apollodorus, Library",
 	
 ]
 
@@ -70,22 +74,31 @@ corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 # ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
 isnothing(corpus) ? nothing : md"""## Profile"""
 
-# ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
-# Alternative to local file: use a URL:
-begin
-	#parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
-	#parser = dfParser(Downloads.download(parsersrc))
-end
-
 # ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
 lg = literaryGreek()
 
 # ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
 parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
 
+# ╔═╡ aaf59427-69a6-45df-ad88-5ec7f39a5386
+"""Construct a `DataFrameParser` from a local `.csv` file."""
+function fromfile(fdata)
+	if isnothing(fdata)
+		nothing
+	else
+		f = tempname()
+		open(f, "w") do io
+			write(f, fdata["data"])
+		end
+		dfparser = dfParser(f)
+		rm(f)
+		dfparser
+	end
+end
+
 # ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╠═╡ show_logs = false
-parser = dfParser(read(parsersrc))
+parser = fromfile(file_data)
 
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
@@ -300,7 +313,7 @@ StatsBase = "~0.33.21"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.0"
+julia_version = "1.9.1"
 manifest_format = "2.0"
 project_hash = "97854bbc9d4f12dabe2a7fb533cd6c0c0fa0b2ca"
 
@@ -1550,7 +1563,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.7.0+0"
+version = "5.8.0+0"
 
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1603,6 +1616,7 @@ version = "1.4.1+0"
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 # ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
+# ╟─a96f7a32-9f45-44dc-bcc5-1204d41c70f2
 # ╟─92a2622f-5c83-4341-ba8d-dc864dd3c556
 # ╟─b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
@@ -1616,10 +1630,10 @@ version = "1.4.1+0"
 # ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
 # ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
-# ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
 # ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
-# ╟─e41f7627-bf49-4844-a49d-51714c1ee91d
+# ╟─aaf59427-69a6-45df-ad88-5ec7f39a5386
+# ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
 # ╟─cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╟─7f7167f5-b401-4535-b530-708a142fb35c
@@ -1635,7 +1649,7 @@ version = "1.4.1+0"
 # ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
 # ╟─551958f8-3284-487d-a25b-01a36b1c1013
 # ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
-# ╠═597f3d08-e464-4cf1-9978-21e07bac0799
+# ╟─597f3d08-e464-4cf1-9978-21e07bac0799
 # ╟─544ae06d-4266-4681-aaac-abe791658410
 # ╟─9875fcdd-facf-4204-b628-5b0574760bb7
 # ╟─2a570046-4851-4cd3-aa90-3020667359f1
