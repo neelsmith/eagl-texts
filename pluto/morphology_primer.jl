@@ -34,28 +34,21 @@ begin
 	using PlutoUI
 end
 
-# ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
-menu = ["" => "", 
-	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
-	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
-	joinpath(dirname(pwd()), "texts", "apollodorus.cex") => "Apollodorus Library"
-]
-
 # ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 md"""*To see the Pluto environment, unhide the following cell.*"""
 
 # ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
 md"""## 1. Citable text"""
 
-# ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
-md"""Choose a text: $(@bind src Select(menu))"""
-
-# ╔═╡ 422ce03e-9e36-4920-900e-116606f25ad3
-parsermenu = [
-	"online" => "Online core parser",
-	"local" => "Local copy of comprehensive parser (in personal Dropbox)"
-	
+# ╔═╡ e871f548-3764-4c16-9a27-64fd1b603b86
+textmenu = ["" => "", 
+	joinpath(dirname(pwd()), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(pwd()), "texts", "lysias1.cex") => "Lysias 1",
+	joinpath(dirname(pwd()), "texts", "apollodorus.cex") => "Apollodorus Library"
 ]
+
+# ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
+md"""Choose a text: $(@bind src Select(textmenu))"""
 
 # ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
 corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
@@ -73,24 +66,41 @@ citabletokens = isnothing(corpus) ? nothing : tokenize(corpus, lg)
 md"""## 3. Analyzed tokens"""
 
 # ╔═╡ 188a3b26-90bd-4764-882b-cdc43757b991
-md"""Use a delimited-text source to build a DFParser: can be either a URL or a local file."""
+md"""Use a delimited-text source to build a DFParser."""
 
-# ╔═╡ 554890aa-1e30-4133-b848-1eaceb661376
-parsersrc = "https://raw.githubusercontent.com/neelsmith/Kanones.jl/dev/parsers/current-core.csv"
+# ╔═╡ 43c63b8d-89e0-4c23-a4f5-efcb43ffe1b1
+md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 
-# ╔═╡ ee2c55f7-a39e-47eb-a992-244a216becfd
-newsrc = Downloads.download(parsersrc)
+# ╔═╡ ebc87f5e-fc45-4b5c-b796-15b48351b86c
+"""Construct a `DataFrameParser` from a local `.csv` file."""
+function fromfile(fdata)
+	if isnothing(fdata)
+		nothing
+	else
+		f = tempname()
+		open(f, "w") do io
+			write(f, fdata["data"])
+		end
+		dfparser = dfParser(f)
+		rm(f)
+		dfparser
+	end
+end
 
 # ╔═╡ e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # ╠═╡ show_logs = false
-parser = dfParser(newsrc)
+parser = fromfile(file_data)
 
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 # ╔═╡ 9c07a686-9f30-4fbd-ab74-01447d24aac7
-parsetoken("κακῷ", parser)
+if isnothing(parser)
+	nothing
+else
+	parsetoken("κακῷ", parser)
+end
 
 # ╔═╡ ab586cf9-3cc0-456a-9ff1-c8650184d0fb
 md"""##### Example applications"""
@@ -102,12 +112,12 @@ exampleform = "ποιησαίμην"
 md"""Parsing yields a vector of `Analysis` objects."""
 
 # ╔═╡ 8813b5a9-cc32-4ee7-9d39-02d92de8b37a
-parses = parsetoken(exampleform, parser)
+parses = isnothing(parser) ? [] : parsetoken(exampleform, parser)
 
 # ╔═╡ 8b4548b7-2565-4811-b9f0-eb234f6d26ac
 # This is crude. Need functions to extract lexemes from these analyses.
 # For this demo, we just take the lexeme member of the first parse. :-(
-parsedlex = parses[1].lexeme
+parsedlex = isempty(parses) ? [] :  parses[1].lexeme
 
 # ╔═╡ 97f0937d-ab49-4918-8f1d-99d9990e7ff4
 lexstring =  string(parsedlex)
@@ -202,7 +212,7 @@ StatsBase = "~0.34.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.0"
+julia_version = "1.9.1"
 manifest_format = "2.0"
 project_hash = "c052aa63ed7ab4f9d74ed397bfec4df8052207dc"
 
@@ -1458,7 +1468,7 @@ version = "0.15.1+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.7.0+0"
+version = "5.8.0+0"
 
 [[deps.libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1508,20 +1518,19 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 # ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
+# ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─92a2622f-5c83-4341-ba8d-dc864dd3c556
-# ╠═422ce03e-9e36-4920-900e-116606f25ad3
 # ╠═b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─e06efadb-4dc7-463e-aad5-e6e198c72db2
 # ╠═66cef781-a849-4ff5-bc48-66d7dcd88c61
 # ╠═6dce46e6-b25b-49c5-a8ba-03c3953356c2
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
 # ╟─188a3b26-90bd-4764-882b-cdc43757b991
-# ╠═554890aa-1e30-4133-b848-1eaceb661376
-# ╠═ee2c55f7-a39e-47eb-a992-244a216becfd
+# ╟─43c63b8d-89e0-4c23-a4f5-efcb43ffe1b1
+# ╠═ebc87f5e-fc45-4b5c-b796-15b48351b86c
 # ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═9c07a686-9f30-4fbd-ab74-01447d24aac7

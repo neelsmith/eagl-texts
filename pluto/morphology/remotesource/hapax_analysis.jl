@@ -834,7 +834,7 @@ uuid = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 version = "1.2.1"
 
 [[deps.ImageMagick_jll]]
-deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
+deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "OpenJpeg_jll", "Pkg", "Zlib_jll", "libpng_jll"]
 git-tree-sha1 = "124626988534986113cfd876e3093e4a03890f58"
 uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
 version = "6.9.12+3"
@@ -1056,6 +1056,12 @@ version = "4.4.0+0"
 deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
+[[deps.LittleCMS_jll]]
+deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg"]
+git-tree-sha1 = "110897e7db2d6836be22c18bffd9422218ee6284"
+uuid = "d3a379c0-f9a3-5b72-a4c0-6bf4d2e8af0f"
+version = "2.12.0+0"
+
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
 git-tree-sha1 = "c3ce8e7420b3a6e071e0fe4745f5d4300e37b13f"
@@ -1199,6 +1205,12 @@ deps = ["Artifacts", "Imath_jll", "JLLWrappers", "Libdl", "Zlib_jll"]
 git-tree-sha1 = "a4ca623df1ae99d09bc9868b008262d0c0ac1e4f"
 uuid = "18a262bb-aa17-5467-a713-aee519bc75cb"
 version = "3.1.4+0"
+
+[[deps.OpenJpeg_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Libtiff_jll", "LittleCMS_jll", "Pkg", "libpng_jll"]
+git-tree-sha1 = "76374b6e7f632c130e78100b166e5a48464256f8"
+uuid = "643b3616-a352-519d-856d-80112ee9badc"
+version = "2.4.0+0"
 
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -1695,13 +1707,13 @@ version = "17.4.0+0"
 # ╟─5b0aef6d-f725-4bb3-8145-883d2b1a47df
 # ╟─33b3a5f3-ee50-46e1-9c50-0641202c6874
 # ╟─1901e88e-ffc0-11ed-2ff3-751f7d00f9b3
-# ╟─771fb0f4-8dcb-4e9a-a493-6ee336558ba6
+# ╠═771fb0f4-8dcb-4e9a-a493-6ee336558ba6
 # ╟─b99a1df3-6826-484d-9e0d-dacc45ec3869
 # ╟─89fa448a-250c-4a26-aad1-68d036627f5b
 # ╟─b3733f65-aa78-485f-82f7-01eff55cc7dd
 # ╟─c2fc6c97-8165-4579-baa6-a7a92d84b9fb
 # ╟─c146e831-4b21-4a7c-80c9-a8c31f7523e4
-# ╠═681dc957-923c-4b0c-b7a1-7737427924a3
+# ╟─681dc957-923c-4b0c-b7a1-7737427924a3
 # ╠═69574493-2ca5-4d2f-9a84-d608b51abb57
 # ╟─b2f5b731-e723-43e3-b656-8c511b723722
 # ╠═bbb97994-15e6-44bb-82a7-072230e24f42
@@ -1720,11 +1732,11 @@ version = "17.4.0+0"
 # ╟─561e9b61-bffb-468b-8c9b-971aacad56fa
 # ╟─104512af-c27e-47a3-8f03-a4ac7e9b5b50
 # ╟─f2c9ffb2-dbc6-4b77-b976-b5a0815c61f0
-# ╠═aac8f110-a052-4052-a726-701d4c7e0cda
+# ╟─aac8f110-a052-4052-a726-701d4c7e0cda
 # ╟─e1216411-d56e-4d12-ab2f-0ef58e387333
 # ╟─98d5b50b-7892-42c6-81d0-5e84379d4a0d
 # ╟─cb543bcb-0882-44d8-bc2d-d6570e259647
-# ╠═d86b185e-17c6-4ec9-80da-dda0c5d8b24d
+# ╟─d86b185e-17c6-4ec9-80da-dda0c5d8b24d
 # ╟─1fdde7ba-2ccb-4ac9-a855-d59974ed3831
 # ╠═d22ed420-bfcc-48be-a77d-6b180cc45b53
 # ╠═fc42a3bf-2e0e-47f7-9c2f-ffe700e8fbec
