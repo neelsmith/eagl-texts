@@ -38,7 +38,7 @@ end
 md"""*To see the Pluto environment, unhide the following cell.*"""
 
 # ╔═╡ 5187fb8e-8186-435f-b2de-318a60b38264
-md"""## Profile the morphology of a citable text"""
+md"""## Profile vocabulary of a citable text"""
 
 # ╔═╡ a96f7a32-9f45-44dc-bcc5-1204d41c70f2
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
@@ -47,7 +47,16 @@ md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 md""" Analyzed tokens:"""
 
 # ╔═╡ 4041fc0b-cae8-4a26-8edc-12a4274748ae
-md"""## Vocab by part of speech?"""
+md"""## Vocabulary by part of speech"""
+
+# ╔═╡ 64ed4bf5-cb80-4981-98c2-12ca625755f5
+md""" #### Verbs"""
+
+# ╔═╡ f734b5f5-508d-4eed-b76a-69b3fd096136
+md""" #### Nouns"""
+
+# ╔═╡ d9b2329c-ad57-49ac-8115-565c880b5879
+md""" #### Adjectives"""
 
 # ╔═╡ 4b80d272-bddd-47ca-b919-d7e1c2ef2591
 html"""
@@ -55,6 +64,9 @@ html"""
 <br/><br/><br/><br/><br/><br/><br/><br/>
 <hr/>
 """
+
+# ╔═╡ f91d5215-e984-4046-a4d0-ee623b4ce431
+md"> Counting"
 
 # ╔═╡ ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 md"""> Parser, settings, labelling utilities"""
@@ -73,9 +85,6 @@ md"""*Choose a text to profile*: $(@bind src Select(menu))"""
 
 # ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
 corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
-
-# ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
-isnothing(corpus) ? nothing : md"""## Profile"""
 
 # ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
 lg = literaryGreek()
@@ -99,10 +108,6 @@ end
 # ╔═╡ e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╠═╡ show_logs = false
 parser = fromfile(file_data)
-
-# ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
-# ╠═╡ show_logs = false
-analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 # ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╠═╡ show_logs = false
@@ -128,142 +133,62 @@ function hacklabel(lexurn)
 	end
 end
 
+# ╔═╡ 75ef6eb2-9a3d-4de5-a092-44f9df3bacce
+md"""
+
+---
+
+> Parsing
+"""
+
+
+# ╔═╡ f18aa0b5-31e6-4bdc-b1f5-1772f6621352
+# ╠═╡ show_logs = false
+analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
+
 # ╔═╡ 47791d64-2517-4625-8402-c9d16a07ba3e
 md"""---
 
 
-> Compute survey histograms"""
+> Compute vocabulary histograms"""
 
-# ╔═╡ 8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
-"Compute histogram of parts of speech."
-function poshisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	# analyzedtokens.analyses[1].analyses[1].form
-	morphflattened = map(at -> string(typeof(greekForm(at.form))), flattened)
-	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
-end
-
-# ╔═╡ babe0667-4ff7-4511-9a0b-40f2d84ed48a
-"Histogram of parts of speech."
-posh = isnothing(analyzedlexical) ? nothing : poshisto(analyzedlexical)
-
-# ╔═╡ e19913c8-7c3c-440f-9395-3d9ce8d8e7a7
-begin
-	if isnothing(posh)
-	else
-	poslabels  = keys(posh) |> collect
-	poshvals = map(k -> posh[k], poslabels)
-	bar(poslabels, poshvals, title = "'Part of speech' (analytical type)", xrotation = -45, xticks = :all, legend = false)
-	end
-end
-
-# ╔═╡ 91ed541a-05b5-400c-94cd-0544b11dcc06
-"Compute histogram of morphological forms."
-function morphhisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	# analyzedtokens.analyses[1].analyses[1].form
-	morphflattened = map(at -> label(greekForm(at.form)), flattened)
-	sort!(OrderedDict(countmap(morphflattened)); byvalue=true, rev=true)
-end
-
-# ╔═╡ 17f35d7a-ebb7-45d4-877e-6665e9e3290e
-"Histogram of morpholgoical forms"
-mh = isnothing(analyzedlexical) ? nothing : morphhisto(analyzedlexical)
-
-# ╔═╡ 551958f8-3284-487d-a25b-01a36b1c1013
-"Compute histogram of person-number combinations for finite verbs."
-function pnhisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
-	pns = map(at -> label(gmpPerson(greekForm(at.form))) * " " * label(gmpNumber(greekForm(at.form))), finites)
-	
-	sort!(OrderedDict(countmap(pns)); byvalue=true, rev=true)
-end
-
-# ╔═╡ d64fe501-7e29-4e03-ad69-eb78891e4227
-"Histogram of person-number combinations for finite verbs."
-pnh = isnothing(analyzedlexical) ? nothing : pnhisto(analyzedlexical)
-
-# ╔═╡ fb273b04-0497-4277-9e3b-d31c4edf96cb
-begin
-	if isnothing(pnh)
-	else
-	pnhlabels  = keys(pnh) |> collect
-	pnhvals = map(k -> pnh[k], pnhlabels)
-	bar(pnhlabels, pnhvals, title = "Person-number combinations", xrotation = -45, xticks = :all, legend = false)
-	end
-end
-
-# ╔═╡ 597f3d08-e464-4cf1-9978-21e07bac0799
-"Compute histogram of moods of finite verbs."
-function moodhisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
-	moods = map(at -> label(gmpMood(greekForm(at.form))), finites)
-	
-	sort!(OrderedDict(countmap(moods)); byvalue=true, rev=true)
-end
-
-# ╔═╡ 544ae06d-4266-4681-aaac-abe791658410
-"Histogram of moods of finite verbs."
-moodh = isnothing(analyzedlexical) ? nothing : moodhisto(analyzedlexical)
-
-# ╔═╡ f49cc7d6-e2e2-45c9-a30c-fa3871a1b349
-begin
-	if isnothing(moodh)
-	else
-	moodlabels  = keys(moodh) |> collect
-	moodvals = map(k -> moodh[k], moodlabels)
-	bar(moodlabels, moodvals, title = "Mood", xrotation = -45, xticks = :all, legend = false)
-	end
-end
-
-# ╔═╡ 9875fcdd-facf-4204-b628-5b0574760bb7
-"Compute histogram of person-number combinations for all verb forms."
-function tvhisto(alist)
+# ╔═╡ d5b6916d-d679-4dd2-a85f-4d74e244811c
+"Compute histogram of verb lexemes."
+function verbvocab(alist)
 	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
 	verbs = filter(a -> greekForm(a.form) isa GMFFiniteVerb || greekForm(a.form) isa GMFInfinitive || greekForm(a.form) isa GMFParticiple , flattened)
-	tvs = map(at -> label(gmpTense(greekForm(at.form))) * " " * label(gmpVoice(greekForm(at.form))), verbs)
+	vocab = map(at -> hacklabel(at.lexeme), verbs)
 	
-	sort!(OrderedDict(countmap(tvs)); byvalue=true, rev=true)
+	sort!(OrderedDict(countmap(vocab)); byvalue=true, rev=true)
 end
 
-# ╔═╡ 2a570046-4851-4cd3-aa90-3020667359f1
-"Histogram of person-number combinations for all verb forms."
-tvh = isnothing(analyzedlexical) ? nothing : tvhisto(analyzedlexical)
+# ╔═╡ 53a84dff-4f7f-4d74-a380-11d6689e41b7
+"Histogram of verb lexemes."
+vocab_verbs = isnothing(analyzedlexical) ? nothing : verbvocab(analyzedlexical) |> collect
 
-# ╔═╡ 92181982-74db-4c3e-adff-1f803f637d34
-begin
-	if isnothing(tvh)
-	else
-	tvlabels  = keys(tvh) |> collect
-	tvvals = map(k -> tvh[k], tvlabels)
-	bar(tvlabels, tvvals, title = "Tense-voice combinations (finite and non-finite)", xrotation = -45, xticks = :all, legend = false)
+# ╔═╡ e31f55d5-27ad-4ffd-a72b-d18b0fca8ba4
+isempty(vocab_verbs) ? md"" : md"""*Show verbs occurring at least `n` times where `n` =*  $(@bind verbmin NumberField(1:vocab_verbs[1][2], default= vocab_verbs[1][2]))"""
+
+# ╔═╡ 12408d2f-57c2-414a-ab2c-06191cd440f3
+totalverbforms = map(pr -> pr[2], vocab_verbs) |> sum
+
+# ╔═╡ 30897efa-fca5-4e1c-b853-7ed0ae7a701e
+overmin_verbs = filter(pr -> pr[2] >= verbmin, vocab_verbs)
+
+# ╔═╡ 6076cfd8-a25e-417d-8035-479f5531054b
+totalselectedverbs = map(pr -> pr[2], overmin_verbs) |> sum
+
+# ╔═╡ 3224eb3a-147e-432e-97b1-912f47bb5310
+if isnothing(analyzedlexical)
+	md""
+else
+	hdr = length(overmin_verbs) == 1 ? "**1 verb** occurs at least $(verbmin) times." : """**$(length(overmin_verbs)) verbs** occur at least $(verbmin) times. Total forms:  **$(totalselectedverbs)** = $(round(100 * totalselectedverbs / totalverbforms))%"""
+	overthresh_md = map(overmin_verbs) do pr
+		string("1. ", pr[1], " **", pr[2], "** occurrences")
 	end
-end
-
-# ╔═╡ 7556409b-ee74-4f9f-9e02-d927ca1ae157
-"Compute histogram of tense-mood-voice combinations for finite verbs."
-function tmvhisto(alist)
-	flattened = map(at -> at.analyses, alist) |> Iterators.flatten |> collect
-	finites = filter(a -> greekForm(a.form) isa GMFFiniteVerb, flattened)
-	tmvs = map(at -> label(gmpTense(greekForm(at.form))) * " " *  label(gmpMood(greekForm(at.form))) * " " * label(gmpVoice(greekForm(at.form))), finites)
 	
-	sort!(OrderedDict(countmap(tmvs)); byvalue=true, rev=true)
-end
-
-# ╔═╡ aa56b89b-74a7-44d2-83bb-717235596664
-"Histogram of tense-mood-voice combinations for finite verbs."
-tmvh = isnothing(analyzedlexical) ? nothing : tmvhisto(analyzedlexical)
-
-# ╔═╡ a982c017-bd1a-4141-bebf-7385190a2ad3
-begin
-	if isnothing(tmvh)
-	else
-	tmvlabels  = keys(tmvh) |> collect
-	tmvvals = map(k -> tmvh[k], tmvlabels)
-	bar(tmvlabels, tmvvals, title = "Tense-mood-voice combinations", xrotation = -45, xticks = :all, legend = false)
-	end
+	Markdown.parse(hdr * "\n\n" * join(overthresh_md, "\n"))
+	
 end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1612,34 +1537,29 @@ version = "1.4.1+0"
 # ╟─b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
 # ╟─8bc02373-164c-4b32-9cb8-6d41a37e2626
-# ╟─67b1e432-1a69-4744-ba26-c4c7b55ceea4
-# ╟─e19913c8-7c3c-440f-9395-3d9ce8d8e7a7
-# ╟─fb273b04-0497-4277-9e3b-d31c4edf96cb
-# ╟─92181982-74db-4c3e-adff-1f803f637d34
-# ╟─f49cc7d6-e2e2-45c9-a30c-fa3871a1b349
-# ╟─a982c017-bd1a-4141-bebf-7385190a2ad3
 # ╟─4041fc0b-cae8-4a26-8edc-12a4274748ae
+# ╟─64ed4bf5-cb80-4981-98c2-12ca625755f5
+# ╟─e31f55d5-27ad-4ffd-a72b-d18b0fca8ba4
+# ╟─3224eb3a-147e-432e-97b1-912f47bb5310
+# ╟─f734b5f5-508d-4eed-b76a-69b3fd096136
+# ╟─d9b2329c-ad57-49ac-8115-565c880b5879
 # ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
+# ╟─f91d5215-e984-4046-a4d0-ee623b4ce431
+# ╠═12408d2f-57c2-414a-ab2c-06191cd440f3
+# ╠═6076cfd8-a25e-417d-8035-479f5531054b
+# ╟─30897efa-fca5-4e1c-b853-7ed0ae7a701e
 # ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
 # ╟─aaf59427-69a6-45df-ad88-5ec7f39a5386
-# ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
+# ╟─e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
 # ╟─cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╟─7f7167f5-b401-4535-b530-708a142fb35c
+# ╟─75ef6eb2-9a3d-4de5-a092-44f9df3bacce
+# ╠═f18aa0b5-31e6-4bdc-b1f5-1772f6621352
 # ╟─47791d64-2517-4625-8402-c9d16a07ba3e
-# ╟─8a2bdbb7-7aad-45e7-afc6-d55007b7ea66
-# ╟─babe0667-4ff7-4511-9a0b-40f2d84ed48a
-# ╟─91ed541a-05b5-400c-94cd-0544b11dcc06
-# ╟─17f35d7a-ebb7-45d4-877e-6665e9e3290e
-# ╟─551958f8-3284-487d-a25b-01a36b1c1013
-# ╟─d64fe501-7e29-4e03-ad69-eb78891e4227
-# ╟─597f3d08-e464-4cf1-9978-21e07bac0799
-# ╟─544ae06d-4266-4681-aaac-abe791658410
-# ╟─9875fcdd-facf-4204-b628-5b0574760bb7
-# ╟─2a570046-4851-4cd3-aa90-3020667359f1
-# ╟─7556409b-ee74-4f9f-9e02-d927ca1ae157
-# ╟─aa56b89b-74a7-44d2-83bb-717235596664
+# ╟─d5b6916d-d679-4dd2-a85f-4d74e244811c
+# ╟─53a84dff-4f7f-4d74-a380-11d6689e41b7
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
