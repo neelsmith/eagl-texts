@@ -46,6 +46,9 @@ md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 # ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
 md""" Analyzed tokens:"""
 
+# ╔═╡ 4041fc0b-cae8-4a26-8edc-12a4274748ae
+md"""## Vocab by part of speech?"""
+
 # ╔═╡ 4b80d272-bddd-47ca-b919-d7e1c2ef2591
 html"""
 <br/>
@@ -78,7 +81,7 @@ isnothing(corpus) ? nothing : md"""## Profile"""
 lg = literaryGreek()
 
 # ╔═╡ fdb04419-a763-498b-a28f-4e899b8bb5e2
-parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
+#parsersrc = "/Users/nsmith/Dropbox/_kanones/literarygreek-all-2023-05-25.csv"
 
 # ╔═╡ aaf59427-69a6-45df-ad88-5ec7f39a5386
 """Construct a `DataFrameParser` from a local `.csv` file."""
@@ -1627,11 +1630,12 @@ version = "1.4.1+0"
 # ╟─92181982-74db-4c3e-adff-1f803f637d34
 # ╟─f49cc7d6-e2e2-45c9-a30c-fa3871a1b349
 # ╟─a982c017-bd1a-4141-bebf-7385190a2ad3
+# ╟─4041fc0b-cae8-4a26-8edc-12a4274748ae
 # ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
 # ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
 # ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
-# ╟─fdb04419-a763-498b-a28f-4e899b8bb5e2
+# ╠═fdb04419-a763-498b-a28f-4e899b8bb5e2
 # ╟─aaf59427-69a6-45df-ad88-5ec7f39a5386
 # ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
