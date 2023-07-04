@@ -36,6 +36,12 @@ md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 # ╔═╡ 1c0aefd6-4b26-4c02-b869-0357d72d0e80
 md"""### Unanalyzed forms above a threshhold"""
 
+# ╔═╡ 69d283dc-f71d-4cfd-add2-f4bbc55fe2f0
+md""" ### See passages for form"""
+
+# ╔═╡ af175591-b8e8-48c3-a6d5-78b83d7756c4
+md"""*Token (string value)* $(confirm(@bind s TextField(placeholder="θυγατέρα")))"""
+
 # ╔═╡ bd40d2ca-2f22-4784-888b-0a38c726fe0b
 md"""### Unanalyzed singletons"""
 
@@ -155,6 +161,34 @@ failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), an
 
 # ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
 failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
+
+# ╔═╡ bbb723f9-e7e0-4a7b-8d03-063856da5021
+filter(analyzedlexical.analyses) do at
+	at.ctoken.passage.text == "Βορέου"
+end
+
+# ╔═╡ fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
+"Find passages where token with string value `s` occurs."
+function passages(s)
+	filter(analyzedlexical.analyses) do at
+		at.ctoken.passage.text == nfkc(s)
+	end
+end
+
+# ╔═╡ 8ffbee45-878f-4500-9563-52ff385344b0
+if isempty(s) 
+	md""
+else
+	psglist = passages(nfkc(s))
+	psgsmd = ["$(length(psglist)) occurrences of $(s)",""]
+	for p in psglist
+		push!(psgsmd, string("- ", p))
+	end
+	join(psgsmd, "\n") |> Markdown.parse
+end
+
+# ╔═╡ 3382be61-5dfd-4a55-bd59-d1d7d9ccfc8d
+passages("θυγατέρα")
 
 # ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
 histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
@@ -1727,6 +1761,9 @@ version = "17.4.0+0"
 # ╟─2e98352c-79c5-414f-9e4e-1cd537db20db
 # ╟─5e14151f-4bcf-430f-9253-a9c6f91e7ebe
 # ╟─f61a2900-ce35-495c-869c-424c7a2de134
+# ╟─69d283dc-f71d-4cfd-add2-f4bbc55fe2f0
+# ╟─af175591-b8e8-48c3-a6d5-78b83d7756c4
+# ╠═8ffbee45-878f-4500-9563-52ff385344b0
 # ╟─bd40d2ca-2f22-4784-888b-0a38c726fe0b
 # ╟─bdf28d17-9446-42f3-9a6b-71874e7ffa73
 # ╟─723fb4bb-326d-4342-baf2-aa5751457f27
@@ -1756,6 +1793,9 @@ version = "17.4.0+0"
 # ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 # ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═3120740a-d34c-487b-b4ff-f16db52d5594
+# ╠═bbb723f9-e7e0-4a7b-8d03-063856da5021
+# ╠═fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
+# ╠═3382be61-5dfd-4a55-bd59-d1d7d9ccfc8d
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
 # ╟─a87082dc-7247-4619-a16e-bf32fbab3223
 # ╟─84e4da1d-4082-4393-af39-3c2f828efd94
