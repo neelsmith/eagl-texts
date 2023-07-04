@@ -16,16 +16,16 @@ end
 
 # ╔═╡ b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 begin
-	using PlutoUI
+	using PlutoUI, HypertextLiteral
 	using CSV, DataFrames
 	using Orthography, PolytonicGreek
-	using CitableBase, CitableCorpus
+	using CitableBase, CitableCorpus, CitableText
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
 end
 
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
-md"""# Develop a corpus-specific parser"""
+md"""# Parse passages from a citable text"""
 
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
 md"""## Load data"""
@@ -100,7 +100,7 @@ menu = ["" => "",
 ]
 
 # ╔═╡ ce4fd422-9900-4838-b04b-c74dcbaef1e4
-md""" *Load a text to analyze*: $(@bind src Select(menu))"""
+md""" *Load a text*: $(@bind src Select(menu)) *Enter a passage to analyze:* $(@bind ref confirm(TextField(placeholder="1.1")))"""
 
 # ╔═╡ bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 corpus = if isempty(src) 
@@ -119,9 +119,22 @@ end
 isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpus with **$(length(corpus))** citable passages."
 
 
+# ╔═╡ 0fcad161-4853-4eb0-8fca-19e4adc5e00e
+psgurn = addpassage(corpus.passages[1].urn |> droppassage, ref)
+
+# ╔═╡ de5c424e-370e-477e-beed-fb31d50bd121
+selectedcorpus =  CitableCorpus.select(psgurn, corpus)  |> CitableTextCorpus
+
+# ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
+histo = isnothing(selectedcorpus) ? nothing :  corpus_histo(selectedcorpus, ortho, filterby = LexicalToken())
+
+# ╔═╡ c94d406f-9702-4d98-93f9-7d13e4436133
+ CitableCorpus.select(psgurn, corpus) 
+
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
-analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
+analyzedlexical = isnothing(corpus) | isempty(ref)  ? nothing : parsecorpus(tokenizedcorpus(selectedcorpus,ortho, filterby = LexicalToken()), parser)
+
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -143,9 +156,9 @@ if isnothing(analyzedlexical)
 else
 	
 	md"""
-Lexical tokens in corpus: **$(length(analyzedlexical))**
+**Lexical tokens** in selected passage: **$(length(analyzedlexical))**
 
-Analyzed tokens: **$(analyzedcount)** tokens, **$(analyzedpct)**%
+**Analyzed**: **$(analyzedcount)** tokens, **$(analyzedpct)**%
 
 """
 end
@@ -155,9 +168,6 @@ failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), an
 
 # ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
 failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
-
-# ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
-histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
 
 # ╔═╡ 8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 failedsolos = filter(failedstrs) do s
@@ -215,26 +225,6 @@ end
 
 # ╔═╡ 2e98352c-79c5-414f-9e4e-1cd537db20db
 isempty(failcounts) ? md"" : md"""*Show unanalyzed forms occurring at least `n` times where `n` =*  $(@bind thresh NumberField(1:failcounts[1][2], default= failcounts[1][2]))"""
-
-# ╔═╡ 723fb4bb-326d-4342-baf2-aa5751457f27
-isempty(failed) ? md"" : md"""*Show first `n` from alphabetical list of failures* $(@bind n NumberField(1:length(failcounts)))"""
-
-# ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
-if isnothing(analyzedlexical)
-	md""
-else
-	failedlist = map(failedsolos[1:n]) do s
-		"1. " * s	
-	end
-	Markdown.parse(join(failedlist, "\n"))
-	
-end
-
-# ╔═╡ 931cbc8d-f9e5-4cea-bc7f-82220cf1b895
-currtotal = isempty(failcounts)  ? 0 : map(pr -> pr[2], failcounts[1:multin]) |> sum
-
-# ╔═╡ f713c237-86d3-419a-ae74-5ff20f74b0e3
-currtotal == 0 ? md"" : md"""Displaying **$(multin)** most frequent failures (**$(currtotal)** occurrences total == **$(currtotal / length(analyzedlexical) * 100 |> round )**% of corpus)"""
 
 # ╔═╡ d46bce7d-abd8-4e78-b217-252495291c2a
 if isnothing(analyzedlexical)
@@ -298,8 +288,44 @@ threshpct = threshtotal == 0 ? 0 : round((threshtotal / length(analyzedlexical))
 # ╔═╡ 5e14151f-4bcf-430f-9253-a9c6f91e7ebe
 threshtotal == 0 ? md"" : md"""Tokens occurring at least **$(thresh)** times: **$(length(overthresh))** tokens  (**$(threshtotal)** occurrences = $(threshpct)%)"""
 
+# ╔═╡ 931cbc8d-f9e5-4cea-bc7f-82220cf1b895
+currtotal = isempty(failcounts)  ? 0 : map(pr -> pr[2], failcounts[1:multin]) |> sum
+
+# ╔═╡ f713c237-86d3-419a-ae74-5ff20f74b0e3
+currtotal == 0 ? md"" : md"""Displaying **$(multin)** most frequent failures (**$(currtotal)** occurrences total == **$(currtotal / length(analyzedlexical) * 100 |> round )**% of corpus)"""
+
 # ╔═╡ 3b745855-bcb6-43a8-9e55-e3732240b784
 failcounts
+
+# ╔═╡ 19b72cb7-c0dd-4810-b089-7471a84e2cfd
+"Make range selection widget"
+function rangewidget()
+	PlutoUI.combine() do Child
+		@htl("""
+		<i>Show slice of list from</i>
+	
+		$([
+			@htl("$(name): $(Child(name, NumberField(1:length(failcounts))))</li>")
+			for name in ["start", "end"]
+		])
+	
+		""")
+	end
+end
+
+# ╔═╡ cd914e00-579d-463a-8355-d28bd41b2aaf
+@bind rangevals confirm(rangewidget())
+
+# ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
+if isnothing(analyzedlexical)
+	md""
+else
+	failedlist = map(failedsolos[rangevals[:start]:rangevals[:end]]) do s
+		"- " * s	
+	end
+	Markdown.parse(join(failedlist, "\n"))
+	
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -307,8 +333,10 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CitableBase = "d6f014bd-995c-41bd-9893-703339864534"
 CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
+CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HmtArchive = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
+HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -318,8 +346,10 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 CSV = "~0.10.11"
 CitableBase = "~10.3.0"
 CitableCorpus = "~0.13.4"
+CitableText = "~0.16.0"
 DataFrames = "~1.5.0"
 HmtArchive = "~0.13.0"
+HypertextLiteral = "~0.9.4"
 Kanones = "~0.18.0"
 Orthography = "~0.21.2"
 PlutoUI = "~0.7.51"
@@ -332,7 +362,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "80e52fdb105592fab49510121636098c07aa8aa4"
+project_hash = "aeba294699f4df2df4378d4c1d82459ab33e1757"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1734,10 +1764,9 @@ version = "17.4.0+0"
 # ╟─f61a2900-ce35-495c-869c-424c7a2de134
 # ╟─bd40d2ca-2f22-4784-888b-0a38c726fe0b
 # ╟─bdf28d17-9446-42f3-9a6b-71874e7ffa73
-# ╟─723fb4bb-326d-4342-baf2-aa5751457f27
+# ╟─cd914e00-579d-463a-8355-d28bd41b2aaf
 # ╟─518991c3-b390-4cfe-8b28-f7cdcd9824c4
 # ╟─04cdea60-5458-460a-83f1-db2769576a5b
-# ╟─931cbc8d-f9e5-4cea-bc7f-82220cf1b895
 # ╟─fe286d8c-8f6b-4db6-b7bb-6281fb3500d8
 # ╟─f713c237-86d3-419a-ae74-5ff20f74b0e3
 # ╟─2287e93e-cb85-4be8-b856-517ea4fd8d21
@@ -1753,22 +1782,27 @@ version = "17.4.0+0"
 # ╟─ca156682-0366-4cc1-9ccb-9f6c6372e35a
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
+# ╟─931cbc8d-f9e5-4cea-bc7f-82220cf1b895
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
 # ╠═e5433a82-4221-4b73-8a58-69567ad40713
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 # ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+# ╠═0fcad161-4853-4eb0-8fca-19e4adc5e00e
+# ╠═de5c424e-370e-477e-beed-fb31d50bd121
+# ╠═c94d406f-9702-4d98-93f9-7d13e4436133
 # ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═3120740a-d34c-487b-b4ff-f16db52d5594
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
 # ╟─a87082dc-7247-4619-a16e-bf32fbab3223
-# ╟─84e4da1d-4082-4393-af39-3c2f828efd94
+# ╠═84e4da1d-4082-4393-af39-3c2f828efd94
 # ╟─8806f333-9486-4a81-be60-8a94a49862c1
 # ╟─8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 # ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
 # ╠═3b745855-bcb6-43a8-9e55-e3732240b784
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
 # ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
+# ╟─19b72cb7-c0dd-4810-b089-7471a84e2cfd
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
