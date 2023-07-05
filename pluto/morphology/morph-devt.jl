@@ -16,7 +16,7 @@ end
 
 # ╔═╡ b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 begin
-	using PlutoUI
+	using PlutoUI, HypertextLiteral
 	using CSV, DataFrames
 	using Orthography, PolytonicGreek
 	using CitableBase, CitableCorpus
@@ -44,6 +44,9 @@ md"""*Token (string value)* $(confirm(@bind s TextField(placeholder="θυγατ�
 
 # ╔═╡ bd40d2ca-2f22-4784-888b-0a38c726fe0b
 md"""### Unanalyzed singletons"""
+
+# ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
+
 
 # ╔═╡ 04cdea60-5458-460a-83f1-db2769576a5b
 md"""### Unanalyzed forms occurring multiple times"""
@@ -162,11 +165,6 @@ failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), an
 # ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
 failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
 
-# ╔═╡ bbb723f9-e7e0-4a7b-8d03-063856da5021
-filter(analyzedlexical.analyses) do at
-	at.ctoken.passage.text == "Βορέου"
-end
-
 # ╔═╡ fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 "Find passages where token with string value `s` occurs."
 function passages(s)
@@ -186,9 +184,6 @@ else
 	end
 	join(psgsmd, "\n") |> Markdown.parse
 end
-
-# ╔═╡ 3382be61-5dfd-4a55-bd59-d1d7d9ccfc8d
-passages("θυγατέρα")
 
 # ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
 histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
@@ -249,20 +244,6 @@ end
 
 # ╔═╡ 2e98352c-79c5-414f-9e4e-1cd537db20db
 isempty(failcounts) ? md"" : md"""*Show unanalyzed forms occurring at least `n` times where `n` =*  $(@bind thresh NumberField(1:failcounts[1][2], default= failcounts[1][2]))"""
-
-# ╔═╡ 723fb4bb-326d-4342-baf2-aa5751457f27
-isempty(failed) ? md"" : md"""*Show first `n` from alphabetical list of failures* $(@bind n NumberField(1:length(failcounts)))"""
-
-# ╔═╡ 518991c3-b390-4cfe-8b28-f7cdcd9824c4
-if isnothing(analyzedlexical)
-	md""
-else
-	failedlist = map(failedsolos[1:n]) do s
-		"1. " * s	
-	end
-	Markdown.parse(join(failedlist, "\n"))
-	
-end
 
 # ╔═╡ 931cbc8d-f9e5-4cea-bc7f-82220cf1b895
 currtotal = isempty(failcounts)  ? 0 : map(pr -> pr[2], failcounts[1:multin]) |> sum
@@ -335,6 +316,36 @@ threshtotal == 0 ? md"" : md"""Tokens occurring at least **$(thresh)** times: **
 # ╔═╡ 3b745855-bcb6-43a8-9e55-e3732240b784
 failcounts
 
+# ╔═╡ 53f26f18-0145-4d32-a21e-30cf6cc4dff9
+"Make range selection widget"
+function rangewidget()
+	PlutoUI.combine() do Child
+		@htl("""
+		<i>Show slice of list from</i>
+	
+		$([
+			@htl("$(name): $(Child(name, NumberField(1:length(failcounts))))</li>")
+			for name in ["start", "end"]
+		])
+	
+		""")
+	end
+end
+
+# ╔═╡ c25d1110-4172-41f7-add6-b71122f63dc4
+@bind rangevals confirm(rangewidget())
+
+# ╔═╡ 0957d411-f468-4846-802e-9905c4c33b71
+if isnothing(analyzedlexical)
+	md""
+else
+	failedlist = map(failedsolos[rangevals[:start]:rangevals[:end]]) do s
+		"- " * s	
+	end
+	Markdown.parse(join(failedlist, "\n"))
+	
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -343,10 +354,23 @@ CitableBase = "d6f014bd-995c-41bd-9893-703339864534"
 CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HmtArchive = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
+HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
+
+[compat]
+CSV = "~0.10.11"
+CitableBase = "~10.3.0"
+CitableCorpus = "~0.13.4"
+DataFrames = "~1.5.0"
+HmtArchive = "~0.12.1"
+HypertextLiteral = "~0.9.4"
+Kanones = "~0.18.0"
+Orthography = "~0.21.2"
+PlutoUI = "~0.7.51"
+PolytonicGreek = "~0.18.5"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -355,7 +379,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "e7a829cf40d9953e2b639aa859711d24041c0d1a"
+project_hash = "f51affeedfcd8b17fd852ac21d1382dbf3e423ac"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1766,7 +1790,8 @@ version = "17.4.0+0"
 # ╟─8ffbee45-878f-4500-9563-52ff385344b0
 # ╟─bd40d2ca-2f22-4784-888b-0a38c726fe0b
 # ╟─bdf28d17-9446-42f3-9a6b-71874e7ffa73
-# ╟─723fb4bb-326d-4342-baf2-aa5751457f27
+# ╟─c25d1110-4172-41f7-add6-b71122f63dc4
+# ╟─0957d411-f468-4846-802e-9905c4c33b71
 # ╟─518991c3-b390-4cfe-8b28-f7cdcd9824c4
 # ╟─04cdea60-5458-460a-83f1-db2769576a5b
 # ╟─931cbc8d-f9e5-4cea-bc7f-82220cf1b895
@@ -1793,9 +1818,7 @@ version = "17.4.0+0"
 # ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 # ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═3120740a-d34c-487b-b4ff-f16db52d5594
-# ╠═bbb723f9-e7e0-4a7b-8d03-063856da5021
 # ╠═fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
-# ╠═3382be61-5dfd-4a55-bd59-d1d7d9ccfc8d
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
 # ╟─a87082dc-7247-4619-a16e-bf32fbab3223
 # ╟─84e4da1d-4082-4393-af39-3c2f828efd94
@@ -1805,5 +1828,6 @@ version = "17.4.0+0"
 # ╠═3b745855-bcb6-43a8-9e55-e3732240b784
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
 # ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
+# ╠═53f26f18-0145-4d32-a21e-30cf6cc4dff9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
