@@ -20,7 +20,7 @@ begin
 	using PlutoUI
 	import PlutoUI: combine # For using `aside`, from PlutoTeachingTools
 	using PlutoTeachingTools
-	#using Kroki
+	using Kroki
 	using HypertextLiteral
 	using CitableText
 	
@@ -34,7 +34,7 @@ begin
 end
 
 # ╔═╡ 6791a277-05ea-43d6-9710-c4044f0c178a
-nbversion = "0.6.0";
+nbversion = "0.6.1";
 
 # ╔═╡ 282716c0-e0e4-4433-beb4-4b988fddaa9c
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -42,6 +42,7 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ a4946b0e-17c9-4f90-b820-2439047f2a6a
 if history
 	md"""
+- **0.6.1**: 	support user-defined color palettes.
 - **0.6.0**:  replace `Kroki` with `HypertextLiteral` to render mermaid diagrams.
 - **0.5.2**:	use version `0.3.2` of the `LatinSyntax` package		
 - **0.5.1**:	use version `0.3.1` of the `LatinSyntax` package	
@@ -61,23 +62,6 @@ if history
 - **0.1.0**: simplified reader using new `GreekSyntax` julia package
 - **0.0.1**: initial release	
 	"""
-end
-
-# ╔═╡ 76fbf6d1-c4bf-41e4-a4db-22958d5617a8
-"""Render mermaid diagram as HTML"""
-function mermify(str)
-        @htl """
-        <html>
-            <body>
-                <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"/>
-                <script>
-                    mermaid.initialize({ startOnLoad: true });
-                </script>
-                <pre class="mermaid">
-                $str
-                </pre>
-            </body>
-        </html>"""
 end
 
 # ╔═╡ e7059fa0-82f2-11ed-3bfe-059070a00b1d
@@ -274,18 +258,9 @@ palette = if defaultcolors
 	GreekSyntax.defaultpalette
 	
 else
-	["#79A6A3;",
-	"#E5B36A;",
-	"#C7D7CA;",
-	"#E7926C;",
-	"#D29DC0;",
-	"#C2D6C4;",
-	"#D291BC;",
-	"E7DCCA;",
-	"#FEC8D8;",
-	"#F5CF89;",
-	"#F394AF;"
-]
+	 ["#79A6A3","#caffbf","#9bf6ff", "#fdffb6", "#a0c4ff", ]
+
+	
 end
 
 # ╔═╡ 34f55f22-1115-4962-801f-bde4edca05f3
@@ -402,11 +377,11 @@ end
 # ╠═╡ show_logs = false
 if @isdefined(sentchoice) && sentchoice > 0
 	if txtdisplay == "continuous"
-		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+		rendered = "<div class=\"passage\">" * htmltext(sentences[sentchoice], tokens; sov = sov, vucolor = vucolor, colors = palette, syntaxtips = tooltips) * "</div>"
 		HTML(rendered)
 		
 	else # indented
-		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], verbalunits, tokens; sov = sov, vucolor = vucolor, syntaxtips = tooltips) * "</div>"
+		rendered = "<div class=\"passage\">" *  htmltext_indented(sentences[sentchoice], verbalunits, tokens; sov = sov, vucolor = vucolor,  palette = palette, syntaxtips = tooltips) * "</div>"
 
 		HTML(rendered)
 		
@@ -446,7 +421,7 @@ if @isdefined(sentchoice) && sentchoice > 0
 	</ul>
 	""" : ""
 	
-	colorkey = vucolor ? "<p><b>Color</b></p>" * htmlgrouplist(sentence, verbalunits) : ""
+	colorkey = vucolor ? "<p><b>Color</b></p>" * htmlgrouplist(sentence, verbalunits, palette = palette) : ""
 	
 	keytext = sovkey * colorkey
 
@@ -514,6 +489,23 @@ The following two cells define the visual appearance of the text's formatting.  
 	end
 end
 
+# ╔═╡ 76fbf6d1-c4bf-41e4-a4db-22958d5617a8
+"""Render mermaid diagram as HTML"""
+function mermify(str)
+        @htl """
+        <html>
+            <body>
+                <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"/>
+                <script>
+                    mermaid.initialize({ startOnLoad: true });
+                </script>
+                <pre class="mermaid">
+                $str
+                </pre>
+            </body>
+        </html>"""
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -521,6 +513,7 @@ CitableText = "41e66566-473b-49d4-85b7-da83b66615d8"
 Downloads = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 GreekSyntax = "5497687e-e4d1-4cb6-b14f-a6a808518ccd"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+Kroki = "b3565e16-c1f2-4fe9-b4ab-221c88942068"
 LatinOrthography = "1e3032c9-fa1e-4efb-a2df-a06f238f6146"
 LatinSyntax = "48187f9f-78ff-4060-b31e-d855612fbaec"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
@@ -531,6 +524,7 @@ PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
 CitableText = "~0.15.2"
 GreekSyntax = "~0.13.8"
 HypertextLiteral = "~0.9.4"
+Kroki = "~0.2.0"
 LatinOrthography = "~0.6.0"
 LatinSyntax = "~0.3.2"
 PlutoTeachingTools = "~0.2.5"
@@ -544,7 +538,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "d38a9ceafd6965be0ca5be4c3a7b5d8765e87060"
+project_hash = "691b040cb54b9eef333f2bc2a901bd09aeb0ae4f"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1231,7 +1225,7 @@ version = "17.4.0+0"
 # ╟─fba8ea15-ea3f-430e-afbb-6140a3c372ca
 # ╟─9ed6aaaf-fba8-4101-9a6c-48215f4ec3f9
 # ╟─c82f00a2-301c-4b5b-a034-c13d06554f09
-# ╟─87e46deb-aaad-4e78-81e9-410e3dda062d
+# ╠═87e46deb-aaad-4e78-81e9-410e3dda062d
 # ╟─34f55f22-1115-4962-801f-bde4edca05f3
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345
 # ╟─136599a5-b7c1-4513-be88-e7e79e1f6fb5
