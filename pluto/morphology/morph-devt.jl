@@ -18,7 +18,7 @@ end
 begin
 	using PlutoUI, HypertextLiteral
 	using CSV, DataFrames
-	using Orthography, PolytonicGreek
+	using Orthography, PolytonicGreek, ManuscriptOrthography
 	using CitableBase, CitableCorpus
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
@@ -90,7 +90,7 @@ isnothing(parser) ? md"**Parser**: no parser loaded." : md"""**Parser**: loaded 
 md"> Analyzed corpus"
 
 # ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
-ortho = literaryGreek()
+ortho = src == "scholia" ? msGreek() : literaryGreek()
 
 # ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
 md"> Frequencies"
@@ -128,9 +128,12 @@ end
 isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpus with **$(length(corpus))** citable passages."
 
 
+# ╔═╡ 92d8d256-1f21-4fa3-a424-9ce355f9331a
+tcorpus = tokenizedcorpus(corpus,ortho, filterby = LexicalToken())
+
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
-analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
+analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -356,6 +359,7 @@ DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HmtArchive = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
+ManuscriptOrthography = "c7d01213-112e-44c9-bed3-ac95fd3728c7"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
@@ -368,6 +372,7 @@ DataFrames = "~1.5.0"
 HmtArchive = "~0.12.1"
 HypertextLiteral = "~0.9.4"
 Kanones = "~0.18.0"
+ManuscriptOrthography = "~0.4.4"
 Orthography = "~0.21.2"
 PlutoUI = "~0.7.51"
 PolytonicGreek = "~0.18.5"
@@ -379,7 +384,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "f51affeedfcd8b17fd852ac21d1382dbf3e423ac"
+project_hash = "8d4fc401a2e1047fef0f2a8a6c3b257384bb4ffe"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1816,9 +1821,10 @@ version = "17.4.0+0"
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 # ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+# ╠═92d8d256-1f21-4fa3-a424-9ce355f9331a
 # ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
-# ╠═3120740a-d34c-487b-b4ff-f16db52d5594
-# ╠═fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
+# ╟─3120740a-d34c-487b-b4ff-f16db52d5594
+# ╟─fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
 # ╟─a87082dc-7247-4619-a16e-bf32fbab3223
 # ╟─84e4da1d-4082-4393-af39-3c2f828efd94
@@ -1828,6 +1834,6 @@ version = "17.4.0+0"
 # ╠═3b745855-bcb6-43a8-9e55-e3732240b784
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
 # ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
-# ╠═53f26f18-0145-4d32-a21e-30cf6cc4dff9
+# ╟─53f26f18-0145-4d32-a21e-30cf6cc4dff9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
