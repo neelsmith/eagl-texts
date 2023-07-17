@@ -89,9 +89,6 @@ isnothing(parser) ? md"**Parser**: no parser loaded." : md"""**Parser**: loaded 
 # ╔═╡ aed560de-ffe3-4b26-8b66-41e0cb54beea
 md"> Analyzed corpus"
 
-# ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
-ortho = src == "scholia" ? msGreek() : literaryGreek()
-
 # ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
 md"> Frequencies"
 
@@ -102,14 +99,14 @@ md"> UI"
 menu = ["" => "", 
 	joinpath(dirname(dirname(pwd())), "texts", "lysias1.cex") => "Lysias 1",
 	joinpath(dirname(dirname(pwd())), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
-	joinpath(dirname(dirname(pwd())), "texts", "herodotus.cex") => "Herodotus",
-	joinpath(dirname(dirname(pwd())), "texts", "apollodorus.cex") => "Apollodorus, Library",
+	joinpath(dirname(dirname(pwd())), "texts", "herodotus-filtered.cex") => "Herodotus",
+	joinpath(dirname(dirname(pwd())), "texts", "apollodorus-filtered.cex") => "Apollodorus, Library",
 	"scholia" => "Scholia to the Iliad"
 	
 ]
 
 # ╔═╡ ce4fd422-9900-4838-b04b-c74dcbaef1e4
-md""" *Load a text to analyze*: $(@bind src Select(menu))"""
+isnothing(parser) ? md""" *No parser loaded*: $(@bind src Select([""]]))""" : md""" *Load a text to analyze*: $(@bind src Select(menu))"""
 
 # ╔═╡ bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 corpus = if isempty(src) 
@@ -124,12 +121,18 @@ else
 	fromcex(src, CitableTextCorpus, FileReader)
 end
 
-# ╔═╡ 63414fa1-5484-4361-9bbc-7c5221c86817
-isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpus with **$(length(corpus))** citable passages."
-
+# ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+ortho = src == "scholia" ? msGreek() : literaryGreek()
 
 # ╔═╡ 92d8d256-1f21-4fa3-a424-9ce355f9331a
-tcorpus = tokenizedcorpus(corpus,ortho, filterby = LexicalToken())
+tcorpus = isnothing(corpus) ? nothing : tokenizedcorpus(corpus,ortho, filterby = LexicalToken())
+
+# ╔═╡ 0c3228ec-3023-4fa6-b0d8-7e11fb077b8a
+vocab = isnothing(tcorpus) ? nothing : map(psg -> psg.text, tcorpus) |> unique
+
+# ╔═╡ 63414fa1-5484-4361-9bbc-7c5221c86817
+isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpus with **$(length(corpus))** citable passages, comprising **$(length(vocab))** distinct forms (tokens)."
+
 
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
@@ -149,6 +152,11 @@ else
 round(analyzedcount / length(analyzedlexical) * 100)
 end
 
+# ╔═╡ 63e8c2f9-4ce7-493a-9506-bba563ee7c78
+lexurnstrs = isnothing(analyzedlexical) ? nothing : map(analyzedlexical) do alex
+	lexx = map(a -> a.lexeme, alex.analyses) 
+end |> Iterators.flatten |> collect .|> string |> unique
+
 # ╔═╡ da178dfa-9e59-42ea-b873-4953518f48c2
 if isnothing(analyzedlexical)
 	md""
@@ -157,16 +165,13 @@ else
 	md"""
 Lexical tokens in corpus: **$(length(analyzedlexical))**
 
-Analyzed tokens: **$(analyzedcount)** tokens, **$(analyzedpct)**%
+Analyzed tokens: **$(analyzedcount)** tokens (**$(analyzedpct)**% of), from **$(length(lexurnstrs))** lexemes.
 
 """
 end
 
 # ╔═╡ 3120740a-d34c-487b-b4ff-f16db52d5594
 failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
-
-# ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
-failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
 
 # ╔═╡ fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 "Find passages where token with string value `s` occurs."
@@ -190,6 +195,9 @@ end
 
 # ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
 histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
+
+# ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
+failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
 
 # ╔═╡ 8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 failedsolos = filter(failedstrs) do s
@@ -315,9 +323,6 @@ threshpct = threshtotal == 0 ? 0 : round((threshtotal / length(analyzedlexical))
 
 # ╔═╡ 5e14151f-4bcf-430f-9253-a9c6f91e7ebe
 threshtotal == 0 ? md"" : md"""Tokens occurring at least **$(thresh)** times: **$(length(overthresh))** tokens  (**$(threshtotal)** occurrences = $(threshpct)%)"""
-
-# ╔═╡ 3b745855-bcb6-43a8-9e55-e3732240b784
-failcounts
 
 # ╔═╡ 53f26f18-0145-4d32-a21e-30cf6cc4dff9
 "Make range selection widget"
@@ -1816,13 +1821,15 @@ version = "17.4.0+0"
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
-# ╠═e5433a82-4221-4b73-8a58-69567ad40713
+# ╟─e5433a82-4221-4b73-8a58-69567ad40713
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
-# ╠═fd3dd69c-91b2-4261-a9d9-59dcea113ef8
-# ╠═92d8d256-1f21-4fa3-a424-9ce355f9331a
-# ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╟─fd3dd69c-91b2-4261-a9d9-59dcea113ef8
+# ╟─92d8d256-1f21-4fa3-a424-9ce355f9331a
+# ╟─0c3228ec-3023-4fa6-b0d8-7e11fb077b8a
+# ╟─518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╟─63e8c2f9-4ce7-493a-9506-bba563ee7c78
 # ╟─3120740a-d34c-487b-b4ff-f16db52d5594
 # ╟─fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
@@ -1831,7 +1838,6 @@ version = "17.4.0+0"
 # ╟─8806f333-9486-4a81-be60-8a94a49862c1
 # ╟─8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 # ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
-# ╠═3b745855-bcb6-43a8-9e55-e3732240b784
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
 # ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
 # ╟─53f26f18-0145-4d32-a21e-30cf6cc4dff9
