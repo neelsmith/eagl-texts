@@ -103,6 +103,9 @@ md"""> **Parse user-supplied string**"""
 # ╔═╡ 3cb34642-8d2c-4022-a95f-b2e4d689acfa
 lexstrings = map(p -> string(lexemeurn(p)), parselist) |> unique
 
+# ╔═╡ dc47b0dd-b3d9-43c5-9a21-1185486bdc51
+md"> **Find and format passages**"
+
 # ╔═╡ df57878e-da4a-4b2b-8dbb-ef1cd9247937
 md"""> **Analyze user-selected corpus**"""
 
@@ -136,6 +139,19 @@ lg = literaryGreek()
 # ╔═╡ ab5974db-9a7d-4e4d-873c-6a0dab824676
 corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 
+# ╔═╡ 543d9c9f-73ee-43a9-84aa-6e600a308120
+"Format a single passage in markdown, hilighting occurrences of the string `s`."
+function formatpassage(psgurn, s)
+	u = collapsePassageBy(psgurn, 1) |> dropversion
+	#string("- ", passagecomponent(p))
+	puretext = filter(corpus.passages) do psg
+		startswith(workcomponent(psg.urn), workcomponent(u)) &&
+		startswith(passagecomponent(psg.urn), passagecomponent(u))
+	end[1].text
+	hilited = replace(puretext, s => "**$(s)**")
+	string("1. *", passagecomponent(psgurn), "* ", md" $(hilited)")
+end
+
 # ╔═╡ efec30a6-806f-452c-b589-4113b909a83f
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) || isnothing(parser) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
@@ -156,41 +172,52 @@ tokenindex = isnothing(corpus) ? nothing : corpusindex(corpus, lg)
 lexdict  =  isnothing(analyzedlexical) ? nothing :  lexemedictionary(analyzedlexical.analyses, tokenindex)
 
 # ╔═╡ 51ac26c5-9d38-4c52-8a6e-71981a6843c2
+"Compose markdown display of passages."
 function showpassages()
-	formcounts = []
+	psgmd = []	
+	
 	for lexstr in lexstrings
+		hdg = lemmalabel(lexstr, dict = dict)
+		push!(psgmd, "### Lexeme $(hdg)")
+		push!(psgmd, "")
+		
+
+		
+		formcounts = []
+		sortedforms = OrderedDict()
 		formlist = keys(lexdict[lexstr])
+		
+		
+		
+		
+
+		
 		for f in formlist	
 			psglist = lexdict[lexstr][f]	
             push!(formcounts, (f, length(psglist)))
-            #push!(psgmd, f)
-			#push!(psgmd, "$(length(psglist)) passages found.")
-			#push!(psgmd, "")
-		
-			# kuse Foldable...
+			sortedforms = formcounts |> collect |> OrderedDict
+			sort!(sortedforms; byvalue=true, rev=true)
 		end
-		#push!(psgmd, formlist)
-		#push!(psgs, lexdict[lexstr])		
+		
+		countsall = values(sortedforms) |> collect |> sum
+		totalstr = countsall == 1 ? " **1 passage**" : " **$(countsall) passages**"
+		
+		length(formlist) == 1 ?  push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) form** in $(totalstr)") : push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) forms** in $(totalstr)")
+		push!(psgmd, "")
+		
+		push!(psgmd,"The following list of forms is sorted by frequency:" )
+		push!(psgmd, "")
+		for f in keys(sortedforms)
+			psgcount = sortedforms[f]
+			push!(psgmd, "**$(f)**. ")
+			push!(psgmd, "$(psgcount) passages found.")
+			push!(psgmd, "")
+			psgs = formatpassage.(lexdict[lexstr][f], f)
+			push!(psgmd, join(psgs,"\n"))
+		end
 	end
-	sortedforms = formcounts |> collect |> OrderedDict
-	sort!(sortedforms; byvalue=true, rev=true)
 
-#=
-hdg = lemmalabel(lexstr, dict = dict)
-		push!(psgmd, "### Lexeme $(hdg)")
-		push!(psgmd, "")
-		push!(psgmd,"The following forms of the lexeme $(hdg) appear in the selected corpus (sorted by frequency):" )
-		push!(psgmd, "")
-=#
-    psgmd = []
-    for f in keys(sortedforms)
-
-psgcount = sortedforms[f]
-        push!(psgmd, f)
-		push!(psgmd, "$(psgcount) passages found.")
-		push!(psgmd, "")
-
-	end
+	
     join(psgmd,"\n") |> Markdown.parse
 end
 
@@ -1002,7 +1029,6 @@ version = "17.4.0+0"
 # ╟─7835421a-b27b-407a-bca6-96bf4aa1aef3
 # ╟─17221365-ab81-430b-9740-fa9452cddbd2
 # ╟─ac903cac-3547-4c1d-ab6e-b43872daa95f
-# ╠═51ac26c5-9d38-4c52-8a6e-71981a6843c2
 # ╟─0f1ff74f-db8e-4ac3-bdc9-cdbc9626f7bf
 # ╟─fc134769-5741-42b3-a510-32a279b178fe
 # ╟─1e469909-f494-4183-9357-24d3740a3ab0
@@ -1011,7 +1037,10 @@ version = "17.4.0+0"
 # ╟─bf9191df-3a18-4137-a456-d7b9f27bb7e4
 # ╟─8779a548-856b-43e1-906e-1600cc558f00
 # ╟─3cb34642-8d2c-4022-a95f-b2e4d689acfa
-# ╠═5e6bf257-67e4-4809-864d-d04f8c816faf
+# ╟─5e6bf257-67e4-4809-864d-d04f8c816faf
+# ╟─dc47b0dd-b3d9-43c5-9a21-1185486bdc51
+# ╟─51ac26c5-9d38-4c52-8a6e-71981a6843c2
+# ╟─543d9c9f-73ee-43a9-84aa-6e600a308120
 # ╟─df57878e-da4a-4b2b-8dbb-ef1cd9247937
 # ╟─d3904b21-996a-4142-a7b6-a545dacf5b9c
 # ╠═a425d3ba-22b0-40b4-83e3-927bf295965a
