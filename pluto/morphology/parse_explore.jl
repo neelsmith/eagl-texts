@@ -41,6 +41,9 @@ md"""## Parse and explore a corpus
 # ╔═╡ 34efa77d-ee37-4b6f-b83e-ac672d73f4b7
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 
+# ╔═╡ 608548d5-5778-439d-af5e-8339984c4d57
+md"""*Display passages* $(@bind includetext CheckBox())"""
+
 # ╔═╡ 7d632d49-927a-4ac4-87e1-cf30cea6270f
 md"""### Parse a form and find passages with any form of its lexeme"""
 
@@ -102,6 +105,13 @@ md"""> **Parse user-supplied string**"""
 
 # ╔═╡ 3cb34642-8d2c-4022-a95f-b2e4d689acfa
 lexstrings = map(p -> string(lexemeurn(p)), parselist) |> unique
+
+# ╔═╡ 92321cfc-06d3-4188-928c-185ae42715ce
+begin
+	f = parselist[1]
+	parselist
+	
+end
 
 # ╔═╡ dc47b0dd-b3d9-43c5-9a21-1185486bdc51
 md"> **Find and format passages**"
@@ -1023,10 +1033,12 @@ version = "17.4.0+0"
 # ╟─34efa77d-ee37-4b6f-b83e-ac672d73f4b7
 # ╟─0486b29c-81b2-4847-b802-a1794a43185f
 # ╟─43991d17-2748-4c81-b215-9db88df2912d
+# ╟─608548d5-5778-439d-af5e-8339984c4d57
 # ╟─cc162d72-f151-4229-86bc-fed3f4492736
 # ╟─7d632d49-927a-4ac4-87e1-cf30cea6270f
 # ╟─9b4c5ab9-9f5b-4415-94f3-8caf2b8fd1d2
 # ╟─7835421a-b27b-407a-bca6-96bf4aa1aef3
+# ╠═92321cfc-06d3-4188-928c-185ae42715ce
 # ╟─17221365-ab81-430b-9740-fa9452cddbd2
 # ╟─ac903cac-3547-4c1d-ab6e-b43872daa95f
 # ╟─0f1ff74f-db8e-4ac3-bdc9-cdbc9626f7bf
