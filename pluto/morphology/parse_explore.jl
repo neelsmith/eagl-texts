@@ -32,7 +32,12 @@ end
 md"*To see the Julia environment, unhide the following cell*."
 
 # ╔═╡ cdf282ea-6f20-4957-86f5-58b5d6ebbc3d
-md"""*No release version yet.*"""
+md"""*Notebook version*: **0.1.0**.  Initial release.
+
+> **TBD**:
+>
+> - *Needs better checking on all display cells for missing parser or corpus selections.*
+"""
 
 # ╔═╡ 145c8a3d-4bed-41aa-9d1a-4418819bd36c
 md"""## Parse and explore a corpus
@@ -103,15 +108,19 @@ md"""> **Parse user-supplied string**"""
 # ╔═╡ 8779a548-856b-43e1-906e-1600cc558f00
 	parselist = isnothing(parser) ? [] : parsetoken(s, parser)
 
-# ╔═╡ 3cb34642-8d2c-4022-a95f-b2e4d689acfa
-lexstrings = map(p -> string(lexemeurn(p)), parselist) |> unique
-
 # ╔═╡ 92321cfc-06d3-4188-928c-185ae42715ce
 begin
-	f = parselist[1]
-	parselist
+	if isempty(parselist)
+		
+	else
+		f = parselist[1]
+		parselist
+	end
 	
 end
+
+# ╔═╡ 3cb34642-8d2c-4022-a95f-b2e4d689acfa
+lexstrings = map(p -> string(lexemeurn(p)), parselist) |> unique
 
 # ╔═╡ dc47b0dd-b3d9-43c5-9a21-1185486bdc51
 md"> **Find and format passages**"
@@ -158,7 +167,7 @@ function formatpassage(psgurn, s)
 		startswith(workcomponent(psg.urn), workcomponent(u)) &&
 		startswith(passagecomponent(psg.urn), passagecomponent(u))
 	end[1].text
-	hilited = replace(puretext, s => "**$(s)**")
+	hilited = replace(nfkc(puretext), nfkc(s) => "**$(s)**")
 	string("1. *", passagecomponent(psgurn), "* ", md" $(hilited)")
 end
 
@@ -181,6 +190,24 @@ tokenindex = isnothing(corpus) ? nothing : corpusindex(corpus, lg)
 # ╔═╡ d1faafd6-e6cc-4378-95de-1cb3ee493dcd
 lexdict  =  isnothing(analyzedlexical) ? nothing :  lexemedictionary(analyzedlexical.analyses, tokenindex)
 
+# ╔═╡ e8f36174-6aff-4440-b991-6afc685255a0
+"""For the given lexeme URN string, get list of all forms, and sort list
+by frequency.
+"""
+function sortedcounts(lexstr)
+	formcounts = []
+	sortedforms = OrderedDict()
+	formlist = keys(lexdict[lexstr])
+	for f in formlist	
+		psglist = lexdict[lexstr][f]	
+		push!(formcounts, (f, length(psglist)))
+		sortedforms = formcounts |> collect |> OrderedDict
+		sort!(sortedforms; byvalue=true, rev=true)
+	end
+	sortedforms
+end
+
+
 # ╔═╡ 51ac26c5-9d38-4c52-8a6e-71981a6843c2
 "Compose markdown display of passages."
 function showpassages()
@@ -190,44 +217,42 @@ function showpassages()
 		hdg = lemmalabel(lexstr, dict = dict)
 		push!(psgmd, "### Lexeme $(hdg)")
 		push!(psgmd, "")
-		
 
-		
-		formcounts = []
-		sortedforms = OrderedDict()
-		formlist = keys(lexdict[lexstr])
-		
-		
-		
-		
-
-		
-		for f in formlist	
-			psglist = lexdict[lexstr][f]	
-            push!(formcounts, (f, length(psglist)))
-			sortedforms = formcounts |> collect |> OrderedDict
-			sort!(sortedforms; byvalue=true, rev=true)
-		end
-		
-		countsall = values(sortedforms) |> collect |> sum
+		# lexdict is a dict of dicts: the lexstring
+		# is the key to a dict keyed by forms, and
+		# giving passages per form:
+		formlist = lexdict[lexstr] |> keys
+		countsall = lexdict[lexstr] |> values |>  collect .|> length |> sum
 		totalstr = countsall == 1 ? " **1 passage**" : " **$(countsall) passages**"
 		
-		length(formlist) == 1 ?  push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) form** in $(totalstr)") : push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) forms** in $(totalstr)")
+		# list of forms sorted by frequency:
+		formcounts = sortedcounts(lexstr)
+
+		if length(formlist) == 1
+			 push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) form** in $(totalstr)")
+		else
+		 	push!(psgmd, "$(hdg) appears in **$(length(collect(formlist))) forms** in $(totalstr)")
+		end
 		push!(psgmd, "")
 		
 		push!(psgmd,"The following list of forms is sorted by frequency:" )
 		push!(psgmd, "")
-		for f in keys(sortedforms)
-			psgcount = sortedforms[f]
+		for f in keys(formcounts)
+			psgcount = formcounts[f]
 			push!(psgmd, "**$(f)**. ")
-			push!(psgmd, "$(psgcount) passages found.")
+			if psgcount == 1
+				push!(psgmd, "$(psgcount) passage found.")
+			else
+				push!(psgmd, "$(psgcount) passages found.")
+			end
 			push!(psgmd, "")
-			psgs = formatpassage.(lexdict[lexstr][f], f)
-			push!(psgmd, join(psgs,"\n"))
+			if includetext
+				psgs = formatpassage.(lexdict[lexstr][f], f)
+				push!(psgmd, join(psgs,"\n"))
+			end
 		end
+		
 	end
-
-	
     join(psgmd,"\n") |> Markdown.parse
 end
 
@@ -1036,9 +1061,9 @@ version = "17.4.0+0"
 # ╟─608548d5-5778-439d-af5e-8339984c4d57
 # ╟─cc162d72-f151-4229-86bc-fed3f4492736
 # ╟─7d632d49-927a-4ac4-87e1-cf30cea6270f
+# ╟─92321cfc-06d3-4188-928c-185ae42715ce
 # ╟─9b4c5ab9-9f5b-4415-94f3-8caf2b8fd1d2
 # ╟─7835421a-b27b-407a-bca6-96bf4aa1aef3
-# ╠═92321cfc-06d3-4188-928c-185ae42715ce
 # ╟─17221365-ab81-430b-9740-fa9452cddbd2
 # ╟─ac903cac-3547-4c1d-ab6e-b43872daa95f
 # ╟─0f1ff74f-db8e-4ac3-bdc9-cdbc9626f7bf
@@ -1051,8 +1076,9 @@ version = "17.4.0+0"
 # ╟─3cb34642-8d2c-4022-a95f-b2e4d689acfa
 # ╟─5e6bf257-67e4-4809-864d-d04f8c816faf
 # ╟─dc47b0dd-b3d9-43c5-9a21-1185486bdc51
-# ╟─51ac26c5-9d38-4c52-8a6e-71981a6843c2
 # ╟─543d9c9f-73ee-43a9-84aa-6e600a308120
+# ╟─51ac26c5-9d38-4c52-8a6e-71981a6843c2
+# ╟─e8f36174-6aff-4440-b991-6afc685255a0
 # ╟─df57878e-da4a-4b2b-8dbb-ef1cd9247937
 # ╟─d3904b21-996a-4142-a7b6-a545dacf5b9c
 # ╠═a425d3ba-22b0-40b4-83e3-927bf295965a
