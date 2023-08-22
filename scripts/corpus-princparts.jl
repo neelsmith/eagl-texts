@@ -3,13 +3,17 @@ using CitableBase, CitableCorpus, CitableText
 using Orthography, PolytonicGreek
 using OrderedCollections, StatsBase
 
-textsrc = joinpath(pwd(), "texts", "lysias1.cex")
+textsrc = joinpath(pwd(), "texts", "oeconomicus-filtered.cex")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
 
 struct Occurs
     str::AbstractString
     count::Int
+end
+
+function delimited(occurs::Occurs; delimiter = ",")
+    string(occurs.str, delimiter, occurs.count)
 end
 
 """Filter a vector of `AnalzedToken`s to keep only verbs."""
@@ -74,3 +78,9 @@ end
 
 kroot = joinpath(pwd() |> dirname, "Kanones.jl")
 pps_by_freqs = occursdata(corpus, kroot)
+
+outstr = join(pps_by_freqs .|> delimited,"\n")
+
+open("oec-princparts.csv","w") do io
+    write(io, outstr)
+end
