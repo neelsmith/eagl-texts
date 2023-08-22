@@ -1,20 +1,30 @@
 using Kanones, CitableParserBuilder
-using CitableBase, CitableCorpus, CitableText
+using CitableBase, CitableCorpus, CitableText, CitableCollection, CitableObject
 using Orthography, PolytonicGreek
 using OrderedCollections, StatsBase
 
-textsrc = joinpath(pwd(), "texts", "oeconomicus-filtered.cex")
+textsrc = joinpath(pwd(), "texts", "lysias1-filtered.cex")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
 
 struct Occurs
-    str::AbstractString
+    label::AbstractString
     count::Int
+    data::AbstractString
 end
 
 function delimited(occurs::Occurs; delimiter = ",")
-    string(occurs.str, delimiter, occurs.count)
+    string(occurs.label, delimiter, occurs.count, delimiter, occurs.data)
 end
+
+
+LSJ_FU_URL = "https://raw.githubusercontent.com/Eumaeus/cite_lsj_cex/master/lsj_chicago.cex"
+"""Read CITE Collection from CEX source."""
+function lsjcollection()
+	collv = fromcex(LSJ_FU_URL, CatalogedCollection, UrlReader; delimiter = "#")
+	collv[2]
+end
+lsjdata = lsjcollection()
 
 """Filter a vector of `AnalzedToken`s to keep only verbs."""
 function verbsonly(analyzedtkns)
@@ -36,33 +46,36 @@ end
 function verb_pps_by_freq(verbhisto::OrderedDict{Vector{String}, Int64}, kds::Kanones.FilesDataset)
     pplist = []
     i = 0
+    
     for kvect in keys(verbhisto)
         i = i + 1
         if length(kvect) > 1
-            println("MULTI: $(kvect)")
+            println("Multiple IDs: $(kvect)")
         end
+
         for vb in kvect 
             # Get counts...
             count = verbhisto[kvect]
             pps = join(principalparts(LexemeUrn(vb), kds), ", ")
+
+            idval = split(vb, ".")[2]
+            lsjrows = filter(lsjdata.data.data) do r
+                objectcomponent(r.urn) == idval
+            end
             data = string(count, ",", pps)
-            @info(string(i, "...", data))
-            push!(pplist, Occurs(pps,count))
+            lsjkey = lsjrows.key[1]
+            @info(string(i, "/", length(verbhisto),  "...", data, " from ", lsjkey))
+            push!(pplist, Occurs(lsjkey, count, pps))
         end
     end
     pplist
 end
 
-
-
-
 """Given a text corpus and a clone of the Kanones repo, build an occurence structure
 with principal parts of verbs, sorted by frequency of verb."""
 function occursdata(c::CitableTextCorpus, krepo; ortho = literaryGreek(), dict = Kanones.lsjdict())
-    
     parsersrc = joinpath(kroot, "parsers", "current-core-attic.csv")
     parser = dfParser(parsersrc)
-
     analyzedtokencollection = parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
 
     verbs = verbsonly(analyzedtokencollection.analyses)
@@ -79,8 +92,9 @@ end
 kroot = joinpath(pwd() |> dirname, "Kanones.jl")
 pps_by_freqs = occursdata(corpus, kroot)
 
-outstr = join(pps_by_freqs .|> delimited,"\n")
 
+outstr = join(pps_by_freqs .|> delimited,"\n")
 open("oec-princparts.csv","w") do io
     write(io, outstr)
 end
+
