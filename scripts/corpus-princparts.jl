@@ -3,7 +3,8 @@ using CitableBase, CitableCorpus, CitableText, CitableCollection, CitableObject
 using Orthography, PolytonicGreek
 using OrderedCollections, StatsBase
 
-textsrc = joinpath(pwd(), "texts", "lysias1-filtered.cex")
+textsrc = joinpath(pwd(), "texts", "oeconomicus-filtered.cex")
+outfile = joinpath(pwd(), "oec-princparts.csv")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
 
@@ -94,7 +95,7 @@ pps_by_freqs = occursdata(corpus, kroot)
 
 
 outstr = join(pps_by_freqs .|> delimited,"\n")
-open("oec-princparts.csv","w") do io
+open(outfile,"w") do io
     write(io, outstr)
 end
 
