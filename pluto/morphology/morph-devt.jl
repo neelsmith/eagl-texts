@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.26
+# v0.19.27
 
 using Markdown
 using InteractiveUtils
@@ -23,6 +23,9 @@ begin
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
 end
+
+# ╔═╡ 944013e2-1f48-4a66-a343-2a66e07ec8d5
+md"""*Version: **0.1.0**.*"""
 
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
 md"""# Develop a corpus-specific parser"""
@@ -86,6 +89,21 @@ parser = fromfile(file_data)
 # ╔═╡ 6405375f-061d-483f-bf3c-a4a2414c3625
 isnothing(parser) ? md"**Parser**: no parser loaded." : md"""**Parser**: loaded parser capable of analyzing **$(nrow(parser.df))** forms."""
 
+# ╔═╡ 28da3e9d-3f5b-4e93-a1ce-82aaa2d7e9a2
+if isnothing(parser)
+	md""
+else
+	parsedisplay = []
+	parseresults = parsetoken(s,parser)
+	for prs in parseresults
+		push!(parsedisplay, "- " * string(prs))
+	end
+	join(parsedisplay,"\n") |> Markdown.parse
+end
+
+# ╔═╡ 6f33a235-68ea-4d34-9dd9-94e8b18288e2
+parser
+
 # ╔═╡ aed560de-ffe3-4b26-8b66-41e0cb54beea
 md"> Analyzed corpus"
 
@@ -106,10 +124,10 @@ menu = ["" => "",
 ]
 
 # ╔═╡ ce4fd422-9900-4838-b04b-c74dcbaef1e4
-isnothing(parser) ? md""" *No parser loaded*: $(@bind src Select([""]]))""" : md""" *Load a text to analyze*: $(@bind src Select(menu))"""
+isnothing(parser) ? md""" $(@bind src Select(["" => "--No parser loaded--"]))""" : md""" *Load a text to analyze*: $(@bind src Select(menu))"""
 
 # ╔═╡ bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
-corpus = if isempty(src) 
+corpus = if isnothing(parser) || isempty(src)
 	nothing 
 elseif src == "scholia"
 	scholiaurnstr = "urn:cts:greekLit:tlg5026:"
@@ -1784,6 +1802,7 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
+# ╟─944013e2-1f48-4a66-a343-2a66e07ec8d5
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
@@ -1797,6 +1816,7 @@ version = "17.4.0+0"
 # ╟─f61a2900-ce35-495c-869c-424c7a2de134
 # ╟─69d283dc-f71d-4cfd-add2-f4bbc55fe2f0
 # ╟─af175591-b8e8-48c3-a6d5-78b83d7756c4
+# ╟─28da3e9d-3f5b-4e93-a1ce-82aaa2d7e9a2
 # ╟─8ffbee45-878f-4500-9563-52ff385344b0
 # ╟─bd40d2ca-2f22-4784-888b-0a38c726fe0b
 # ╟─bdf28d17-9446-42f3-9a6b-71874e7ffa73
@@ -1821,7 +1841,8 @@ version = "17.4.0+0"
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
-# ╟─e5433a82-4221-4b73-8a58-69567ad40713
+# ╠═e5433a82-4221-4b73-8a58-69567ad40713
+# ╠═6f33a235-68ea-4d34-9dd9-94e8b18288e2
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
