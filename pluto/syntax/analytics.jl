@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.19
+# v0.19.26
 
 using Markdown
 using InteractiveUtils
@@ -65,6 +65,27 @@ md"""## Analyze syntactic complexity by sentence
 # ╔═╡ b9311908-9282-4658-95ab-6e1ff0ebb84f
 md"""### Load data set"""
 
+# ╔═╡ d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
+begin
+	loadmsg = md"""
+	
+You may load syntactically annotated texts from a URL or from a local file.
+
+*To load from a URL*:
+	
+- paste or type a URL in the input box, and verify your choice with the `Submit` button 
+
+	
+*To load from a file*:
+	
+1. Identify a directory with delimited-text files containing syntactic annotations, and verify your choice with the `Submit` button.
+2. Choose a file from the popup menu.
+
+
+"""
+	aside(Foldable("How to load annotated texts", instructions("Loading data sets", loadmsg))  )
+end
+
 # ╔═╡ 8aef0231-b608-4cbf-9473-2d05b0867a8c
 begin
 	orthomenu = ["litgreek" => "Greek: literary orthography", "latin23" => "Latin: 23-character alphabet","latin24" => "Latin: 24-character alphabet", "latin25" => "Latin: 25-character alphabet"]
@@ -102,6 +123,17 @@ if srctype == "file"
 end
 
 
+# ╔═╡ bf279ded-a4d8-44ff-93b1-985c9a77ca4b
+begin
+	plotsmsg = md"""
+
+Explanation of these metrics is being developed as part of the [`GreekSyntax` documentation](https://neelsmith.github.io/GreekSyntax.jl/stable/metrics/)
+
+
+"""
+	aside(Foldable("What are these observations?", instructions("Syntax metrics", plotsmsg))  )
+end
+
 # ╔═╡ 39d9bf4f-eed4-4d5f-8736-b2ebe9f6b136
 md"""### Measures of sentence's complexity"""
 
@@ -133,6 +165,14 @@ md"""
 # ╔═╡ d54f3199-7bbe-4c31-91d6-5b86e40ab20c
 md""" ### View a passage of the text
 """
+
+# ╔═╡ 7a694e8a-8907-4067-9625-3f00e1322345
+	if dsexists()
+	displaymenu = ["indented" => "indented for subordination", "continuous" => "continuous text"
+	]
+	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
+"""
+end
 
 # ╔═╡ 757c4c9e-7db6-4a2c-9057-803a9829cf3b
 md""" ### Frequency of syntactic features
@@ -177,19 +217,6 @@ md"""> **Loading data**. Use the `GreekSyntax` package to read delimited text an
 
 """
 
-# ╔═╡ 2a498b50-db14-4a29-bef8-a3caaa81b2f6
-"""Instantiate `OrthographicSystem` for user's menu choice.
-"""
-function orthography()
-	if ortho == "litgreek"
-		literaryGreek()
-	elseif ortho == "latin23"
-		latin23()
-	else
-		nothing
-	end
-end
-
 # ╔═╡ 74ec2148-dd53-4f54-9d92-327d5ba44eaf
 (sentences, groups, tokens) = if srctype == "file"
 	src = joinpath(basedir, dataset) |> readlines
@@ -199,12 +226,6 @@ elseif srctype == "url"
 	readdelimited(src, orthography())
 else
 	(nothing, nothing, nothing)
-end
-
-# ╔═╡ 20f31f23-9d89-47d3-85a3-b53b5bc67a9f
-"""True if selected dataset exists."""
-function dsexists()
-	! isnothing(sentences) && ! isempty(sentences)
 end
 
 # ╔═╡ 5ce73837-a376-4d2c-88f9-ce084262dda4
@@ -217,14 +238,6 @@ if dsexists()
 	
 	md"""*Display the text for a sentence* $(@bind sentchoice Select(sentencemenu)) 
 	"""
-end
-
-# ╔═╡ 7a694e8a-8907-4067-9625-3f00e1322345
-	if dsexists()
-	displaymenu = ["indented" => "indented for subordination", "continuous" => "continuous text"
-	]
-	md"""*Display* $(@bind txtdisplay Select(displaymenu)) *Highlight SOV+ functions* $(@bind sov CheckBox()) *Color verbal units* $(@bind vucolor CheckBox())  *Include tooltips* $(@bind tooltips CheckBox()) 
-"""
 end
 
 # ╔═╡ b5541ee3-65d9-4b65-8f3b-21cc490478fe
@@ -403,41 +416,28 @@ if dsexists()
 	end
 end
 
+# ╔═╡ 2a498b50-db14-4a29-bef8-a3caaa81b2f6
+"""Instantiate `OrthographicSystem` for user's menu choice.
+"""
+function orthography()
+	if ortho == "litgreek"
+		literaryGreek()
+	elseif ortho == "latin23"
+		latin23()
+	else
+		nothing
+	end
+end
+
+# ╔═╡ 20f31f23-9d89-47d3-85a3-b53b5bc67a9f
+"""True if selected dataset exists."""
+function dsexists()
+	! isnothing(sentences) && ! isempty(sentences)
+end
+
 # ╔═╡ 698f3062-02a4-48b5-955e-a8c3ee527872
 """Format user instructions with Markdown admonition."""
 instructions(title, text) = Markdown.MD(Markdown.Admonition("tip", title, [text]))
-
-# ╔═╡ d76195d9-5bf6-4d3e-bddf-92cc4a1001ba
-begin
-	loadmsg = md"""
-	
-You may load syntactically annotated texts from a URL or from a local file.
-
-*To load from a URL*:
-	
-- paste or type a URL in the input box, and verify your choice with the `Submit` button 
-
-	
-*To load from a file*:
-	
-1. Identify a directory with delimited-text files containing syntactic annotations, and verify your choice with the `Submit` button.
-2. Choose a file from the popup menu.
-
-
-"""
-	aside(Foldable("How to load annotated texts", instructions("Loading data sets", loadmsg))  )
-end
-
-# ╔═╡ bf279ded-a4d8-44ff-93b1-985c9a77ca4b
-begin
-	plotsmsg = md"""
-
-Explanation of these metrics is being developed as part of the [`GreekSyntax` documentation](https://neelsmith.github.io/GreekSyntax.jl/stable/metrics/)
-
-
-"""
-	aside(Foldable("What are these observations?", instructions("Syntax metrics", plotsmsg))  )
-end
 
 # ╔═╡ cf66b68c-6ad3-4e14-98b7-791672d6e0a8
 css = HTML("<style>" * GreekSyntax.defaultcss() * "</style>")
@@ -1672,7 +1672,7 @@ version = "1.4.1+0"
 
 # ╔═╡ Cell order:
 # ╟─6791a277-05ea-43d6-9710-c4044f0c178a
-# ╟─c91e9345-9a42-4418-861b-6cdda203a71e
+# ╠═c91e9345-9a42-4418-861b-6cdda203a71e
 # ╟─282716c0-e0e4-4433-beb4-4b988fddaa9c
 # ╟─a4946b0e-17c9-4f90-b820-2439047f2a6a
 # ╟─e7059fa0-82f2-11ed-3bfe-059070a00b1d
@@ -1693,7 +1693,7 @@ version = "1.4.1+0"
 # ╟─7a694e8a-8907-4067-9625-3f00e1322345
 # ╟─b5541ee3-65d9-4b65-8f3b-21cc490478fe
 # ╟─757c4c9e-7db6-4a2c-9057-803a9829cf3b
-# ╟─ce04ba69-8526-4802-926e-0a0038bfdda8
+# ╠═ce04ba69-8526-4802-926e-0a0038bfdda8
 # ╟─8d890d45-52c7-4537-8760-1b1cf549a2cc
 # ╟─73efb203-72ad-4c16-9836-140303f4e189
 # ╟─85e2f41f-1163-45f1-b10a-aa25769f8345

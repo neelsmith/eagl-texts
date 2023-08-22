@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.19
+# v0.19.26
 
 using Markdown
 using InteractiveUtils
@@ -28,7 +28,7 @@ begin
 end
 
 # ╔═╡ 7e0a834e-ab93-4320-9119-cbd04495dc9b
-nbversion = "0.2.1";
+nbversion = "0.2.0";
 
 # ╔═╡ 5ede902b-be5d-479a-9816-209b1adb7ce8
 md"""**Notebook version $(nbversion)**  *See version history* $(@bind history CheckBox())"""
@@ -36,16 +36,13 @@ md"""**Notebook version $(nbversion)**  *See version history* $(@bind history Ch
 # ╔═╡ 31d7e8b4-e4b3-450e-9401-f4256dfe8d53
 if history
 	md"""
-- **0.2.1**: 	use version `0.13.8` of `GreekSyntax` package and `0.3.2` of `LatinSyntax`
-- **0.2.0**: 	add selection of language and orthography for corpus
-- **0.1.2**: 	use version `0.13.4` of `GreekSyntax` package
-- **0.1.1**: update internal package manifest
-- **0.1.0**: initial release	
+- **0.2.0**:	adds navigation links.
+- **0.1.0**: initial release.
 	"""
 end
 
 # ╔═╡ 93b49926-9104-11ed-19c6-df715bde3818
-md"""# Build a web site for syntactically annotated texts
+md"""# Build a web site for syntactically annotated passages
 
 """
 
@@ -111,15 +108,21 @@ html"""
 # ╔═╡ d8df443c-44b0-4243-ae40-9ad1a684281f
 md"> Check settings and load data"
 
+# ╔═╡ c1274e8d-2bb5-4979-b46c-20b8993cb915
+	csspage = GreekSyntax.defaultcss() * "blockquote.guide {\n background-color: #f2f2f2;}\n .spaced {\n line-height: 200%; }"
+
+
 # ╔═╡ 5f0898f7-bc7d-479c-a304-c84ded1a9a90
 if runit
 			
 	open(joinpath(outputdir, "syntax.css"), "w") do io
-		write(io, GreekSyntax.defaultcss() * "\n")
+		#write(io, GreekSyntax.defaultcss() * "\n")
+		write(io, csspage)
 	end
 
 	open(joinpath(outputdir, "page.css"), "w") do io
 		write(io, GreekSyntax.pagecss())
+		
 	end
 
 
@@ -130,18 +133,14 @@ end
 
 
 # ╔═╡ 792a44c9-093d-431d-9277-a77163433570
-"""Make directory for syntax diagrams."""
-function mkpngdir(outdir)
-	imgdir = if startswith(outdir, "/")
-		joinpath(outdir, "pngs")
-	else
-		joinpath(pwd(), outdir, "pngs")
-	end
-	mkpath(imgdir)
+"""Make directory for HTML output."""
+function mkoutputdir(outdir)
+	resultsdir  = startswith(outdir, "/") ? outdir : joinpath(pwd(), outdir)
+	mkpath(resultsdir)
 end
 
 # ╔═╡ 3e11aa5f-f020-4229-95c6-3f64145738ed
-pngdir = mkpngdir(outputdir)
+pngdir = mkoutputdir(outputdir)
 
 # ╔═╡ cb126faf-7678-4087-999b-349e03ab929f
 """Instantiate `OrthographicSystem` for user's menu choice.
@@ -165,6 +164,16 @@ elseif srctype == "url"
 	readdelimited(src, orthography())
 else
 	(nothing, nothing, nothing)
+end
+
+# ╔═╡ 76688216-15d2-4a96-8f8f-eb947c254c41
+psglist = if runit && ! isnothing(sentences)
+	map(sentences) do s
+		baseu = droppassage(s.range)
+		collapsePassageBy(s.range, 1)
+	end |> unique
+else
+	nothing
 end
 
 # ╔═╡ 49f787aa-63ec-4883-ac98-49310bdad7d8
@@ -200,106 +209,91 @@ end
 
 """Compose navigation links for page with index `idx`.
 """
-function navlinks(idx::Int, sentencelist::Vector{SentenceAnnotation})
+function navlinks(idx::Int, psglist::Vector{CtsUrn}, label)
     nxt = ""
     prev = ""
     if idx == 1
-        nxtpsg = sentences[idx + 1].range |> passagecomponent
-        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+        nxtpsg = psglist[idx + 1] |> passagecomponent
+        nxt = "$(label), <a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
     
         prev = ""
         
-    elseif idx == length(sentences)
+    elseif idx == length(psglist)
         nxt = ""
 
-        prevpsg = sentences[idx - 1].range |> passagecomponent
-        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+        prevpsg = psglist[idx - 1] |> passagecomponent
+        prev = "$(label), <a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
 
     else
-        nxtpsg = sentences[idx + 1].range |> passagecomponent
-        nxt = "<a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
+        nxtpsg = psglist[idx + 1] |> passagecomponent
+        nxt = "$(label), <a href=\"./$(nxtpsg).html\">$(nxtpsg)</a>"
 
-        prevpsg = sentences[idx - 1].range |> passagecomponent
-        prev = "<a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
+        prevpsg = psglist[idx - 1] |> passagecomponent
+        prev = "$(label), <a href=\"./$(prevpsg).html\">$(prevpsg)</a>"
     end
 nav = "<p class=\"nav\">$(prev) | $(nxt)</p>"
 end
 
 # ╔═╡ 5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
 
-"""Compose HMTL page for sentence number `idx`.
+"""Compose HMTL page for citable passage `p`.
 """
-function webpage(idx, sentences, groups, tokens, versionid)
-    sentence = sentences[idx]
-    @info("$(idx). Writing page for $(sentence.sequence) == $(sentence.range)...")
+function webpage(p, idx, sentences, groups, tokens, versionid)
+    @info("Writing page for $(p)")
 
     # Compose parts of page content:
 
     #  Heading and subheading
-    psg = passagecomponent(sentence.range)
+    psg = passagecomponent(p)
     pagetitle = "$(textlabel),  $(psg)"
     hdg = "<h1>$(pagetitle)</h1>"
-    subhead = "<h2>Sentence $(sentence.sequence)</h2>"
-     
+
+	guide = """<blockquote class="guide"><p>Indentation shows level of subordination; <span class="verb">verbs</span> are boxed, <span class="subject">subjects</span> marked with thick underline, and <span class="object">objects</span> with wavy underline.</p></blockquote>"""
     # navigation links
-    nav = navlinks(idx, sentences)
+    nav = navlinks(idx, psglist, textlabel)
 
     # Continuous text view:
-    plaintext = htmltext(sentence.range, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
+    plaintext = htmltext(p, sentences, tokens, sov = false, vucolor = false, syntaxtips = true)
+
+	sentenceindents = ["<div class=\"passage spaced\">"]
+	for s in sentencesforurn(p, sentences, tokens)
+		push!(sentenceindents,   htmltext_indented(s, groups, tokens, sov = true, vucolor = false) )
+	end
+	push!(sentenceindents, "</div>")
 
 
-    # Text colored by verbal expression:
-    key1 = "<div class=\"key right\"><strong>Highlighting</strong>:" *  GreekSyntax.sovkey() * "</div>"
-    txtdisplay1 = "<div class=\"passage\">" * htmltext_indented(sentence, groups, tokens, sov = true, vucolor = false) * "</div>"
+    txtdisplay = join(sentenceindents, "\n\n")
 
-    # Text indented by level of subordination
-    pagegroups = GreekSyntax.groupsforsentence(sentence, groups)
-    key2 = "<div class=\"key left\"><strong>Color code</strong>:" * GreekSyntax.htmlgrouplist(pagegroups) * "</div>"
-    txtdisplay2 = "<div class=\"passage\">" * htmltext(sentence, tokens, sov = true, vucolor = true) * "</div>"
-
-    # Syntax diagram (pre-generated PNG)
-    @info("Linking to image for $(sentence.sequence) == $(sentence.range)")
-    imglink = "<img src=\"pngs/sentence_$(sentence.sequence).png\" alt=\"Syntax diagram, sentence $(sentence.sequence)\"/>"
-    diagram = "<div class=\"diagram\">" * imglink * "</div>"
     
     m = now() |> monthname
     d = now() |> day
     y = now() |> year
-    footer = "<footer>Site created by Pluto notebook <code>webpublisher.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
+    footer = "<footer>Site created by Pluto notebook <code>simplepassage.jl</code>, version $(versionid), on $(m) $(d), $(y).</footer>"
 
     # String all the parts together!
-    htmlparts = [hdg, nav, subhead, plaintext, txtdisplay1, txtdisplay2, key1, key2, diagram, footer]
+    htmlparts = [hdg, nav, plaintext, "<h3>Syntactically highlighted</h3>", guide, txtdisplay, footer]
     bodycontent = join(htmlparts, "\n\n")
     wrap_page(pagetitle, bodycontent)
 end
 
 
-# ╔═╡ 2f4f4048-3998-4743-aa5c-641e82e23c22
-
-"""Write HTML page for sentence `num` to HTML file.
-"""
-function publishsentence(num, sentences, groups, tokens, versionid; pngdir = pngdir, outdir = outputdir)
-    idx = findfirst(s -> s.sequence == num, sentences)
-    # Write png for page:
-    sentence = sentences[idx]
-    @info("Composing diagram for sentence $(num) == $(sentence.range)")
-    pngout = mermaiddiagram(sentence, tokens, format = "png")
-    write(joinpath(pngdir, "sentence_$(sentence.sequence).png"), pngout)
-
-    psg = passagecomponent(sentence.range)
-    pagehtml = webpage(idx, sentences, groups, tokens, versionid)
+# ╔═╡ c7ce7d2c-7011-41ba-b141-c0ca2857d586
+"""Write HTML page for a citable passage to HTML file."""
+function publishpassage(p, idx, sentences, groups, tokens, versionid; outdir = outputdir)
+	psg = passagecomponent(p)
+    pagehtml = webpage(p, idx, sentences, groups, tokens, versionid)
     open(joinpath(outputdir, "$(psg).html"), "w") do io
         write(io, pagehtml)
     end
-    @info("Done: wrote HTML page for sentence $(num) in $(outputdir) as $(psg).html.")
+    @info("Done: wrote HTML page for passage $(p) in $(outputdir) as $(psg).html.")
 end
 
 # ╔═╡ 94054ecf-5089-4f36-a94d-62de91ff022a
 """Write HTML pages for all sentences in `sentences`.
 """
 function publishall(sentences, groups, tokens, versionid)
-    for sentence in sentences
-        publishsentence(sentence.sequence, sentences, groups, tokens, versionid)   
+    for (index, p)  in enumerate(psglist)
+		publishpassage(p, index, sentences, groups, tokens, versionid)   
     end
     @info("Done: wrote $(length(sentences)) HTML pages linked to accompanying PNG file in $(outputdir). (Now in $(pwd()))")
 end
@@ -309,7 +303,7 @@ if ! runit
 else
 	if settingsok()		
 		publishall(sentences, groups, tokens, nbversion)
-		md"""**Done**: wrote **$(length(sentences))** HTML pages linked to accompanying PNG file in *$(outputdir)*."""
+		md"""**Done**: wrote **$(length(sentences))** HTML pages in *$(outputdir)*."""
 	else
 		md"""*Please complete settings.*"""
 	end
@@ -340,7 +334,7 @@ PolytonicGreek = "~0.18.0"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.4"
+julia_version = "1.9.1"
 manifest_format = "2.0"
 project_hash = "684c789085c335d5238467d868a7e236be23c37a"
 
@@ -439,7 +433,7 @@ version = "4.5.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.0.1+0"
+version = "1.0.2+0"
 
 [[deps.DataAPI]]
 git-tree-sha1 = "e8119c1a33d267e16108be441a287a6981ba1630"
@@ -637,7 +631,7 @@ version = "1.10.2+0"
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
 [[deps.LinearAlgebra]]
-deps = ["Libdl", "libblastrampoline_jll"]
+deps = ["Libdl", "OpenBLAS_jll", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
 [[deps.LogExpFunctions]]
@@ -673,7 +667,7 @@ version = "1.1.7"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
-version = "2.28.0+0"
+version = "2.28.2+0"
 
 [[deps.Missings]]
 deps = ["DataAPI"]
@@ -686,7 +680,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
-version = "2022.2.1"
+version = "2022.10.11"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
@@ -695,7 +689,7 @@ version = "1.2.0"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.20+0"
+version = "0.3.21+4"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
@@ -727,9 +721,9 @@ uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "2.5.3"
 
 [[deps.Pkg]]
-deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
+deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-version = "1.8.0"
+version = "1.9.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
@@ -806,7 +800,7 @@ uuid = "a2af1166-a08f-5f64-846c-94a0d3cef48c"
 version = "1.1.0"
 
 [[deps.SparseArrays]]
-deps = ["LinearAlgebra", "Random"]
+deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [[deps.SplitApplyCombine]]
@@ -818,6 +812,7 @@ version = "1.2.2"
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+version = "1.9.0"
 
 [[deps.StatsAPI]]
 deps = ["LinearAlgebra"]
@@ -837,10 +832,15 @@ git-tree-sha1 = "ceeef74797d961aee825aabf71446d6aba898acb"
 uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
 version = "0.11.2"
 
+[[deps.SuiteSparse_jll]]
+deps = ["Artifacts", "Libdl", "Pkg", "libblastrampoline_jll"]
+uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
+version = "5.10.1+6"
+
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
-version = "1.0.0"
+version = "1.0.3"
 
 [[deps.TableTraits]]
 deps = ["IteratorInterfaceExtensions"]
@@ -857,7 +857,7 @@ version = "1.10.0"
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
-version = "1.10.1"
+version = "1.10.0"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -912,12 +912,12 @@ version = "1.6.1"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
-version = "1.2.12+3"
+version = "1.2.13+0"
 
 [[deps.libblastrampoline_jll]]
-deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.1.1+0"
+version = "5.8.0+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -946,17 +946,19 @@ version = "17.4.0+0"
 # ╟─f6337759-7c80-43db-b050-a7895e201542
 # ╟─60c5db9e-5185-42e1-a5cd-49ec516f07f3
 # ╟─d8df443c-44b0-4243-ae40-9ad1a684281f
+# ╟─76688216-15d2-4a96-8f8f-eb947c254c41
 # ╟─9447b4e0-e2e3-4c5f-9958-ede1549d0027
 # ╟─3e11aa5f-f020-4229-95c6-3f64145738ed
 # ╟─5f0898f7-bc7d-479c-a304-c84ded1a9a90
+# ╟─c1274e8d-2bb5-4979-b46c-20b8993cb915
 # ╟─49f787aa-63ec-4883-ac98-49310bdad7d8
 # ╟─792a44c9-093d-431d-9277-a77163433570
 # ╟─cb126faf-7678-4087-999b-349e03ab929f
 # ╟─d0e510b8-edab-4249-9609-fd082225def2
 # ╟─94054ecf-5089-4f36-a94d-62de91ff022a
-# ╟─2f4f4048-3998-4743-aa5c-641e82e23c22
+# ╟─c7ce7d2c-7011-41ba-b141-c0ca2857d586
 # ╟─5fff3d5c-ff81-444f-b8f1-4c12ded8e25b
 # ╟─903326cf-c9eb-45fd-b6a9-d131bebab02a
-# ╟─3faa116c-df96-4110-bf43-daef4b4ccdb1
+# ╠═3faa116c-df96-4110-bf43-daef4b4ccdb1
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

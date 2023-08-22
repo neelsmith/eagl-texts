@@ -7,3 +7,4 @@ scratch/
 scratchpad/
 .vscode/
 Manifest.toml
+*.tess

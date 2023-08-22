@@ -11,11 +11,11 @@ originaldir = pwd()
 #1: directory where output will be written
 outputdir = joinpath(originaldir, "scratchpad", "reader")
 #2: title for your text
-textlabel = "Hyginus, Fabulae"
+textlabel = "Lysias, Oration 1"
 #3:  source for your syntactic annotations.
 # You can either use a local file, or download a file from a URL.  Uncomment only ONE of these two settings.
 # (If you leave both uncommented, the the URL takes precedence over the local file.)
-annotations_file = joinpath(pwd(), "annotations", "Iliad_annotations.cex")
+annotations_file = joinpath(pwd(), "annotations", "Lysias1_annotations.cex")
 #annotations_url = "https://raw.githubusercontent.com/neelsmith/GreekAndLatinSyntax/main/data/Lysias1_annotations.cex"
 
 # set up environment: you shouldn't touch this bit.
@@ -158,8 +158,8 @@ function publishsentence(num, sentences, groups, tokens; pngdir = pngdir, outdir
     # Write png for page:
     sentence = sentences[idx]
     @info("Composing diagram for sentence $(num) == $(sentence.range)")
-    pngout = mermaiddiagram(sentence, tokens, format = "png")
-    write(joinpath(pngdir, "sentence_$(sentence.sequence).png"), pngout)
+    #pngout = mermaiddiagram(sentence, tokens, format = "png")
+    #write(joinpath(pngdir, "sentence_$(sentence.sequence).png"), pngout)
 
     psg = passagecomponent(sentence.range)
     pagehtml = webpage(idx, sentences, groups, tokens)
