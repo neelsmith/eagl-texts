@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.26
+# v0.19.27
 
 using Markdown
 using InteractiveUtils
@@ -34,6 +34,9 @@ begin
 	using PlutoUI
 end
 
+# ╔═╡ 5a84f4c3-8235-40a3-99bd-912e619bbf57
+md"""*Notebook version: **0.1.0**.*"""
+
 # ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 md"""*To see the Pluto environment, unhide the following cell.*"""
 
@@ -42,9 +45,6 @@ md"""## Profile the morphology of a citable text"""
 
 # ╔═╡ a96f7a32-9f45-44dc-bcc5-1204d41c70f2
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
-
-# ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
-md""" Analyzed tokens:"""
 
 # ╔═╡ 4041fc0b-cae8-4a26-8edc-12a4274748ae
 md"""## Vocab by part of speech?"""
@@ -68,14 +68,8 @@ menu = ["" => "",
 	
 ]
 
-# ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
-md"""*Choose a text to profile*: $(@bind src Select(menu))"""
-
-# ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
-corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
-
-# ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
-isnothing(corpus) ? nothing : md"""## Profile"""
+# ╔═╡ 0735b957-e600-4dd2-b576-b2a79e14949f
+dummymenu = ["" => ""]
 
 # ╔═╡ 66cef781-a849-4ff5-bc48-66d7dcd88c61
 lg = literaryGreek()
@@ -100,9 +94,21 @@ end
 # ╠═╡ show_logs = false
 parser = fromfile(file_data)
 
+# ╔═╡ 92a2622f-5c83-4341-ba8d-dc864dd3c556
+isnothing(parser) ? md"""$(@bind src Select(dummymenu))""" : md"""*Choose a text to profile*: $(@bind src Select(menu))"""
+
+# ╔═╡ b5cbb1a9-ee3b-4236-af73-84fa9f278665
+corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
+
+# ╔═╡ 67b1e432-1a69-4744-ba26-c4c7b55ceea4
+isnothing(corpus) ? nothing : md"""## Profile"""
+
 # ╔═╡ 8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
+
+# ╔═╡ 725bb091-aef0-471e-a36e-9bae7598e6a8
+isnothing(analyzedlexical) ? md"" : md""" Analyzed tokens:"""
 
 # ╔═╡ cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╠═╡ show_logs = false
@@ -1604,6 +1610,7 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
+# ╟─5a84f4c3-8235-40a3-99bd-912e619bbf57
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 # ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
@@ -1622,9 +1629,10 @@ version = "1.4.1+0"
 # ╟─4b80d272-bddd-47ca-b919-d7e1c2ef2591
 # ╟─ed2b99fa-7138-4f2c-8fbc-7283445b9e52
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
+# ╟─0735b957-e600-4dd2-b576-b2a79e14949f
 # ╟─66cef781-a849-4ff5-bc48-66d7dcd88c61
 # ╟─aaf59427-69a6-45df-ad88-5ec7f39a5386
-# ╠═e41f7627-bf49-4844-a49d-51714c1ee91d
+# ╟─e41f7627-bf49-4844-a49d-51714c1ee91d
 # ╟─ec1037e5-33db-46f5-b7a9-93e23450ca11
 # ╟─cc58effb-d9a8-40ae-813f-dbda4eaa0caf
 # ╟─7f7167f5-b401-4535-b530-708a142fb35c
