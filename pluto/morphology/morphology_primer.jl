@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.26
+# v0.19.27
 
 using Markdown
 using InteractiveUtils
@@ -33,6 +33,9 @@ begin
 	
 	using PlutoUI
 end
+
+# ╔═╡ 70e8e7ab-0731-4522-97d6-c173f325f620
+md"""*Notebook version: **0.1.0**.*"""
 
 # ╔═╡ 17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
 md"""*To see the Pluto environment, unhide the following cell.*"""
@@ -106,7 +109,7 @@ end
 md"""##### Example applications"""
 
 # ╔═╡ cd4584d5-278e-4115-9723-ac3e171f49ee
-exampleform = "ποιησαίμην"
+exampleform = "ποτε"
 
 # ╔═╡ c84a16d7-ae9d-4e80-959f-5e20df34aed0
 md"""Parsing yields a vector of `Analysis` objects."""
@@ -1518,11 +1521,12 @@ version = "1.4.1+0"
 """
 
 # ╔═╡ Cell order:
+# ╟─70e8e7ab-0731-4522-97d6-c173f325f620
 # ╟─17e57a5f-12b2-4e47-8bd2-de5e0f2b5c5c
-# ╟─e73845ec-f7f6-11ed-01a3-75bd5188678f
+# ╠═e73845ec-f7f6-11ed-01a3-75bd5188678f
 # ╟─5187fb8e-8186-435f-b2de-318a60b38264
 # ╟─e871f548-3764-4c16-9a27-64fd1b603b86
-# ╟─92a2622f-5c83-4341-ba8d-dc864dd3c556
+# ╠═92a2622f-5c83-4341-ba8d-dc864dd3c556
 # ╠═b5cbb1a9-ee3b-4236-af73-84fa9f278665
 # ╟─e06efadb-4dc7-463e-aad5-e6e198c72db2
 # ╠═66cef781-a849-4ff5-bc48-66d7dcd88c61
@@ -1530,7 +1534,7 @@ version = "1.4.1+0"
 # ╟─725bb091-aef0-471e-a36e-9bae7598e6a8
 # ╟─188a3b26-90bd-4764-882b-cdc43757b991
 # ╟─43c63b8d-89e0-4c23-a4f5-efcb43ffe1b1
-# ╠═ebc87f5e-fc45-4b5c-b796-15b48351b86c
+# ╟─ebc87f5e-fc45-4b5c-b796-15b48351b86c
 # ╠═e5f799bf-ecc4-4ffa-a114-7391b98f8be6
 # ╠═8bc02373-164c-4b32-9cb8-6d41a37e2626
 # ╠═9c07a686-9f30-4fbd-ab74-01447d24aac7
