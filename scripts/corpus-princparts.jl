@@ -1,4 +1,4 @@
-using Kanones
+using Kanones, CitableParserBuilder
 using CitableBase, CitableCorpus, CitableText
 using Orthography, PolytonicGreek
 using OrderedCollections, StatsBase
@@ -6,26 +6,13 @@ using OrderedCollections, StatsBase
 textsrc = joinpath(pwd(), "texts", "lysias1.cex")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
-kroot = joinpath(pwd() |> dirname, "Kanones.jl")
-parsersrc = joinpath(kroot, "parsers", "current-core-attic.csv")
-parser = dfParser(parsersrc)
 
-
-lg = literaryGreek()
-analyzedtokencollection = parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
-
-dict = Kanones.lsjdict()
-
-
-#=
-function lexemestrings(atkn, dict = dict)
-    map(atkn.analyses .|> Kanones.lexemeurn) do a
-       lemmalabel(a, dict = dict) 
-    end |> unique
+struct Occurs
+    str::AbstractString
+    count::Int
 end
-=#
 
-
+"""Filter a vector of `AnalzedToken`s to keep only verbs."""
 function verbsonly(analyzedtkns)
 	filter(analyzedtkns) do atkn
 		if isempty(atkn.analyses)
@@ -41,31 +28,49 @@ function verbsonly(analyzedtkns)
 end
 
 
-verbs = verbsonly(analyzedtokencollection.analyses)
-labelledlexemelist = verbs .|> lexemestrings |> Iterators.flatten |>  collect
-filter(labelledlexemelist) do l
-    startswith(l, "lsj.842")
-end
-matchme = filter(labelledlexemelist) do l
-    startswith(l, "lsj.n2429")
-end |> unique
-join(matchme, ", ")
-
-lexemelist = map(verbs) do v
-    map(a -> string(Kanones.lexemeurn(a)), v.analyses) |> unique
-end
-verbhisto = sort!(OrderedDict(countmap(lexemelist)); byvalue = true, rev = true)
-
-
-
-
-ds = Kanones.coredata(kroot; atticonly = true)
-pplist = []
-for kvect in keys(verbhisto)
-    if length(kvect) > 1
-        println("MULTI: $(kvect)")
+"""List principal of verbs sorted by frequency of verbs in corpus."""
+function verb_pps_by_freq(verbhisto::OrderedDict{Vector{String}, Int64}, kds::Kanones.FilesDataset)
+    pplist = []
+    i = 0
+    for kvect in keys(verbhisto)
+        i = i + 1
+        if length(kvect) > 1
+            println("MULTI: $(kvect)")
+        end
+        for vb in kvect 
+            # Get counts...
+            count = verbhisto[kvect]
+            pps = join(principalparts(LexemeUrn(vb), kds), ", ")
+            data = string(count, ",", pps)
+            @info(string(i, "...", data))
+            push!(pplist, Occurs(pps,count))
+        end
     end
-    #for vb in verbhisto[k]
-    # push!(pplist, principalparts(k, ds))
-    #end
+    pplist
 end
+
+
+
+
+"""Given a text corpus and a clone of the Kanones repo, build an occurence structure
+with principal parts of verbs, sorted by frequency of verb."""
+function occursdata(c::CitableTextCorpus, krepo; ortho = literaryGreek(), dict = Kanones.lsjdict())
+    
+    parsersrc = joinpath(kroot, "parsers", "current-core-attic.csv")
+    parser = dfParser(parsersrc)
+
+    analyzedtokencollection = parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
+
+    verbs = verbsonly(analyzedtokencollection.analyses)
+    lexemelist = map(verbs) do v
+        map(a -> string(Kanones.lexemeurn(a)), v.analyses) |> unique
+    end
+    verbhisto = sort!(OrderedDict(countmap(lexemelist)); byvalue = true, rev = true)
+
+    ds = Kanones.coredata(kroot; atticonly = true)
+    verb_pps_by_freq(verbhisto, ds)
+end
+
+
+kroot = joinpath(pwd() |> dirname, "Kanones.jl")
+pps_by_freqs = occursdata(corpus, kroot)
