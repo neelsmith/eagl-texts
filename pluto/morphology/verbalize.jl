@@ -145,13 +145,13 @@ lg = literaryGreek()
 analyzedtokencollection = isnothing(corpus) || isnothing(parser) ? nothing : parsecorpus(tokenizedcorpus(corpus,lg, filterby = LexicalToken()), parser)
 
 # ╔═╡ 99be5b44-ebb1-4f54-bb76-23fabd93aba5
-analyzedtokenlist = analyzedtokencollection.analyses
+analyzedtokenlist = isnothing(analyzedtokencollection) ? nothing : analyzedtokencollection.analyses
 
 # ╔═╡ cc162d72-f151-4229-86bc-fed3f4492736
 isnothing(analyzedtokenlist)  ? md"" : md"Parsed corpus with **$(length(corpus.passages))** citable passages and **$(length(analyzedtokenlist))** lexical tokens"
 
 # ╔═╡ a2701749-8be1-417a-a5ae-0b4ec930acba
-verbtokens = verbsonly(analyzedtokenlist)
+verbtokens = isnothing(analyzedtokenlist) ? [] : verbsonly(analyzedtokenlist)
 
 # ╔═╡ 85278af3-d2e5-4d26-afbb-f38f0e0bee24
 verbhisto = begin
@@ -176,7 +176,7 @@ function verbsmenu()
 end
 
 # ╔═╡ 259d0009-e679-4f56-b7bd-26744ca1a8c7
-md"""$(@bind verb Select(verbsmenu()))"""
+md"""*Choose a verb*: $(@bind verb Select(verbsmenu()))"""
 
 # ╔═╡ 1e9330b8-ec80-4a10-8dc0-5a73fe124824
 md"> **Index corpus morphologically**"
@@ -203,7 +203,7 @@ function formsmenu(v)
 end
 
 # ╔═╡ 82a80f52-a73c-4dfe-815f-6298ffcc85fb
-isempty(verb) ? md"$(@bind verbform Select(dummymenu))" : md"""$(@bind verbform Select(formsmenu(verb)))"""
+isempty(verb) ? md"$(@bind verbform Select(dummymenu))" : md"""*Choose a form*: $(@bind verbform Select(formsmenu(verb)))"""
 
 # ╔═╡ ce36f4e2-a26f-4586-b990-d33a56f716ff
 md"> **Final display of texts**"
