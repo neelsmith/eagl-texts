@@ -6,8 +6,8 @@ using OrderedCollections, StatsBase
 repo = pwd() # root of eagl-texts repository
 kroot = joinpath(repo |> dirname, "Kanones.jl") # root of Kanones repository
 
-textsrc = joinpath(repo, "texts", "oeconomicus-filtered.cex")
-outfile = joinpath(repo, "oec-princparts.csv")
+textsrc = joinpath(repo, "texts", "lysias1-filtered.cex")
+outfile = joinpath(repo, "lysias1-princparts.csv")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
 
