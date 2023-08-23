@@ -3,8 +3,11 @@ using CitableBase, CitableCorpus, CitableText, CitableCollection, CitableObject
 using Orthography, PolytonicGreek
 using OrderedCollections, StatsBase
 
-textsrc = joinpath(pwd(), "texts", "oeconomicus-filtered.cex")
-outfile = joinpath(pwd(), "oec-princparts.csv")
+repo = pwd() # root of eagl-texts repository
+kroot = joinpath(repo |> dirname, "Kanones.jl") # root of Kanones repository
+
+textsrc = joinpath(repo, "texts", "oeconomicus-filtered.cex")
+outfile = joinpath(repo, "oec-princparts.csv")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
 
 
@@ -64,7 +67,7 @@ function verb_pps_by_freq(verbhisto::OrderedDict{Vector{String}, Int64}, kds::Ka
                 objectcomponent(r.urn) == idval
             end
             data = string(count, ",", pps)
-            lsjkey = lsjrows.key[1]
+            lsjkey = string(idval,"@", lsjrows.key[1])
             @info(string(i, "/", length(verbhisto),  "...", data, " from ", lsjkey))
             push!(pplist, Occurs(lsjkey, count, pps))
         end
@@ -90,7 +93,7 @@ function occursdata(c::CitableTextCorpus, krepo; ortho = literaryGreek(), dict =
 end
 
 
-kroot = joinpath(pwd() |> dirname, "Kanones.jl")
+
 pps_by_freqs = occursdata(corpus, kroot)
 
 
