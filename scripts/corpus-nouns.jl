@@ -7,9 +7,9 @@ repo = pwd() # root of eagl-texts repository
 kroot = joinpath(repo |> dirname, "Kanones.jl") # root of Kanones repository
 
 textsrc = joinpath(repo, "texts", "lysias1-filtered.cex")
-outfile = joinpath(repo, "lysias1-princparts.csv")
+outfile = joinpath(repo, "lysias1-nouns.csv")
 corpus = fromcex(textsrc, CitableTextCorpus, FileReader)
-
+ortho = literaryGreek()
 
 
 struct Occurs
@@ -45,14 +45,36 @@ function nounsonly(analyzedtkns)
 end
 
 function nounlexbyfreq(nounhisto::OrderedDict{Vector{String}, Int64}, kds::Kanones.FilesDataset)
-	nounhisto
-end
+	entries = []
+	i = 0
+	for kvect in keys(nounhisto)
+		i = i + 1
+		if length(kvect) > 1
+			println("Multiple IDs: $(kvect)")
+		end
 
-ortho = literaryGreek()
+		for noun in kvect 
+			# Get counts...
+			count = nounhisto[kvect]
+			entry = lexicon_noun_md(LexemeUrn(noun), kds)
+
+			idval = split(noun, ".")[2]
+			lsjrows = filter(lsjdata.data.data) do r
+				objectcomponent(r.urn) == idval
+			end
+			labelstr = isempty(lsjrows) ? idval : lsjrows.key[1]
+			lsjkey = string(idval,"@", labelstr)
+			@info(string(i, "/", length(nounhisto),  "...", entry, " from ", lsjkey))
+			push!(entries, Occurs(lsjkey, count, entry))
+		
+		end
+	end
+	entries
+end
 
 """Given a text corpus and a clone of the Kanones repo, build an occurence structure
 with principal parts of verbs, sorted by frequency of verb."""
-#function occursdata(corpus::CitableTextCorpus, kroot; ortho = literaryGreek(), dict = Kanones.lsjdict())
+function occursdata(corpus::CitableTextCorpus, kroot; ortho = literaryGreek(), dict = Kanones.lsjdict())
     parsersrc = joinpath(kroot, "parsers", "current-core-attic.csv")
     parser = dfParser(parsersrc)
     analyzedtokencollection = parsecorpus(tokenizedcorpus(corpus,ortho, filterby = LexicalToken()), parser)
@@ -65,36 +87,15 @@ with principal parts of verbs, sorted by frequency of verb."""
 
     ds = Kanones.coredata(kroot; atticonly = true)
     nounlexbyfreq(nounhisto, ds)
-#end
-
-
-
-entries = []
-i = 0
-
-for kvect in keys(nounhisto)
-	i = i + 1
-	if length(kvect) > 1
-		println("Multiple IDs: $(kvect)")
-	end
-
-	for noun in kvect 
-		# Get counts...
-		count = nounhisto[kvect]
-		#pps = #join(principalparts(LexemeUrn(vb), kds), ", ")
-		@info("noun/count $(noun) / $(count)")
-		entry = lexicon_noun_md(LexemeUrn(noun), ds)
-		push!(entries, entry)
-#=
-		idval = split(vb, ".")[2]
-		lsjrows = filter(lsjdata.data.data) do r
-			objectcomponent(r.urn) == idval
-		end
-		data = string(count, ",", pps)
-		lsjkey = string(idval,"@", lsjrows.key[1])
-		@info(string(i, "/", length(verbhisto),  "...", data, " from ", lsjkey))
-		push!(pplist, Occurs(lsjkey, count, pps))
-		=#
-	end
 end
-pplist
+
+
+
+lexicon = occursdata(corpus, kroot)
+
+
+outstr = join(lexicon .|> delimited,"\n")
+open(outfile,"w") do io
+    write(io, outstr)
+end
+println("Wrote results to file $(outfile)")
