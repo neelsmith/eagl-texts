@@ -82,6 +82,7 @@ for kvect in keys(nounhisto)
 		# Get counts...
 		count = nounhisto[kvect]
 		#pps = #join(principalparts(LexemeUrn(vb), kds), ", ")
+		@info("noun/count $(noun) / $(count)")
 		entry = lexicon_noun_md(LexemeUrn(noun), ds)
 		push!(entries, entry)
 #=
