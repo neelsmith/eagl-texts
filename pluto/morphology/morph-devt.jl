@@ -24,8 +24,18 @@ begin
 	using Kanones
 end
 
-# ╔═╡ 944013e2-1f48-4a66-a343-2a66e07ec8d5
-md"""*Version: **0.1.0**.*"""
+# ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
+md"""*Version: **0.2.0**.* *See version info* $(@bind versioninfo CheckBox())"""
+
+# ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
+if versioninfo
+	md"""
+- **0.2.0**: additions to menu of texts to analyze
+- **0.1.0**: initial release
+	"""
+else
+	md""
+end
 
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
 md"""# Develop a corpus-specific parser"""
@@ -1804,7 +1814,8 @@ version = "17.4.0+0"
 
 # ╔═╡ Cell order:
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
-# ╟─944013e2-1f48-4a66-a343-2a66e07ec8d5
+# ╟─2557eed2-0af8-4a7c-a807-0753255fc19d
+# ╟─71e79010-a5a8-4b78-aefb-3e0c588497e2
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
