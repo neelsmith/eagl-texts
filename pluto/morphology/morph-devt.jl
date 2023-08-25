@@ -119,6 +119,8 @@ menu = ["" => "",
 	joinpath(dirname(dirname(pwd())), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
 	joinpath(dirname(dirname(pwd())), "texts", "herodotus-filtered.cex") => "Herodotus",
 	joinpath(dirname(dirname(pwd())), "texts", "apollodorus-filtered.cex") => "Apollodorus, Library",
+	joinpath(dirname(dirname(pwd())), "texts", "iliad-allen-filtered.cex") => "Iliad",
+	joinpath(dirname(dirname(pwd())), "texts", "iliad-allen-bk6-filtered.cex") => "Iliad, book 6",
 	"scholia" => "Scholia to the Iliad"
 	
 ]
@@ -1860,7 +1862,7 @@ version = "17.4.0+0"
 # ╟─8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 # ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
-# ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
+# ╠═dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
 # ╟─53f26f18-0145-4d32-a21e-30cf6cc4dff9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
