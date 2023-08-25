@@ -45,6 +45,7 @@ function nounsonly(analyzedtkns)
 end
 
 function nounlexbyfreq(nounhisto::OrderedDict{Vector{String}, Int64}, kds::Kanones.FilesDataset)
+	classdict =  Kanones.Kanones.lexemetoclassdict(kds)
 	entries = []
 	i = 0
 	for kvect in keys(nounhisto)
@@ -56,8 +57,12 @@ function nounlexbyfreq(nounhisto::OrderedDict{Vector{String}, Int64}, kds::Kanon
 		for noun in kvect 
 			# Get counts...
 			count = nounhisto[kvect]
-			entry = lexicon_noun_md(LexemeUrn(noun), kds)
-
+			entry = ""
+			try 
+				entry = lexicon_noun_md(LexemeUrn(noun), kds)
+			catch e
+				entry = "NO GENDER for $(noun)"
+			end
 			idval = split(noun, ".")[2]
 			lsjrows = filter(lsjdata.data.data) do r
 				objectcomponent(r.urn) == idval
@@ -65,7 +70,9 @@ function nounlexbyfreq(nounhisto::OrderedDict{Vector{String}, Int64}, kds::Kanon
 			labelstr = isempty(lsjrows) ? idval : lsjrows.key[1]
 			lsjkey = string(idval,"@", labelstr)
 			@info(string(i, "/", length(nounhisto),  "...", entry, " from ", lsjkey))
-			push!(entries, Occurs(lsjkey, count, entry))
+
+			hdrval = haskey(classdict, noun) ? string(lsjkey, " ", classdict[noun]) : string(lsjkey, " (no entry in dictionary for $(idval))")
+			push!(entries, Occurs(hdrval, count, entry))
 		
 		end
 	end
