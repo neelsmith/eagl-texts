@@ -25,19 +25,14 @@ begin
 	md"""*Unhide this cell to see the Julia environment.*"""
 end
 
-# ╔═╡ 09f8bcd8-cd88-46fb-9f04-2a0cd5294570
-md"""
-!!! note "Next steps"
-
-    - add an option to include data auto-extracted from LSJ
-"""
-
 # ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
-md"""*Notebook version **0.1.0**.  See version info* $(@bind versioninfo CheckBox())"""
+md"""*Notebook version **0.2.0**.  See version info* $(@bind versioninfo CheckBox())"""
 
 # ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
 if versioninfo
 	md"""
+- **0.2.0**: add display of passage highlighted for parsing results
+- **0.1.1**: tidier presentation of analyses
 - **0.1.0**: build a parser using a clone of `Kanones.jl` in an adjacent directory
 	"""
 else
@@ -55,6 +50,16 @@ md"""
     - (re)build a parser on demand (checkbox to activate building, button to prompt rebuilding). This is *slow*: on my HC laptop, a couple of minutes.
 """
 
+# ╔═╡ 5d9318b4-f139-4f0a-b995-146bdec93999
+md"""
+!!! tip "Hey! Here are some better ideas!"
+
+    1. You should really give `Kanones` an option to *add to* an existing parser, rather than rebuilding all when adding *vocab*. This would require isolating the rules from the original set, compiling a parser with those rules and any *new* voca , and then adding the parser output to the previous output.  
+    1. With that in place, it's *really* worthwhile to start from an initial compiliation that *includes* auto-grabbed data from LSJ!. 
+
+    *Yes!*
+"""
+
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
 md"""## Load data"""
 
@@ -63,6 +68,9 @@ md"""> Check the following box to build a parser for the first time. With the bo
 
 # ╔═╡ c58f02d7-2506-4cb8-b0a1-11bce7b586d2
 md"""*Build parser:* $(@bind build_ok CheckBox()) $(@bind rebuild Button("Rebuild parser"))"""
+
+# ╔═╡ 28df2b78-497c-4ea9-8721-2629e8220674
+md"""## View a passage"""
 
 # ╔═╡ 144e8fc5-f1c6-4bae-a146-19b437b7881d
 md"""## Recurring unanalyzed tokens"""
@@ -102,6 +110,8 @@ eagltexts = [
 	"lysias1-filtered.cex" => "Lysias 1",
 	"apollodorus-filtered.cex" => "Apollodorus",
 	"oeconomicus-filtered.cex" => "Xenophon, Oeconomicus",
+	"isaeus-filtered.cex" => "Isaeus",
+	"against_neaera-filtered.cex" => "Demosthenes, Against Neaera",
 	"herodotus-filtered.cex" => "Herodotus",
 	"iliad-allen.cex" => "Iliad (Allen)"
 	
@@ -179,6 +189,16 @@ else
 	fromcex(eaglbase * textchoice, CitableTextCorpus, UrlReader)
 end
 
+# ╔═╡ 0a4b67bd-7868-4cde-845d-2d85aa7d4171
+begin
+	if isnothing(corpus)
+	else
+		menuhdr = ["" => "--Choose a passage--"]
+		psgmenu = map(psg -> (passagecomponent(psg.urn) => passagecomponent(psg.urn)), corpus.passages)
+		@bind psgchoice Select(vcat(menuhdr, psgmenu))
+	end
+end
+
 # ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 ortho =  literaryGreek()
 
@@ -195,6 +215,24 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) || isnothing(parser) ? nothing : parsecorpus(tcorpus, parser)
+
+# ╔═╡ 1825599f-24dc-4c20-af62-9f5545f236bf
+if isempty(psgchoice)
+else
+	#filter(psg -> startswith(passagecomponent(psg.urn), string(psgchoice, ".")), tcorpus.passages)
+	atokenmatches = filter(atkn -> startswith(passagecomponent(atkn.ctoken.passage.urn), string(psgchoice, ".")), analyzedlexical.analyses)
+	mdwords = []
+	for tkn in atokenmatches
+		tokentext = tkn.ctoken.passage.text
+		if isempty(tkn.analyses)
+			push!(mdwords, string("*", tokentext, "*"))
+		else
+			push!(mdwords, tokentext)
+		end
+	end
+	hdr = "Passage: **$(psgchoice)**\n"
+	hdr * "> " * join(mdwords, " ") |> Markdown.parse
+end
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -1826,12 +1864,12 @@ version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─09f8bcd8-cd88-46fb-9f04-2a0cd5294570
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─2557eed2-0af8-4a7c-a807-0753255fc19d
 # ╟─71e79010-a5a8-4b78-aefb-3e0c588497e2
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─e5249452-50df-4be0-af31-f74b0b129560
+# ╟─5d9318b4-f139-4f0a-b995-146bdec93999
 # ╟─cc52eefd-c02c-4613-ae12-d3d187a4050e
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─7291d0b0-6b10-402f-8acd-bd28cf4eb15c
@@ -1840,6 +1878,9 @@ version = "17.4.0+0"
 # ╟─6405375f-061d-483f-bf3c-a4a2414c3625
 # ╟─63414fa1-5484-4361-9bbc-7c5221c86817
 # ╟─da178dfa-9e59-42ea-b873-4953518f48c2
+# ╟─28df2b78-497c-4ea9-8721-2629e8220674
+# ╟─0a4b67bd-7868-4cde-845d-2d85aa7d4171
+# ╟─1825599f-24dc-4c20-af62-9f5545f236bf
 # ╟─144e8fc5-f1c6-4bae-a146-19b437b7881d
 # ╟─fe286d8c-8f6b-4db6-b7bb-6281fb3500d8
 # ╟─2e98352c-79c5-414f-9e4e-1cd537db20db
@@ -1878,7 +1919,7 @@ version = "17.4.0+0"
 # ╟─fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 # ╟─92d8d256-1f21-4fa3-a424-9ce355f9331a
 # ╟─0c3228ec-3023-4fa6-b0d8-7e11fb077b8a
-# ╟─518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╟─63e8c2f9-4ce7-493a-9506-bba563ee7c78
 # ╟─3120740a-d34c-487b-b4ff-f16db52d5594
 # ╟─fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
