@@ -26,11 +26,12 @@ begin
 end
 
 # ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
-md"""*Notebook version **0.2.0**.  See version info* $(@bind versioninfo CheckBox())"""
+md"""*Notebook version **0.3.0**.  See version info* $(@bind versioninfo CheckBox())"""
 
 # ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
 if versioninfo
 	md"""
+- **0.3.0**: add option to incorporate LSJ data
 - **0.2.0**: add display of passage highlighted for parsing results
 - **0.1.1**: tidier presentation of analyses
 - **0.1.0**: build a parser using a clone of `Kanones.jl` in an adjacent directory
@@ -38,6 +39,15 @@ if versioninfo
 else
 	md""
 end
+
+# ╔═╡ 5d9318b4-f139-4f0a-b995-146bdec93999
+md"""
+!!! tip "Hey! Here are some better ideas!"
+
+    1. You should really give `Kanones` an option to *add to* an existing parser, rather than rebuilding all when adding *vocab*. This would require isolating the rules from the original set, compiling a parser with those rules and any *new* voca , and then adding the parser output to the previous output. With that in place, it's *really* worthwhile to start from an initial compiliation that *includes* auto-grabbed data from LSJ!. 
+
+    *Yes!*
+"""
 
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
 md"""# `[B|Reb]`uild parsers to analyze a corpus"""
@@ -50,16 +60,6 @@ md"""
     - (re)build a parser on demand (checkbox to activate building, button to prompt rebuilding). This is *slow*: on my HC laptop, a couple of minutes.
 """
 
-# ╔═╡ 5d9318b4-f139-4f0a-b995-146bdec93999
-md"""
-!!! tip "Hey! Here are some better ideas!"
-
-    1. You should really give `Kanones` an option to *add to* an existing parser, rather than rebuilding all when adding *vocab*. This would require isolating the rules from the original set, compiling a parser with those rules and any *new* voca , and then adding the parser output to the previous output.  
-    1. With that in place, it's *really* worthwhile to start from an initial compiliation that *includes* auto-grabbed data from LSJ!. 
-
-    *Yes!*
-"""
-
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
 md"""## Load data"""
 
@@ -67,7 +67,7 @@ md"""## Load data"""
 md"""> Check the following box to build a parser for the first time. With the box checked, you can use the `Rebuild parser` button to rebuild it."""
 
 # ╔═╡ c58f02d7-2506-4cb8-b0a1-11bce7b586d2
-md"""*Build parser:* $(@bind build_ok CheckBox()) $(@bind rebuild Button("Rebuild parser"))"""
+md"""*Build parser:* $(@bind build_ok CheckBox()) $(@bind rebuild Button("Rebuild parser")) *Include LSJ mining data* $(@bind lsjtoo CheckBox())"""
 
 # ╔═╡ 28df2b78-497c-4ea9-8721-2629e8220674
 md"""## View a passage"""
@@ -134,7 +134,8 @@ end
 
 # ╔═╡ c7ca88b6-6bf8-45aa-b16d-30cbc99c759f
 """Place holder function until this is provided in publication of next Kanones release."""
-function coredata(repo = pwd())
+function coredata(repo = pwd(); lsjtoo = false)
+	
     # 1. rules with demo vocab:
     lgr = joinpath(repo, "datasets", "literarygreek-rules")
     ionic = joinpath(repo, "datasets", "ionic")
@@ -144,23 +145,31 @@ function coredata(repo = pwd())
     # 3. manually validated NOT in LSJ:
     extra = joinpath(repo, "datasets", "extra")
 
+	
+	# 4. any annotations in the local morphology directory:
 	wip = joinpath(pwd() |> dirname, "morphology")
 	
-	dataset([lgr, ionic, homeric, lsj, extra, wip]) 
+	# 5. Optionally, auto-quarried data from LSJ:
+	if lsjtoo
+		lsjmining = joinpath(dirname(repo), "LSJMining.jl", "kanonesdata", "lsjx")
+		dataset([lgr, ionic, homeric, lsj, extra, wip, lsjmining]) 
+	else
+		dataset([lgr, ionic, homeric, lsj, extra, wip]) 	
+	end
 end
 
 # ╔═╡ f5b03be0-35c6-437a-9348-f68fd356fa5b
 """Rebuild dataset and recompile parser."""
-function recompile(root)	
+function recompile(root; withlsj)	
 	@info("Starting to compile parser using $(root) for core data")
-	coredata(root) |> stringParser
+	coredata(root; lsjtoo = withlsj) |> stringParser
 end
 
 # ╔═╡ a4ec7226-02e2-4034-940c-e9f30b51817a
 # ╠═╡ show_logs = false
 parser = begin
 	rebuild
-	build_ok ? recompile(kroot) : nothing
+	build_ok ? recompile(kroot; withlsj = lsjtoo) : nothing
 end
 
 # ╔═╡ 6405375f-061d-483f-bf3c-a4a2414c3625
@@ -191,7 +200,9 @@ end
 
 # ╔═╡ 0a4b67bd-7868-4cde-845d-2d85aa7d4171
 begin
+	
 	if isnothing(corpus)
+		@bind psgchoice Select(["" => "--No text selected--"])
 	else
 		menuhdr = ["" => "--Choose a passage--"]
 		psgmenu = map(psg -> (passagecomponent(psg.urn) => passagecomponent(psg.urn)), corpus.passages)
@@ -217,7 +228,7 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 analyzedlexical = isnothing(corpus) || isnothing(parser) ? nothing : parsecorpus(tcorpus, parser)
 
 # ╔═╡ 1825599f-24dc-4c20-af62-9f5545f236bf
-if isempty(psgchoice)
+if isempty(psgchoice) || isnothing(parser)
 else
 	#filter(psg -> startswith(passagecomponent(psg.urn), string(psgchoice, ".")), tcorpus.passages)
 	atokenmatches = filter(atkn -> startswith(passagecomponent(atkn.ctoken.passage.urn), string(psgchoice, ".")), analyzedlexical.analyses)
@@ -278,7 +289,7 @@ function passages(s)
 end
 
 # ╔═╡ 8ffbee45-878f-4500-9563-52ff385344b0
-if isempty(s) 
+if isempty(s) || isnothing(corpus)
 	md""
 else
 	psglist = passages(nfkc(s))
@@ -1867,9 +1878,9 @@ version = "17.4.0+0"
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─2557eed2-0af8-4a7c-a807-0753255fc19d
 # ╟─71e79010-a5a8-4b78-aefb-3e0c588497e2
+# ╟─5d9318b4-f139-4f0a-b995-146bdec93999
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─e5249452-50df-4be0-af31-f74b0b129560
-# ╟─5d9318b4-f139-4f0a-b995-146bdec93999
 # ╟─cc52eefd-c02c-4613-ae12-d3d187a4050e
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─7291d0b0-6b10-402f-8acd-bd28cf4eb15c
@@ -1911,7 +1922,7 @@ version = "17.4.0+0"
 # ╟─1d3b369e-5a0f-4392-a773-be5c75c52abd
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
 # ╟─08cee0da-ecd8-4670-a1f1-df522a936f4f
-# ╟─a4ec7226-02e2-4034-940c-e9f30b51817a
+# ╠═a4ec7226-02e2-4034-940c-e9f30b51817a
 # ╟─f5b03be0-35c6-437a-9348-f68fd356fa5b
 # ╟─c7ca88b6-6bf8-45aa-b16d-30cbc99c759f
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
