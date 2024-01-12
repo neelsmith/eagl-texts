@@ -28,28 +28,23 @@ begin
 	md"""*Unhide this cell to see the Julia environment.*"""
 end
 
-# ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
-md"""*Version: **0.3.0**.* *See version info* $(@bind versioninfo CheckBox())"""
-
-# ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
-if versioninfo
-	md"""
-- **0.3.0**: use `StatsBase` to create count maps
-- **0.2.0**: additions to menu of texts to analyze
-- **0.1.0**: initial release
-	"""
-else
-	md""
-end
-
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
-md"""# Develop a corpus-specific parser"""
+md"""# Develop vocabulary lists covering a given proportion of a corpus"""
 
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
 md"""## Load data"""
 
 # ╔═╡ 38ce0b39-e616-4225-99fc-f1f7cc6f470b
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
+
+# ╔═╡ 8e6a42b3-6de5-485a-8bf9-212c5972257d
+md"""*Percent coverage*: $(@bind pcttoshow Slider(50:5:75, show_value = true))%"""
+
+# ╔═╡ 094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
+md"""*Show list of lexemes*: $(@bind showlexemes CheckBox())"""
+
+# ╔═╡ f938a065-6a9b-48a4-bebf-1e7756293f97
+md"""*Show list of forms*: $(@bind showforms CheckBox())"""
 
 # ╔═╡ 1c0aefd6-4b26-4c02-b869-0357d72d0e80
 md"""### Unanalyzed forms above a threshhold"""
@@ -74,6 +69,12 @@ html"""
 <br/><br/><br/><br/><br/><br/><br/>
 <hr/>
 """
+
+# ╔═╡ f99ab8ea-14a7-447f-b093-e965c0e82f0d
+md"""> Totaling threshholds for *lexemes*"""
+
+# ╔═╡ ef3b9d87-3f83-4d6c-80b4-c4474b5748be
+md"""> Totaling threshholds for *forms*"""
 
 # ╔═╡ f53b222d-ef12-47ab-bd6c-e80131f94f8f
 md"""> Counting"""
@@ -179,10 +180,51 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
 
+# ╔═╡ a46883f2-b7f1-422f-b3bd-226cc1edf760
+totallextokens = length(analyzedlexical)
+
+# ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
+analyzedcount = if isnothing(analyzedlexical)
+	nothing
+else
+	filter(at -> ! isempty(at.analyses), analyzedlexical.analyses) |> length
+end
+
 # ╔═╡ 67d419e2-f634-4740-ae87-70169e4522be
 successes = filter(analyzedlexical.analyses) do tkn
 	! isempty(tkn.analyses)
 end
+
+# ╔═╡ 9c6cd449-d775-4db6-b76c-60e2aa1d473c
+lexemecounts = map(tkn -> string(tkn.analyses[1].lexeme), successes) |> countmap |> OrderedDict
+
+# ╔═╡ 69eb9982-6392-4b05-9fd5-ceb51da464af
+orderedlexcounts = sort(lexemecounts; byvalue = true, rev = true)
+
+# ╔═╡ 444eefca-affe-4542-bf46-28497ce4cd52
+orderedlexkeys = keys(orderedlexcounts) |> collect
+
+# ╔═╡ 9456f093-6fb5-47d7-8cea-2e5c6051f095
+begin
+	lexemetallies = []
+	
+	for k in orderedlexkeys
+		currtotal = orderedlexcounts[k]
+		if isempty(lexemetallies)
+			push!(lexemetallies, currtotal) 
+		else
+			prevtotal = lexemetallies[end]
+			push!(lexemetallies, (currtotal + prevtotal) )
+		end
+	end
+	lexemetallies	
+end
+
+# ╔═╡ 9c29d356-21a4-4e0b-801d-533b62a96da8
+runninglexpcts = lexemetallies ./ totallextokens  .* 100
+
+# ╔═╡ c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
+lexsize = filter(pct -> pct < pcttoshow, runninglexpcts) |> length
 
 # ╔═╡ a25c8f75-8dd1-4604-84d2-d3a7ed74672a
 successcounts = map(tkn -> tkn.ctoken.passage.text, successes) |> countmap |> OrderedDict
@@ -193,28 +235,44 @@ orderedcounts = sort(successcounts; byvalue = true, rev = true)
 # ╔═╡ c186ba00-552b-4831-8f43-ffcab1feba4a
 orderedkeys = keys(orderedcounts) |> collect
 
-# ╔═╡ a5a7199e-0cfe-4b57-8efd-9eb805ade293
+# ╔═╡ 4aa50787-bfec-411c-93d2-a97b727a5b8e
 begin
 	runningtally = []
-	totallextokens = length(analyzedlexical)
-	for (i,k) in enumerate(orderedkeys)
+	
+	for k in orderedkeys
 		currval = orderedcounts[k]
-		if i == 1
-			push!(runningtally, currval / totallextokens) 
+		if isempty(runningtally)
+			push!(runningtally, currval) 
 		else
-			prevval = runningtally[i - 1]
-			push!(runningtally, (currval + prevval) / totallextokens)
+			prevval = runningtally[end]
+			push!(runningtally, (currval + prevval) )
 		end
 	end
-	runningtally
-	
+	runningtally	
 end
 
-# ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
-analyzedcount = if isnothing(analyzedlexical)
-	nothing
-else
-	filter(at -> ! isempty(at.analyses), analyzedlexical.analyses) |> length
+# ╔═╡ e2b2e966-9d7b-463c-81ea-394faebb4c9f
+runningpcts = runningtally ./ totallextokens  .* 100
+
+# ╔═╡ 239adb0c-951d-4f2d-a907-7a63557ca77a
+vocabsize = filter(pct -> pct < pcttoshow, runningpcts) |> length
+
+# ╔═╡ e77fc8e0-bb7a-4832-9442-9d0a276f1e35
+md"""
+To reach $(pcttoshow)% coverage:
+
+- **$(vocabsize)** *forms* cover **$(pcttoshow)%** of the words in this text. 
+- **$(lexsize)** *lexemes* cover **$(pcttoshow)%** of the words in this text. 
+"""
+
+# ╔═╡ 37a70d41-13de-4fb7-aba2-edd46aa73814
+if showlexemes
+	join(map(term -> string("1. ", term, " ", orderedlexcounts[term], " occurrences") , orderedlexkeys[1:vocabsize]), "\n") |> Markdown.parse 
+end
+
+# ╔═╡ 6fd98dc9-9206-4465-b26c-7100403c502a
+if showforms
+	join(map(term -> string("1. ", term, " ", orderedcounts[term], " occurrences") , orderedkeys[1:vocabsize]), "\n") |> Markdown.parse 
 end
 
 # ╔═╡ e33764ef-c482-47c3-a9f5-cd7509aeb292
@@ -1866,15 +1924,19 @@ version = "17.4.0+2"
 
 # ╔═╡ Cell order:
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
-# ╟─2557eed2-0af8-4a7c-a807-0753255fc19d
-# ╟─71e79010-a5a8-4b78-aefb-3e0c588497e2
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
 # ╟─ce4fd422-9900-4838-b04b-c74dcbaef1e4
 # ╟─6405375f-061d-483f-bf3c-a4a2414c3625
 # ╟─63414fa1-5484-4361-9bbc-7c5221c86817
-# ╠═da178dfa-9e59-42ea-b873-4953518f48c2
+# ╟─da178dfa-9e59-42ea-b873-4953518f48c2
+# ╟─8e6a42b3-6de5-485a-8bf9-212c5972257d
+# ╟─e77fc8e0-bb7a-4832-9442-9d0a276f1e35
+# ╟─094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
+# ╟─37a70d41-13de-4fb7-aba2-edd46aa73814
+# ╟─f938a065-6a9b-48a4-bebf-1e7756293f97
+# ╟─6fd98dc9-9206-4465-b26c-7100403c502a
 # ╟─1c0aefd6-4b26-4c02-b869-0357d72d0e80
 # ╟─2e98352c-79c5-414f-9e4e-1cd537db20db
 # ╟─5e14151f-4bcf-430f-9253-a9c6f91e7ebe
@@ -1895,15 +1957,26 @@ version = "17.4.0+2"
 # ╟─2287e93e-cb85-4be8-b856-517ea4fd8d21
 # ╟─d46bce7d-abd8-4e78-b217-252495291c2a
 # ╟─7b803068-4345-4c5d-915f-c159336ae12f
-# ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
-# ╠═a25c8f75-8dd1-4604-84d2-d3a7ed74672a
-# ╠═497ed9be-4de3-40e7-834a-3405c6fd1c5f
+# ╟─f99ab8ea-14a7-447f-b093-e965c0e82f0d
+# ╟─a46883f2-b7f1-422f-b3bd-226cc1edf760
+# ╠═c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
+# ╠═9c6cd449-d775-4db6-b76c-60e2aa1d473c
+# ╟─69eb9982-6392-4b05-9fd5-ceb51da464af
+# ╠═444eefca-affe-4542-bf46-28497ce4cd52
+# ╠═9456f093-6fb5-47d7-8cea-2e5c6051f095
+# ╠═9c29d356-21a4-4e0b-801d-533b62a96da8
+# ╟─ef3b9d87-3f83-4d6c-80b4-c4474b5748be
+# ╠═4aa50787-bfec-411c-93d2-a97b727a5b8e
+# ╠═e2b2e966-9d7b-463c-81ea-394faebb4c9f
 # ╠═c186ba00-552b-4831-8f43-ffcab1feba4a
+# ╠═497ed9be-4de3-40e7-834a-3405c6fd1c5f
+# ╠═239adb0c-951d-4f2d-a907-7a63557ca77a
+# ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
+# ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
+# ╟─a25c8f75-8dd1-4604-84d2-d3a7ed74672a
 # ╠═67d419e2-f634-4740-ae87-70169e4522be
-# ╠═a5a7199e-0cfe-4b57-8efd-9eb805ade293
 # ╟─909e3e41-a20e-4b4d-a4c9-be18480de049
 # ╟─95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
-# ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
 # ╟─e33764ef-c482-47c3-a9f5-cd7509aeb292
 # ╟─626ee6a5-10eb-4d6c-ae37-fc5f7890fd14
 # ╟─1b4bdd33-0a95-40e5-8c5a-80428646d602
