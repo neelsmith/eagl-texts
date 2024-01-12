@@ -37,14 +37,33 @@ md"""## Load data"""
 # ╔═╡ 38ce0b39-e616-4225-99fc-f1f7cc6f470b
 md"""*Load a parser from a local file*: $(@bind file_data FilePicker())"""
 
+# ╔═╡ e17dd34b-2495-429d-9dc2-af56500a3273
+function labellexid(s, labelsdict)
+	keyval = replace(s, r"^[^n]+"=> "")
+	if haskey(labelsdict, keyval)
+		string(labelsdict[keyval], " ($(s))")
+	else
+		s
+	end
+end
+
 # ╔═╡ 8e6a42b3-6de5-485a-8bf9-212c5972257d
-md"""*Percent coverage*: $(@bind pcttoshow Slider(50:5:75, show_value = true))%"""
+md"""*Percent coverage*: $(@bind pcttoshow Slider(25:5:100, default = 50, show_value = true))%"""
 
 # ╔═╡ 094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
 md"""*Show list of lexemes*: $(@bind showlexemes CheckBox())"""
 
+# ╔═╡ f16ac212-ab83-4908-8972-f9e5d1e7340c
+html"""
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+"""
+
 # ╔═╡ f938a065-6a9b-48a4-bebf-1e7756293f97
 md"""*Show list of forms*: $(@bind showforms CheckBox())"""
+
+# ╔═╡ a925c095-b4e7-4fe3-bfc5-c2c6ad4656cc
+ lemmalabels = Kanones.lemmatadict()
+
 
 # ╔═╡ 1c0aefd6-4b26-4c02-b869-0357d72d0e80
 md"""### Unanalyzed forms above a threshhold"""
@@ -82,11 +101,8 @@ md"""> Counting"""
 # ╔═╡ f7c3c9a3-e602-4877-94ec-5e6842348f2d
 md"> Parser"
 
-# ╔═╡ 2227c1c0-21c3-474c-b1a9-63f154454123
-
-
 # ╔═╡ b12a3713-f896-41bc-bc36-96db576d8c95
-"""Construct a `DataFrameParser` from a local `.csv` file."""
+"""Construct a `DataFrameParser` from a local `.csv` file selected from user interaction using PlutoUI widget."""
 function fromfile(fdata)
 	if isnothing(fdata)
 		nothing
@@ -119,9 +135,6 @@ else
 	end
 	join(parsedisplay,"\n") |> Markdown.parse
 end
-
-# ╔═╡ 6f33a235-68ea-4d34-9dd9-94e8b18288e2
-parser
 
 # ╔═╡ aed560de-ffe3-4b26-8b66-41e0cb54beea
 md"> Analyzed corpus"
@@ -181,7 +194,7 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
 
 # ╔═╡ a46883f2-b7f1-422f-b3bd-226cc1edf760
-totallextokens = length(analyzedlexical)
+totallextokens = isnothing(analyzedlexical) ? 0 : length(analyzedlexical)
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -191,7 +204,7 @@ else
 end
 
 # ╔═╡ 67d419e2-f634-4740-ae87-70169e4522be
-successes = filter(analyzedlexical.analyses) do tkn
+successes = isnothing(analyzedlexical) ? [] : filter(analyzedlexical.analyses) do tkn 
 	! isempty(tkn.analyses)
 end
 
@@ -203,6 +216,19 @@ orderedlexcounts = sort(lexemecounts; byvalue = true, rev = true)
 
 # ╔═╡ 444eefca-affe-4542-bf46-28497ce4cd52
 orderedlexkeys = keys(orderedlexcounts) |> collect
+
+# ╔═╡ 920a3749-d0f7-4428-8c8a-75684730fb8d
+orderedlexids = map(s -> replace(s, r"^[^n]+"=> ""), orderedlexkeys)
+
+# ╔═╡ 384454ba-0665-4166-a5f5-96959ca44aa9
+orderedlexlabelled = map(orderedlexids) do s
+	keyval = replace(s, r"^[^n]+"=> "")
+	if haskey(lemmalabels, keyval)
+		string(lemmalabels[keyval], " ($(s))")
+	else
+		s
+	end
+end
 
 # ╔═╡ 9456f093-6fb5-47d7-8cea-2e5c6051f095
 begin
@@ -225,6 +251,21 @@ runninglexpcts = lexemetallies ./ totallextokens  .* 100
 
 # ╔═╡ c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
 lexsize = filter(pct -> pct < pcttoshow, runninglexpcts) |> length
+
+# ╔═╡ 37a70d41-13de-4fb7-aba2-edd46aa73814
+if showlexemes
+	#join(map(term -> string("1. ", labellexid(term, lemmalabels), " ", orderedlexcounts[term], " occurrences") , orderedlexkeys[1:lexsize]), "\n") |> Markdown.parse 
+	# Use:
+	#runninglexpcts
+	lexlistmd = ["| Lemma  (ID) | running total coverage |", "| --- |  --- |"]
+	for (i, s) in enumerate(orderedlexkeys[1:lexsize])
+		#counts = orderedlexcounts[s]
+		pct = runninglexpcts[i] |> round
+		push!(lexlistmd, string("| ", labellexid(s, lemmalabels), " | $(pct)% | |"))
+	end
+	#join(map(term -> string("1. ", labellexid(term, lemmalabels), " ", orderedlexcounts[term], " occurrences") , orderedlexkeys[1:lexsize]), "\n") |> Markdown.parse 
+	join(lexlistmd,"\n") |> Markdown.parse
+end
 
 # ╔═╡ a25c8f75-8dd1-4604-84d2-d3a7ed74672a
 successcounts = map(tkn -> tkn.ctoken.passage.text, successes) |> countmap |> OrderedDict
@@ -264,11 +305,6 @@ To reach $(pcttoshow)% coverage:
 - **$(vocabsize)** *forms* cover **$(pcttoshow)%** of the words in this text. 
 - **$(lexsize)** *lexemes* cover **$(pcttoshow)%** of the words in this text. 
 """
-
-# ╔═╡ 37a70d41-13de-4fb7-aba2-edd46aa73814
-if showlexemes
-	join(map(term -> string("1. ", term, " ", orderedlexcounts[term], " occurrences") , orderedlexkeys[1:vocabsize]), "\n") |> Markdown.parse 
-end
 
 # ╔═╡ 6fd98dc9-9206-4465-b26c-7100403c502a
 if showforms
@@ -1931,12 +1967,17 @@ version = "17.4.0+2"
 # ╟─6405375f-061d-483f-bf3c-a4a2414c3625
 # ╟─63414fa1-5484-4361-9bbc-7c5221c86817
 # ╟─da178dfa-9e59-42ea-b873-4953518f48c2
+# ╟─384454ba-0665-4166-a5f5-96959ca44aa9
+# ╟─e17dd34b-2495-429d-9dc2-af56500a3273
 # ╟─8e6a42b3-6de5-485a-8bf9-212c5972257d
 # ╟─e77fc8e0-bb7a-4832-9442-9d0a276f1e35
 # ╟─094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
 # ╟─37a70d41-13de-4fb7-aba2-edd46aa73814
+# ╠═f16ac212-ab83-4908-8972-f9e5d1e7340c
 # ╟─f938a065-6a9b-48a4-bebf-1e7756293f97
-# ╟─6fd98dc9-9206-4465-b26c-7100403c502a
+# ╠═6fd98dc9-9206-4465-b26c-7100403c502a
+# ╟─a925c095-b4e7-4fe3-bfc5-c2c6ad4656cc
+# ╠═920a3749-d0f7-4428-8c8a-75684730fb8d
 # ╟─1c0aefd6-4b26-4c02-b869-0357d72d0e80
 # ╟─2e98352c-79c5-414f-9e4e-1cd537db20db
 # ╟─5e14151f-4bcf-430f-9253-a9c6f91e7ebe
@@ -1959,22 +2000,22 @@ version = "17.4.0+2"
 # ╟─7b803068-4345-4c5d-915f-c159336ae12f
 # ╟─f99ab8ea-14a7-447f-b093-e965c0e82f0d
 # ╟─a46883f2-b7f1-422f-b3bd-226cc1edf760
-# ╠═c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
-# ╠═9c6cd449-d775-4db6-b76c-60e2aa1d473c
+# ╟─c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
+# ╟─9c6cd449-d775-4db6-b76c-60e2aa1d473c
 # ╟─69eb9982-6392-4b05-9fd5-ceb51da464af
-# ╠═444eefca-affe-4542-bf46-28497ce4cd52
+# ╟─444eefca-affe-4542-bf46-28497ce4cd52
 # ╠═9456f093-6fb5-47d7-8cea-2e5c6051f095
-# ╠═9c29d356-21a4-4e0b-801d-533b62a96da8
+# ╟─9c29d356-21a4-4e0b-801d-533b62a96da8
 # ╟─ef3b9d87-3f83-4d6c-80b4-c4474b5748be
-# ╠═4aa50787-bfec-411c-93d2-a97b727a5b8e
-# ╠═e2b2e966-9d7b-463c-81ea-394faebb4c9f
-# ╠═c186ba00-552b-4831-8f43-ffcab1feba4a
-# ╠═497ed9be-4de3-40e7-834a-3405c6fd1c5f
+# ╟─4aa50787-bfec-411c-93d2-a97b727a5b8e
+# ╟─e2b2e966-9d7b-463c-81ea-394faebb4c9f
+# ╟─c186ba00-552b-4831-8f43-ffcab1feba4a
+# ╟─497ed9be-4de3-40e7-834a-3405c6fd1c5f
 # ╠═239adb0c-951d-4f2d-a907-7a63557ca77a
 # ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
 # ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
 # ╟─a25c8f75-8dd1-4604-84d2-d3a7ed74672a
-# ╠═67d419e2-f634-4740-ae87-70169e4522be
+# ╟─67d419e2-f634-4740-ae87-70169e4522be
 # ╟─909e3e41-a20e-4b4d-a4c9-be18480de049
 # ╟─95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
 # ╟─e33764ef-c482-47c3-a9f5-cd7509aeb292
@@ -1984,9 +2025,7 @@ version = "17.4.0+2"
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
-# ╠═2227c1c0-21c3-474c-b1a9-63f154454123
-# ╠═e5433a82-4221-4b73-8a58-69567ad40713
-# ╠═6f33a235-68ea-4d34-9dd9-94e8b18288e2
+# ╟─e5433a82-4221-4b73-8a58-69567ad40713
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
 # ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
@@ -2005,7 +2044,7 @@ version = "17.4.0+2"
 # ╟─8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 # ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
-# ╠═dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
+# ╟─dbcf58fd-fd06-41c2-bfca-9c542fd38b2d
 # ╟─53f26f18-0145-4d32-a21e-30cf6cc4dff9
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
