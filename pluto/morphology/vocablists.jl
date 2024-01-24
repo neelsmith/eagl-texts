@@ -19,6 +19,7 @@ begin
 	using PlutoUI, HypertextLiteral
 	using CSV, DataFrames
 	using Orthography, PolytonicGreek, ManuscriptOrthography
+	using CitableParserBuilder
 	using CitableBase, CitableCorpus
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
@@ -50,8 +51,16 @@ end
 # ╔═╡ 8e6a42b3-6de5-485a-8bf9-212c5972257d
 md"""*Percent coverage*: $(@bind pcttoshow Slider(25:5:100, default = 50, show_value = true))%"""
 
+# ╔═╡ b981b163-652a-47ba-a4c2-aba0d9ba6dd2
+md"""*List lexemes by part of speech*: $(@bind by_pos CheckBox())"""
+
+# ╔═╡ c429245e-9f37-41da-bcf5-86fbaefdd5ec
+function posForForm(frm)
+	frm |> typeof
+end
+
 # ╔═╡ 094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
-md"""*Show list of lexemes*: $(@bind showlexemes CheckBox())"""
+md"""*List all lexemes*: $(@bind showlexemes CheckBox())"""
 
 # ╔═╡ f16ac212-ab83-4908-8972-f9e5d1e7340c
 html"""
@@ -193,6 +202,22 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
 
+# ╔═╡ 662d8349-2fe2-4526-8a55-20f103b0c751
+uniqueforms = map(tkn -> tkn.analyses, analyzedlexical.analyses) |> Iterators.flatten |> collect |> unique .|> greekForm
+
+# ╔═╡ 15cbcfa8-c66f-4a32-980c-59c268e8a897
+uniquepos = typeof.(uniqueforms) |> unique
+
+# ╔═╡ a4fb0715-be33-43bb-98e3-b65444b314eb
+poslabels = string.(uniquepos)
+
+# ╔═╡ 884102ce-6649-47c6-8f34-f24bf57c8a9a
+if uniqueforms[1] isa GMFUninflected
+	uniqueforms[1].pos |> label 
+else
+	typeof(uniqueforms[1])
+end
+
 # ╔═╡ a46883f2-b7f1-422f-b3bd-226cc1edf760
 totallextokens = isnothing(analyzedlexical) ? 0 : length(analyzedlexical)
 
@@ -216,6 +241,14 @@ orderedlexcounts = sort(lexemecounts; byvalue = true, rev = true)
 
 # ╔═╡ 444eefca-affe-4542-bf46-28497ce4cd52
 orderedlexkeys = keys(orderedlexcounts) |> collect
+
+# ╔═╡ ad0fb3eb-69f2-4a0a-b02c-987d9011b218
+findme = orderedlexkeys[1] |> LexemeUrn
+
+# ╔═╡ c373a92f-91d2-4956-b39f-b78f9ac06235
+filter(uniqueforms) do frm
+	formurn(frm) == findme
+end
 
 # ╔═╡ 920a3749-d0f7-4428-8c8a-75684730fb8d
 orderedlexids = map(s -> replace(s, r"^[^n]+"=> ""), orderedlexkeys)
@@ -251,6 +284,29 @@ runninglexpcts = lexemetallies ./ totallextokens  .* 100
 
 # ╔═╡ c1ffdbbd-9d15-4463-a2bf-38580ea28a7c
 lexsize = filter(pct -> pct < pcttoshow, runninglexpcts) |> length
+
+# ╔═╡ 09625ef9-d38e-4e07-a856-2ace25f6a73a
+if by_pos
+	resultsdict = Dict(
+		"verbs" => [],
+		"nouns" => [],
+		"pronouns" => [],
+		"prepositions" => []
+		
+	)
+	dummy = []
+	# Use:
+	
+	#
+	for (i, s) in enumerate(orderedlexkeys[1:lexsize])
+		push!(dummy, string("- ", labellexid(s, lemmalabels)))
+		
+		
+		
+	end
+	
+	join(dummy, "\n") |> Markdown.parse
+end
 
 # ╔═╡ 37a70d41-13de-4fb7-aba2-edd46aa73814
 if showlexemes
@@ -526,6 +582,7 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 CitableBase = "d6f014bd-995c-41bd-9893-703339864534"
 CitableCorpus = "cf5ac11a-93ef-4a1a-97a3-f6af101603b5"
+CitableParserBuilder = "c834cb9d-35b9-419a-8ff8-ecaeea9e2a2a"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 HmtArchive = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
@@ -541,6 +598,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 CSV = "~0.10.11"
 CitableBase = "~10.3.0"
 CitableCorpus = "~0.13.4"
+CitableParserBuilder = "~0.24.2"
 DataFrames = "~1.5.0"
 HmtArchive = "~0.12.1"
 HypertextLiteral = "~0.9.4"
@@ -559,7 +617,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.0"
 manifest_format = "2.0"
-project_hash = "2610ef991e8623a2a010deffbb723f637ed6df32"
+project_hash = "92fef9e1db8f2df67ea84e99a638621696483117"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1959,7 +2017,7 @@ version = "17.4.0+2"
 """
 
 # ╔═╡ Cell order:
-# ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
+# ╠═b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
 # ╟─38ce0b39-e616-4225-99fc-f1f7cc6f470b
@@ -1971,9 +2029,18 @@ version = "17.4.0+2"
 # ╟─e17dd34b-2495-429d-9dc2-af56500a3273
 # ╟─8e6a42b3-6de5-485a-8bf9-212c5972257d
 # ╟─e77fc8e0-bb7a-4832-9442-9d0a276f1e35
+# ╟─b981b163-652a-47ba-a4c2-aba0d9ba6dd2
+# ╠═09625ef9-d38e-4e07-a856-2ace25f6a73a
+# ╠═ad0fb3eb-69f2-4a0a-b02c-987d9011b218
+# ╠═c373a92f-91d2-4956-b39f-b78f9ac06235
+# ╠═662d8349-2fe2-4526-8a55-20f103b0c751
+# ╠═15cbcfa8-c66f-4a32-980c-59c268e8a897
+# ╠═a4fb0715-be33-43bb-98e3-b65444b314eb
+# ╠═884102ce-6649-47c6-8f34-f24bf57c8a9a
+# ╠═c429245e-9f37-41da-bcf5-86fbaefdd5ec
 # ╟─094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
 # ╟─37a70d41-13de-4fb7-aba2-edd46aa73814
-# ╠═f16ac212-ab83-4908-8972-f9e5d1e7340c
+# ╟─f16ac212-ab83-4908-8972-f9e5d1e7340c
 # ╟─f938a065-6a9b-48a4-bebf-1e7756293f97
 # ╠═6fd98dc9-9206-4465-b26c-7100403c502a
 # ╟─a925c095-b4e7-4fe3-bfc5-c2c6ad4656cc
@@ -2015,7 +2082,7 @@ version = "17.4.0+2"
 # ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
 # ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
 # ╟─a25c8f75-8dd1-4604-84d2-d3a7ed74672a
-# ╟─67d419e2-f634-4740-ae87-70169e4522be
+# ╠═67d419e2-f634-4740-ae87-70169e4522be
 # ╟─909e3e41-a20e-4b4d-a4c9-be18480de049
 # ╟─95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
 # ╟─e33764ef-c482-47c3-a9f5-cd7509aeb292
