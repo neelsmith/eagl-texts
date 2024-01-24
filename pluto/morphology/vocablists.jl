@@ -54,13 +54,20 @@ md"""*Percent coverage*: $(@bind pcttoshow Slider(25:5:100, default = 50, show_v
 # ╔═╡ b981b163-652a-47ba-a4c2-aba0d9ba6dd2
 md"""*List lexemes by part of speech*: $(@bind by_pos CheckBox())"""
 
+# ╔═╡ ca6b36eb-0ccf-4dd7-90bc-c92907a075df
+html"""
+<br/><br/><br/><br/>
+"""
+
 # ╔═╡ c429245e-9f37-41da-bcf5-86fbaefdd5ec
-function posForForm(frm)
-	frm |> typeof
+"""Get first PoS for a CitableAnalysis."""
+function posForAnalysis(ca)
+	ca |> greekForm
+	#ca.analyses[1] |> typeof
 end
 
 # ╔═╡ 094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
-md"""*List all lexemes*: $(@bind showlexemes CheckBox())"""
+md"""*Show list of lexemes*: $(@bind showlexemes CheckBox())"""
 
 # ╔═╡ f16ac212-ab83-4908-8972-f9e5d1e7340c
 html"""
@@ -203,7 +210,7 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
 
 # ╔═╡ 662d8349-2fe2-4526-8a55-20f103b0c751
-uniqueforms = map(tkn -> tkn.analyses, analyzedlexical.analyses) |> Iterators.flatten |> collect |> unique .|> greekForm
+uniqueforms = map(tkn -> tkn.analyses, analyzedlexical.analyses) |> Iterators.flatten |> collect |> unique 
 
 # ╔═╡ 15cbcfa8-c66f-4a32-980c-59c268e8a897
 uniquepos = typeof.(uniqueforms) |> unique
@@ -211,11 +218,28 @@ uniquepos = typeof.(uniqueforms) |> unique
 # ╔═╡ a4fb0715-be33-43bb-98e3-b65444b314eb
 poslabels = string.(uniquepos)
 
-# ╔═╡ 884102ce-6649-47c6-8f34-f24bf57c8a9a
-if uniqueforms[1] isa GMFUninflected
-	uniqueforms[1].pos |> label 
+# ╔═╡ 7ae42ca3-c62c-4c86-a8a9-822a8478424a
+tkns = map(a -> a.analyses[1], filter(alex -> !isempty(alex.analyses), analyzedlexical.analyses))
+
+# ╔═╡ 2f40e121-9d22-4c06-b1d4-758abd9e17f6
+tkns[1] |> typeof
+
+# ╔═╡ 8b6749f3-0cd5-45dd-8720-bd85b783e264
+at = tkns[1] 
+
+# ╔═╡ 28073285-dfe3-4f44-8cbf-71761b1844c4
+xform = at |> formurn
+
+# ╔═╡ 8c0060c0-c390-4264-b032-8c08c5cfa7ca
+xlex = at |> lexemeurn
+
+# ╔═╡ b1f27cd3-13a2-4991-a7a3-35d2d51aee83
+if posForAnalysis(at)  isa GMFUninflected
+	#at |> label
+	at.form |> greekForm |> label
+	
 else
-	typeof(uniqueforms[1])
+	label(at)
 end
 
 # ╔═╡ a46883f2-b7f1-422f-b3bd-226cc1edf760
@@ -244,11 +268,6 @@ orderedlexkeys = keys(orderedlexcounts) |> collect
 
 # ╔═╡ ad0fb3eb-69f2-4a0a-b02c-987d9011b218
 findme = orderedlexkeys[1] |> LexemeUrn
-
-# ╔═╡ c373a92f-91d2-4956-b39f-b78f9ac06235
-filter(uniqueforms) do frm
-	formurn(frm) == findme
-end
 
 # ╔═╡ 920a3749-d0f7-4428-8c8a-75684730fb8d
 orderedlexids = map(s -> replace(s, r"^[^n]+"=> ""), orderedlexkeys)
@@ -2031,13 +2050,18 @@ version = "17.4.0+2"
 # ╟─e77fc8e0-bb7a-4832-9442-9d0a276f1e35
 # ╟─b981b163-652a-47ba-a4c2-aba0d9ba6dd2
 # ╠═09625ef9-d38e-4e07-a856-2ace25f6a73a
+# ╠═b1f27cd3-13a2-4991-a7a3-35d2d51aee83
 # ╠═ad0fb3eb-69f2-4a0a-b02c-987d9011b218
-# ╠═c373a92f-91d2-4956-b39f-b78f9ac06235
+# ╠═c429245e-9f37-41da-bcf5-86fbaefdd5ec
+# ╟─ca6b36eb-0ccf-4dd7-90bc-c92907a075df
 # ╠═662d8349-2fe2-4526-8a55-20f103b0c751
 # ╠═15cbcfa8-c66f-4a32-980c-59c268e8a897
 # ╠═a4fb0715-be33-43bb-98e3-b65444b314eb
-# ╠═884102ce-6649-47c6-8f34-f24bf57c8a9a
-# ╠═c429245e-9f37-41da-bcf5-86fbaefdd5ec
+# ╠═28073285-dfe3-4f44-8cbf-71761b1844c4
+# ╠═8c0060c0-c390-4264-b032-8c08c5cfa7ca
+# ╠═7ae42ca3-c62c-4c86-a8a9-822a8478424a
+# ╠═2f40e121-9d22-4c06-b1d4-758abd9e17f6
+# ╠═8b6749f3-0cd5-45dd-8720-bd85b783e264
 # ╟─094e2c24-ef30-48d3-b8cb-a4bd6cb293ba
 # ╟─37a70d41-13de-4fb7-aba2-edd46aa73814
 # ╟─f16ac212-ab83-4908-8972-f9e5d1e7340c
