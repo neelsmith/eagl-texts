@@ -56,7 +56,11 @@ s# We want to find one example of an analysis for a given lexeme
 # q&d version:
 function labellexid(lexurn, labeldict)
     idval = split(string(lexurn), ".")[2]
-    string(labeldict[idval], " (", idval, ")")
+    if haskey(labeldict, idval)
+        string(labeldict[idval], " (", idval, ")")
+    else
+        idval
+    end
 end
 
 # Look at type of GreekForm in the analysis to "part of speech"
@@ -64,34 +68,79 @@ function posForAnalysis(analyzed)
     analyzedform = analyzed |> formurn |> greekForm
 
     if analyzedform isa GMFUninflected
-        @info("It's uninflected")
-        analyzedform.pos |> label        
+        str = code(analyzedform)
+        @info("It's uninflected: $(gmpUninflectedType(analyzedform)) with code $(str)")
+        poschar = split(str,"")[end]
+        posnum = parse(Int, poschar)
+        poslabel = Kanones.poslabels[posnum]
+        @info("POS num is in $(posnum) so label $(Kanones.poslabels[posnum])")
+        #analyzedform.pos  |> string
+        uninflType = gmpUninflectedType(analyzedform)  
+        @info("And type is $(uninflType) for $(analyzedform.pos)")
+        
+        if startswith(poslabel, "verb")  ||
+            startswith(poslabel, "finite")
+            "verb" 
+        elseif startswith(poslabel, "pronoun")
+            "pronoun"
+        else
+             poslabel
+        end
+
     else
-        @info("it's inflected")
-        label(analyzedform)
+        #@info("it's inflected")
+        if analyzedform isa GMFPronoun
+            "pronoun"
+        elseif analyzedform isa GMFNoun
+            "noun"
+        elseif analyzedform isa GMFAdjective
+            "adjective"
+        elseif analyzedform isa GMFFiniteVerb ||
+            analyzedform isa GMFInfinitive ||
+            analyzedform isa GMFParticiple ||
+            analyzedform isa GMFVerbalAdjective
+            "verb"
+        else
+            label(analyzedform)
+        end
     end
 end
 
+
+function runitwrapper()
+
 resultsdict = Dict(
-		"verb" => [],
-		"noun" => [],
-		"pronoun" => [],
-		"preposition" => [],
-        "conjunction" => []
-		
+		"verb" => String[],
+		"noun" => String[],
+		"pronoun" => String[],
+		"preposition" => String[],
+        "conjunction" => String[],
+        "particle" => String[],
+        "unrecognized" => String[],
+        "adverb" => String[],
+        "particle" => String[]
 )
 
+for (i, sample) in enumerate(orderedlexkeys)
+    samplelex = orderedlexkeys[i]
+    samplelabeled = labellexid(samplelex, lemmalabels)
+    firstmatch = filter(morphanl -> string(morphanl.lexeme) == samplelex,  uniqueanalyses)[1]
+    pos = posForAnalysis(firstmatch)
+    @info("Sample $(i): $(samplelabeled) == $(pos) from $(firstmatch)")
+    @info("Looking for $(pos) in dict keys $(keys(resultsdict))")
+    if pos in keys(resultsdict)
+       push!(resultsdict[pos], samplelabeled)
+    else
+        push!(resultsdict["unrecognized"], pos)
+    end
+end
 
-samplelex = orderedlexkeys[2]
-samplelabel = labellexid(samplelex, lemmalabels)
-sampletotal = coveragelist[2]
+for k in keys(resultsdict)
+    println(string(k, ": ", resultsdict[k]))
+end
+end
 
 
+runitwrapper()
 
-uniqueanalyses[2].lexeme
-samplelex
-
-firstmatch = filter(morphanl -> string(morphanl.lexeme) == samplelex,  uniqueanalyses)[1]
-
-
-firstmatch  |> posForAnalysis
+join(unique(resultsdict["unrecognized"]),"\n") |> println
