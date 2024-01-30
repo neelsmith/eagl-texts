@@ -14,7 +14,7 @@ msg = """PROJECT IS $(ENV["JULIA_PROJECT"])"""
 # from an LSJMining dataset in adjacent directory.
 function alllitgreek(parentdir = pwd(); atticonly = false)
     kroot = joinpath(parentdir, "Kanones.jl")
-    lsjroot = joinpath(parentdir, "LSJMining.jl")
+
 
     # 1. demo vocab:
     lgr = joinpath(kroot, "datasets", "literarygreek-rules")
@@ -24,13 +24,13 @@ function alllitgreek(parentdir = pwd(); atticonly = false)
     # 3. manually validated NOT in LSJ:
     extra = joinpath(kroot, "datasets", "extra")
     # 4. hypothesized data from LSJMining
-    lsjx = joinpath(lsjroot, "LSJMining.jl", "kanonesdata","lsjx")
+    lsjx = joinpath(parentdir, "LSJMining.jl", "kanonesdata","lsjx")
     atticonly ?  dataset([lgr, lsj, extra, lsjx]) :  dataset([lgr, ionic, lsj, extra, lsjx]) 
 end
 
-kroot = joinpath(projdir |> dirname |> dirname, "Kanones.jl")
+repoparent = joinpath(projdir |> dirname |> dirname)
 
-bigds = alllitgreek(kroot; atticonly = true)
+bigds = alllitgreek(repoparent; atticonly = true)
 @time mongoparser = stringParser(bigds)
 
 
