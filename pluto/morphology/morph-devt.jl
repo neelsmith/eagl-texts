@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.27
+# v0.19.36
 
 using Markdown
 using InteractiveUtils
@@ -22,14 +22,19 @@ begin
 	using CitableBase, CitableCorpus
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
+
+	using StatsBase
+	using OrderedCollections
+	md"""*Unhide this cell to see the Julia environment.*"""
 end
 
 # ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
-md"""*Version: **0.2.0**.* *See version info* $(@bind versioninfo CheckBox())"""
+md"""*Version: **0.3.0**.* *See version info* $(@bind versioninfo CheckBox())"""
 
 # ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
 if versioninfo
 	md"""
+- **0.3.0**: use `StatsBase` to create count maps
 - **0.2.0**: additions to menu of texts to analyze
 - **0.1.0**: initial release
 	"""
@@ -76,6 +81,9 @@ md"""> Counting"""
 # ╔═╡ f7c3c9a3-e602-4877-94ec-5e6842348f2d
 md"> Parser"
 
+# ╔═╡ 2227c1c0-21c3-474c-b1a9-63f154454123
+
+
 # ╔═╡ b12a3713-f896-41bc-bc36-96db576d8c95
 """Construct a `DataFrameParser` from a local `.csv` file."""
 function fromfile(fdata)
@@ -119,6 +127,9 @@ md"> Analyzed corpus"
 
 # ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
 md"> Frequencies"
+
+# ╔═╡ b2be5fe0-bf99-4e8c-9bb6-440170b8252e
+
 
 # ╔═╡ 8738131f-7849-4d58-b1b6-a741ca1c5fef
 md"> UI"
@@ -167,6 +178,37 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) ? nothing : parsecorpus(tcorpus, parser)
+
+# ╔═╡ 67d419e2-f634-4740-ae87-70169e4522be
+successes = filter(analyzedlexical.analyses) do tkn
+	! isempty(tkn.analyses)
+end
+
+# ╔═╡ a25c8f75-8dd1-4604-84d2-d3a7ed74672a
+successcounts = map(tkn -> tkn.ctoken.passage.text, successes) |> countmap |> OrderedDict
+
+# ╔═╡ 497ed9be-4de3-40e7-834a-3405c6fd1c5f
+orderedcounts = sort(successcounts; byvalue = true, rev = true)
+
+# ╔═╡ c186ba00-552b-4831-8f43-ffcab1feba4a
+orderedkeys = keys(orderedcounts) |> collect
+
+# ╔═╡ a5a7199e-0cfe-4b57-8efd-9eb805ade293
+begin
+	runningtally = []
+	totallextokens = length(analyzedlexical)
+	for (i,k) in enumerate(orderedkeys)
+		currval = orderedcounts[k]
+		if i == 1
+			push!(runningtally, currval / totallextokens) 
+		else
+			prevval = runningtally[i - 1]
+			push!(runningtally, (currval + prevval) / totallextokens)
+		end
+	end
+	runningtally
+	
+end
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -395,9 +437,11 @@ HmtArchive = "1e7b0059-6550-4515-8382-5d3f2046a0a7"
 HypertextLiteral = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
 Kanones = "107500f9-53d4-4696-8485-0747242ad8bc"
 ManuscriptOrthography = "c7d01213-112e-44c9-bed3-ac95fd3728c7"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Orthography = "0b4c9448-09b0-4e78-95ea-3eb3328be36d"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 PolytonicGreek = "72b824a7-2b4a-40fa-944c-ac4f345dc63a"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 CSV = "~0.10.11"
@@ -408,18 +452,20 @@ HmtArchive = "~0.12.1"
 HypertextLiteral = "~0.9.4"
 Kanones = "~0.18.0"
 ManuscriptOrthography = "~0.4.4"
+OrderedCollections = "~1.6.3"
 Orthography = "~0.21.2"
 PlutoUI = "~0.7.51"
 PolytonicGreek = "~0.18.5"
+StatsBase = "~0.34.2"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.1"
+julia_version = "1.10.0"
 manifest_format = "2.0"
-project_hash = "8d4fc401a2e1047fef0f2a8a6c3b257384bb4ffe"
+project_hash = "2610ef991e8623a2a010deffbb723f637ed6df32"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -658,7 +704,7 @@ weakdeps = ["Dates", "LinearAlgebra"]
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.0.2+0"
+version = "1.0.5+1"
 
 [[deps.ComputationalResources]]
 git-tree-sha1 = "52cb3ec90e8a8bea0e62e275ba577ad0f74821f7"
@@ -1131,21 +1177,26 @@ version = "0.3.1"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
-version = "0.6.3"
+version = "0.6.4"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
-version = "7.84.0+0"
+version = "8.4.0+0"
 
 [[deps.LibGit2]]
-deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
+deps = ["Base64", "LibGit2_jll", "NetworkOptions", "Printf", "SHA"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
+
+[[deps.LibGit2_jll]]
+deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll"]
+uuid = "e37daf67-58a4-590a-8e99-b0245dd2ffc5"
+version = "1.6.4+0"
 
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
-version = "1.10.2+0"
+version = "1.11.0+1"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -1238,7 +1289,7 @@ version = "1.1.7"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
-version = "2.28.2+0"
+version = "2.28.2+1"
 
 [[deps.MetaGraphs]]
 deps = ["Graphs", "JLD2", "Random"]
@@ -1263,7 +1314,7 @@ version = "0.3.4"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
-version = "2022.10.11"
+version = "2023.1.10"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
@@ -1302,7 +1353,7 @@ version = "1.12.9"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.21+4"
+version = "0.3.23+2"
 
 [[deps.OpenEXR]]
 deps = ["Colors", "FileIO", "OpenEXR_jll"]
@@ -1325,7 +1376,7 @@ version = "2.4.0+0"
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
-version = "0.8.1+0"
+version = "0.8.1+2"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
@@ -1346,9 +1397,9 @@ uuid = "efe28fd5-8261-553b-a9e1-b2916fc3738e"
 version = "0.5.5+0"
 
 [[deps.OrderedCollections]]
-git-tree-sha1 = "d321bf2de576bf25ec4d3e4360faca399afca282"
+git-tree-sha1 = "dfdf5519f235516220579f949664f1bf44e741c5"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
-version = "1.6.0"
+version = "1.6.3"
 
 [[deps.Orthography]]
 deps = ["CitableBase", "CitableCorpus", "CitableText", "Compat", "DocStringExtensions", "Documenter", "OrderedCollections", "StatsBase", "Test", "TestSetExtensions", "TypedTables", "Unicode"]
@@ -1383,7 +1434,7 @@ version = "2.7.1"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-version = "1.9.0"
+version = "1.10.0"
 
 [[deps.PkgVersion]]
 deps = ["Pkg"]
@@ -1470,7 +1521,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[deps.Random]]
-deps = ["SHA", "Serialization"]
+deps = ["SHA"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[deps.RangeArrays]]
@@ -1575,6 +1626,7 @@ version = "1.1.1"
 [[deps.SparseArrays]]
 deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+version = "1.10.0"
 
 [[deps.SpecialFunctions]]
 deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
@@ -1612,7 +1664,7 @@ version = "1.4.0"
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
-version = "1.9.0"
+version = "1.10.0"
 
 [[deps.StatsAPI]]
 deps = ["LinearAlgebra"]
@@ -1622,9 +1674,9 @@ version = "1.6.0"
 
 [[deps.StatsBase]]
 deps = ["DataAPI", "DataStructures", "LinearAlgebra", "LogExpFunctions", "Missings", "Printf", "Random", "SortingAlgorithms", "SparseArrays", "Statistics", "StatsAPI"]
-git-tree-sha1 = "75ebe04c5bed70b91614d684259b661c9e6274a4"
+git-tree-sha1 = "1d77abd07f617c4868c33d4f5b9e1dbb2643c9cf"
 uuid = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
-version = "0.34.0"
+version = "0.34.2"
 
 [[deps.StringDistances]]
 deps = ["Distances", "StatsAPI"]
@@ -1638,9 +1690,9 @@ uuid = "892a3eda-7b42-436c-8928-eab12a02cf0e"
 version = "0.3.0"
 
 [[deps.SuiteSparse_jll]]
-deps = ["Artifacts", "Libdl", "Pkg", "libblastrampoline_jll"]
+deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
-version = "5.10.1+6"
+version = "7.2.1+1"
 
 [[deps.TOML]]
 deps = ["Dates"]
@@ -1776,7 +1828,7 @@ version = "0.9.4"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
-version = "1.2.13+0"
+version = "1.2.13+1"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -1787,7 +1839,7 @@ version = "1.5.5+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+0"
+version = "5.8.0+1"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1804,12 +1856,12 @@ version = "1.10.3+0"
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
-version = "1.48.0+0"
+version = "1.52.0+1"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
-version = "17.4.0+0"
+version = "17.4.0+2"
 """
 
 # ╔═╡ Cell order:
@@ -1844,6 +1896,11 @@ version = "17.4.0+0"
 # ╟─d46bce7d-abd8-4e78-b217-252495291c2a
 # ╟─7b803068-4345-4c5d-915f-c159336ae12f
 # ╟─f53b222d-ef12-47ab-bd6c-e80131f94f8f
+# ╠═a25c8f75-8dd1-4604-84d2-d3a7ed74672a
+# ╠═497ed9be-4de3-40e7-834a-3405c6fd1c5f
+# ╠═c186ba00-552b-4831-8f43-ffcab1feba4a
+# ╠═67d419e2-f634-4740-ae87-70169e4522be
+# ╠═a5a7199e-0cfe-4b57-8efd-9eb805ade293
 # ╟─909e3e41-a20e-4b4d-a4c9-be18480de049
 # ╟─95cf96fc-0108-4c2a-80a9-38bc9dbf71a1
 # ╟─97ac1bc4-c910-47ba-9712-94a24aeb55f7
@@ -1854,6 +1911,7 @@ version = "17.4.0+0"
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
+# ╠═2227c1c0-21c3-474c-b1a9-63f154454123
 # ╠═e5433a82-4221-4b73-8a58-69567ad40713
 # ╠═6f33a235-68ea-4d34-9dd9-94e8b18288e2
 # ╟─b12a3713-f896-41bc-bc36-96db576d8c95
@@ -1867,6 +1925,7 @@ version = "17.4.0+0"
 # ╟─3120740a-d34c-487b-b4ff-f16db52d5594
 # ╟─fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 # ╟─e455604c-4bf4-4ad7-9201-1ecb69c2f054
+# ╠═b2be5fe0-bf99-4e8c-9bb6-440170b8252e
 # ╟─a87082dc-7247-4619-a16e-bf32fbab3223
 # ╟─84e4da1d-4082-4393-af39-3c2f828efd94
 # ╟─8806f333-9486-4a81-be60-8a94a49862c1

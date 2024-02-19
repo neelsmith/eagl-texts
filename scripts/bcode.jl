@@ -31,7 +31,7 @@ function purifyortho(textname)
 end
 
 # Clean up a text, test reading back as a corpus:
-tidier = purifyortho("oeconomicus")
+tidier = purifyortho("leontius")
 
 using CitableBase, CitableCorpus
 c = fromcex(tidier, CitableTextCorpus, FileReader)

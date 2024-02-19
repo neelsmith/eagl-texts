@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.32
+# v0.19.36
 
 using Markdown
 using InteractiveUtils
@@ -19,58 +19,34 @@ begin
 	using PlutoUI, HypertextLiteral
 	using CSV, DataFrames
 	using Orthography, PolytonicGreek, ManuscriptOrthography
-		using CitableBase, CitableCorpus, CitableText
+	using CitableBase, CitableCorpus, CitableText
 	using HmtArchive, HmtArchive.Analysis
 	using Kanones
-	md"""*Unhide this cell to see the Julia environment.*"""
 end
 
 # ╔═╡ 2557eed2-0af8-4a7c-a807-0753255fc19d
-md"""*Notebook version **0.3.0**.  See version info* $(@bind versioninfo CheckBox())"""
+md"""*Notebook version **0.1.0**.  See version info* $(@bind versioninfo CheckBox())"""
 
 # ╔═╡ 71e79010-a5a8-4b78-aefb-3e0c588497e2
 if versioninfo
 	md"""
-- **0.3.0**: add option to incorporate LSJ data
-- **0.2.0**: add display of passage highlighted for parsing results
-- **0.1.1**: tidier presentation of analyses
-- **0.1.0**: build a parser using a clone of `Kanones.jl` in an adjacent directory
+- **0.1.0**: build a parser using core dataset from an adjacent clone of `Kanones.jl`
 	"""
 else
 	md""
 end
 
-# ╔═╡ 5d9318b4-f139-4f0a-b995-146bdec93999
-md"""
-!!! tip "Hey! Here are some better ideas!"
-
-    1. You should really give `Kanones` an option to *add to* an existing parser, rather than rebuilding all when adding *vocab*. This would require isolating the rules from the original set, compiling a parser with those rules and any *new* voca , and then adding the parser output to the previous output. With that in place, it's *really* worthwhile to start from an initial compiliation that *includes* auto-grabbed data from LSJ!. 
-
-    *Yes!*
-"""
-
 # ╔═╡ f78dfd75-0bd3-4e9c-8604-443d0ec92588
-md"""# `[B|Reb]`uild parsers to analyze a corpus"""
+md"""# Work on a parser for a corpus in Attic Greek"""
 
-# ╔═╡ e5249452-50df-4be0-af31-f74b0b129560
-md"""
-!!! note "How this works..."
-
-    - load a corpus from a CEX source. If a parser is already built, the corpus is immediately analyzed. This can take a couple of seconds, even on a small corpus.
-    - (re)build a parser on demand (checkbox to activate building, button to prompt rebuilding). This is *slow*: on my HC laptop, a couple of minutes.
-"""
+# ╔═╡ 80e2b82b-f123-4eaa-a0bd-55594abb2329
+@bind rebuild Button("Rebuild parser")
 
 # ╔═╡ 9823bc1c-b719-49c3-8f01-8acd219ca67c
 md"""## Load data"""
 
-# ╔═╡ 23ea68f0-eb34-4b5d-8976-5bd706b6777d
-md"""> Check the following box to build a parser for the first time. With the box checked, you can use the `Rebuild parser` button to rebuild it."""
-
-# ╔═╡ c58f02d7-2506-4cb8-b0a1-11bce7b586d2
-md"""*Build parser:* $(@bind build_ok CheckBox()) $(@bind rebuild Button("Rebuild parser")) *Include LSJ mining data* $(@bind lsjtoo CheckBox())"""
-
-# ╔═╡ 28df2b78-497c-4ea9-8721-2629e8220674
-md"""## View a passage"""
+# ╔═╡ 2bac28ce-c8c8-49bc-87ae-d3b444a20b7e
+md"""*Parse token*: $(@bind tkn TextField(default="ἀνδρός"))"""
 
 # ╔═╡ 144e8fc5-f1c6-4bae-a146-19b437b7881d
 md"""## Recurring unanalyzed tokens"""
@@ -79,7 +55,7 @@ md"""## Recurring unanalyzed tokens"""
 md"""### Unanalyzed singletons"""
 
 # ╔═╡ 69d283dc-f71d-4cfd-add2-f4bbc55fe2f0
-md""" ### See passages and parses for form"""
+md""" ### See passages for form"""
 
 # ╔═╡ af175591-b8e8-48c3-a6d5-78b83d7756c4
 md"""*Token (string value)* $(confirm(@bind s TextField(placeholder="θυγατέρα")))"""
@@ -100,31 +76,14 @@ md"""> Counting"""
 # ╔═╡ 2b77d1d2-32dc-4c62-8ce4-739dec0fec1b
 md"""> Text selection"""
 
-# ╔═╡ 1b8a2c60-8678-4517-9ed7-840ab689cf85
-eaglbase = "https://raw.githubusercontent.com/neelsmith/eagl-texts/main/texts/"
-	
-
-# ╔═╡ 1d3b369e-5a0f-4392-a773-be5c75c52abd
-eagltexts = [
-	"" => "-- Choose a text --",
-	"lysias1-filtered.cex" => "Lysias 1",
-	"apollodorus-filtered.cex" => "Apollodorus",
-	"oeconomicus-filtered.cex" => "Xenophon, Oeconomicus",
-	"isaeus-filtered.cex" => "Isaeus",
-	"against_neaera-filtered.cex" => "Demosthenes, Against Neaera",
-	"herodotus-filtered.cex" => "Herodotus",
-	"iliad-allen.cex" => "Iliad (Allen)"
-	
-]
-
-# ╔═╡ 7291d0b0-6b10-402f-8acd-bd28cf4eb15c
-md"""*Select a corpus to analyze*: $(@bind textchoice Select(eagltexts))"""
-
 # ╔═╡ f7c3c9a3-e602-4877-94ec-5e6842348f2d
 md"> Parser"
 
+# ╔═╡ a80ec01c-171a-40c6-ae8a-ef554a1c788c
+
+
 # ╔═╡ 08cee0da-ecd8-4670-a1f1-df522a936f4f
-kroot = joinpath(pwd() |> dirname |> dirname, "Kanones.jl")
+kroot = joinpath(pwd() |> dirname |> dirname |> dirname, "Kanones.jl")
 
 # ╔═╡ cc52eefd-c02c-4613-ae12-d3d187a4050e
 if !isdir(kroot)
@@ -133,85 +92,106 @@ else
 end
 
 # ╔═╡ c7ca88b6-6bf8-45aa-b16d-30cbc99c759f
-"""Place holder function until this is provided in publication of next Kanones release."""
-function coredata(repo = pwd(); lsjtoo = false)
-	
+"""Place holder waiting for publicatoin of next Kanones release."""
+function coredata(repo = pwd())
     # 1. rules with demo vocab:
     lgr = joinpath(repo, "datasets", "literarygreek-rules")
-    ionic = joinpath(repo, "datasets", "ionic")
-    homeric = joinpath(repo, "datasets", "homeric")
+    #ionic = joinpath(repo, "datasets", "ionic")
+    #homeric = joinpath(repo, "datasets", "homeric")
     # 2. manually validated LSJ vocab:
     lsj = joinpath(repo, "datasets", "lsj-vocab")
     # 3. manually validated NOT in LSJ:
     extra = joinpath(repo, "datasets", "extra")
 
-	
-	# 4. any annotations in the local morphology directory:
 	wip = joinpath(pwd() |> dirname, "morphology")
 	
-	# 5. Optionally, auto-quarried data from LSJ:
-	if lsjtoo
-		lsjmining = joinpath(dirname(repo), "LSJMining.jl", "kanonesdata", "lsjx")
-		dataset([lgr, ionic, homeric, lsj, extra, wip, lsjmining]) 
-	else
-		dataset([lgr, ionic, homeric, lsj, extra, wip]) 	
-	end
+	dataset([lgr, lsj, extra, wip]) 
 end
 
 # ╔═╡ f5b03be0-35c6-437a-9348-f68fd356fa5b
-"""Rebuild dataset and recompile parser."""
-function recompile(root; withlsj)	
-	@info("Starting to compile parser using $(root) for core data")
-	coredata(root; lsjtoo = withlsj) |> stringParser
+"""Rebuild dataset and rexompile parser."""
+function recompile(root)
+	"Hi, we're recompiling"
+	
+	coredata(root) |> stringParser
 end
 
 # ╔═╡ a4ec7226-02e2-4034-940c-e9f30b51817a
 # ╠═╡ show_logs = false
 parser = begin
 	rebuild
-	build_ok ? recompile(kroot; withlsj = lsjtoo) : nothing
+	newparser = recompile(kroot) 
+	parsefile = joinpath(kroot, "parsers", "current-core-attic.csv")
+	Kanones.tofile(newparser, parsefile)
+	newparser
+end
+
+# ╔═╡ 2489de3c-bc1a-4586-8b02-0e8d3770b768
+filter(parser.entries) do e
+	occursin(e, "n25630")
+end
+
+# ╔═╡ 7d5689b9-513b-4bbb-96b3-8c50773f465d
+
+	if isempty(tkn) 
+		md""
+		else
+	parses = parsetoken(tkn, parser)
+	parselist = join(map(p -> string("1. ", p), parses), "\n")
+	mdtext = """Parses for "**$(tkn)**": **$(length(parses))**
+
+	
+$parselist
+"""
+	Markdown.parse(mdtext)
 end
 
 # ╔═╡ 6405375f-061d-483f-bf3c-a4a2414c3625
 isnothing(parser) ? md"**Parser**: no parser loaded." : md"""**Parser**: compiled a parser capable of analyzing **$(length(parser.entries))** forms."""
 
 # ╔═╡ 28da3e9d-3f5b-4e93-a1ce-82aaa2d7e9a2
-if isnothing(parser) || isempty(s)
+if isnothing(parser)
 	md""
 else
-	parseresults = parsetoken(s, parser)
-	parsedisplay = ["**$(length(parseresults)) parses** for $(s)",""]
-	
+	parsedisplay = []
+	parseresults = parsetoken(s,parser)
 	for prs in parseresults
 		push!(parsedisplay, "- " * string(prs))
 	end
 	join(parsedisplay,"\n") |> Markdown.parse
 end
 
+# ╔═╡ ac74affd-a995-4351-9129-14be814aa3ca
+	
+	Kanones.tofile(newparser, parsefile, delimiter=",")
+
 # ╔═╡ aed560de-ffe3-4b26-8b66-41e0cb54beea
 md"> Analyzed corpus"
 
-# ╔═╡ c54dcf7d-e923-4dab-987b-227bb151ae32
-corpus = if isempty(textchoice)
-	nothing
-else
-	fromcex(eaglbase * textchoice, CitableTextCorpus, UrlReader)
-end
+# ╔═╡ bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 
-# ╔═╡ 0a4b67bd-7868-4cde-845d-2d85aa7d4171
-begin
-	
-	if isnothing(corpus)
-		@bind psgchoice Select(["" => "--No text selected--"])
-	else
-		menuhdr = ["" => "--Choose a passage--"]
-		psgmenu = map(psg -> (passagecomponent(psg.urn) => passagecomponent(psg.urn)), corpus.passages)
-		@bind psgchoice Select(vcat(menuhdr, psgmenu))
-	end
-end
 
 # ╔═╡ fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 ortho =  literaryGreek()
+
+# ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
+md"> Frequencies"
+
+# ╔═╡ 8738131f-7849-4d58-b1b6-a741ca1c5fef
+md"> UI"
+
+# ╔═╡ e6e69c41-3f06-428e-81e5-0b0a36129aed
+textmenu = ["" => "", 
+	joinpath(dirname(dirname(pwd())), "texts", "oeconomicus.cex") => "Xenophon Oeconomicus",
+	joinpath(dirname(dirname(pwd())), "texts", "lysias1.cex") => "Lysias 1",
+	joinpath(dirname(dirname(pwd())), "texts", "apollodorus.cex") => "Apollodorus Library"
+]
+
+# ╔═╡ 1bf040f7-bedd-4425-bda8-373832552985
+md"""*Choose a text*: $(@bind src Select(textmenu))"""
+
+# ╔═╡ a718788f-3ffa-4c84-a9fc-e11a549e852a
+corpus = isempty(src) ? nothing : fromcex(src, CitableTextCorpus, FileReader)
 
 # ╔═╡ 92d8d256-1f21-4fa3-a424-9ce355f9331a
 tcorpus = isnothing(corpus) ? nothing : tokenizedcorpus(corpus,ortho, filterby = LexicalToken())
@@ -226,24 +206,6 @@ isnothing(corpus) ? md"**Text**: *none selected*." :  md"**Text**: citable corpu
 # ╔═╡ 518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╠═╡ show_logs = false
 analyzedlexical = isnothing(corpus) || isnothing(parser) ? nothing : parsecorpus(tcorpus, parser)
-
-# ╔═╡ 1825599f-24dc-4c20-af62-9f5545f236bf
-if isempty(psgchoice) || isnothing(parser)
-else
-	#filter(psg -> startswith(passagecomponent(psg.urn), string(psgchoice, ".")), tcorpus.passages)
-	atokenmatches = filter(atkn -> startswith(passagecomponent(atkn.ctoken.passage.urn), string(psgchoice, ".")), analyzedlexical.analyses)
-	mdwords = []
-	for tkn in atokenmatches
-		tokentext = tkn.ctoken.passage.text
-		if isempty(tkn.analyses)
-			push!(mdwords, string("*", tokentext, "*"))
-		else
-			push!(mdwords, tokentext)
-		end
-	end
-	hdr = "Passage: **$(psgchoice)**\n"
-	hdr * "> " * join(mdwords, " ") |> Markdown.parse
-end
 
 # ╔═╡ 97ac1bc4-c910-47ba-9712-94a24aeb55f7
 analyzedcount = if isnothing(analyzedlexical)
@@ -280,6 +242,9 @@ end
 # ╔═╡ 3120740a-d34c-487b-b4ff-f16db52d5594
 failed = isnothing(analyzedlexical) ? [] : filter(at -> isempty(at.analyses), analyzedlexical.analyses)
 
+# ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
+failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
+
 # ╔═╡ fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
 "Find passages where token with string value `s` occurs."
 function passages(s)
@@ -289,33 +254,19 @@ function passages(s)
 end
 
 # ╔═╡ 8ffbee45-878f-4500-9563-52ff385344b0
-if isempty(s) || isnothing(corpus)
+if isempty(s) 
 	md""
 else
 	psglist = passages(nfkc(s))
-	psgsmd = length(psglist) == 1 ?  ["**1 occurrence** of $(s)"] : ["**$(length(psglist)) occurrences** of $(s)",""]
+	psgsmd = ["$(length(psglist)) occurrences of $(s)",""]
 	for p in psglist
-		canonurn = collapsePassageBy(p.ctoken.passage.urn,1) |> passagecomponent
-		canonpsgs = filter(p -> startswith(passagecomponent(p.urn), canonurn),  corpus.passages)
-		rawtxt = length(canonpsgs) == 1 ? canonpsgs[1].text : "Hmm... Bad luck looking up $(canonurn) in corpus..."
-
-		txt = replace(rawtxt, s => string("**", s, "**"))
-		push!(psgsmd, string(" - `", canonurn, "` ", txt))
+		push!(psgsmd, string("- ", p))
 	end
-
-	
 	join(psgsmd, "\n") |> Markdown.parse
-
 end
-
-# ╔═╡ e455604c-4bf4-4ad7-9201-1ecb69c2f054
-md"> Frequencies"
 
 # ╔═╡ 84e4da1d-4082-4393-af39-3c2f828efd94
 histo = isnothing(corpus) ? nothing :  corpus_histo(corpus, ortho, filterby = LexicalToken())
-
-# ╔═╡ 8806f333-9486-4a81-be60-8a94a49862c1
-failedstrs = PolytonicGreek.sortWords(map(psg -> psg.ctoken.passage.text, failed), ortho)
 
 # ╔═╡ 8c0ea2a2-3892-4a27-aa07-3ec68b08ba56
 failedsolos = filter(failedstrs) do s
@@ -419,9 +370,6 @@ threshpct = threshtotal == 0 ? 0 : round((threshtotal / length(analyzedlexical))
 # ╔═╡ 5e14151f-4bcf-430f-9253-a9c6f91e7ebe
 threshtotal == 0 ? md"" : md"""Tokens occurring at least **$(thresh)** times: **$(length(overthresh))** tokens  (**$(threshtotal)** occurrences = $(threshpct)%)"""
 
-# ╔═╡ 8738131f-7849-4d58-b1b6-a741ca1c5fef
-md"> UI"
-
 # ╔═╡ 53f26f18-0145-4d32-a21e-30cf6cc4dff9
 "Make range selection widget"
 function rangewidget()
@@ -487,7 +435,7 @@ PolytonicGreek = "~0.18.5"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.9.4"
+julia_version = "1.10.0"
 manifest_format = "2.0"
 project_hash = "611ecfd43d21796d8c235add1e35df8f7bb6c7c9"
 
@@ -515,9 +463,9 @@ version = "1.2.0"
 
 [[deps.Adapt]]
 deps = ["LinearAlgebra", "Requires"]
-git-tree-sha1 = "02f731463748db57cc2ebfbd9fbc9ce8280d3433"
+git-tree-sha1 = "68c4c187a232e7abe00ac29e3b03e09af9d77317"
 uuid = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
-version = "3.7.1"
+version = "3.7.0"
 weakdeps = ["StaticArrays"]
 
     [deps.Adapt.extensions]
@@ -733,7 +681,7 @@ weakdeps = ["Dates", "LinearAlgebra"]
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.0.5+0"
+version = "1.0.5+1"
 
 [[deps.ComputationalResources]]
 git-tree-sha1 = "52cb3ec90e8a8bea0e62e275ba577ad0f74821f7"
@@ -1211,8 +1159,13 @@ uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
 version = "8.4.0+0"
 
 [[deps.LibGit2]]
-deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
+deps = ["Base64", "LibGit2_jll", "NetworkOptions", "Printf", "SHA"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
+
+[[deps.LibGit2_jll]]
+deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll"]
+uuid = "e37daf67-58a4-590a-8e99-b0245dd2ffc5"
+version = "1.6.4+0"
 
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
@@ -1304,7 +1257,7 @@ version = "1.1.7"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
-version = "2.28.2+0"
+version = "2.28.2+1"
 
 [[deps.MetaGraphs]]
 deps = ["Graphs", "JLD2", "Random"]
@@ -1329,7 +1282,7 @@ version = "0.3.4"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
-version = "2022.10.11"
+version = "2023.1.10"
 
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
@@ -1368,7 +1321,7 @@ version = "1.12.10"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.21+4"
+version = "0.3.23+2"
 
 [[deps.OpenEXR]]
 deps = ["Colors", "FileIO", "OpenEXR_jll"]
@@ -1385,7 +1338,7 @@ version = "3.1.4+0"
 [[deps.OpenLibm_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "05823500-19ac-5b8b-9628-191a04bc5112"
-version = "0.8.1+0"
+version = "0.8.1+2"
 
 [[deps.OpenSSL]]
 deps = ["BitFlags", "Dates", "MozillaCACerts_jll", "OpenSSL_jll", "Sockets"]
@@ -1395,9 +1348,9 @@ version = "1.4.1"
 
 [[deps.OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "cc6e1927ac521b659af340e0ca45828a3ffc748f"
+git-tree-sha1 = "ceeda72c9fd6bbebc4f4f598560789145a8b6c4c"
 uuid = "458c3c95-2e84-50aa-8efc-19380b2a3a95"
-version = "3.0.12+0"
+version = "3.0.11+0"
 
 [[deps.OpenSpecFun_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
@@ -1443,7 +1396,7 @@ version = "2.7.2"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "FileWatching", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
-version = "1.9.2"
+version = "1.10.0"
 
 [[deps.PkgVersion]]
 deps = ["Pkg"]
@@ -1530,7 +1483,7 @@ deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
 [[deps.Random]]
-deps = ["SHA", "Serialization"]
+deps = ["SHA"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[deps.RangeArrays]]
@@ -1629,6 +1582,7 @@ version = "1.2.0"
 [[deps.SparseArrays]]
 deps = ["Libdl", "LinearAlgebra", "Random", "Serialization", "SuiteSparse_jll"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+version = "1.10.0"
 
 [[deps.SpecialFunctions]]
 deps = ["IrrationalConstants", "LogExpFunctions", "OpenLibm_jll", "OpenSpecFun_jll"]
@@ -1670,7 +1624,7 @@ version = "1.4.2"
 [[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
-version = "1.9.0"
+version = "1.10.0"
 
 [[deps.StatsAPI]]
 deps = ["LinearAlgebra"]
@@ -1697,9 +1651,9 @@ uuid = "892a3eda-7b42-436c-8928-eab12a02cf0e"
 version = "0.3.4"
 
 [[deps.SuiteSparse_jll]]
-deps = ["Artifacts", "Libdl", "Pkg", "libblastrampoline_jll"]
+deps = ["Artifacts", "Libdl", "libblastrampoline_jll"]
 uuid = "bea87d4a-7f5b-5778-9afe-8cc45184846c"
-version = "5.10.1+6"
+version = "7.2.1+1"
 
 [[deps.TOML]]
 deps = ["Dates"]
@@ -1838,7 +1792,7 @@ version = "0.9.4"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
-version = "1.2.13+0"
+version = "1.2.13+1"
 
 [[deps.Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -1849,7 +1803,7 @@ version = "1.5.5+0"
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
-version = "5.8.0+0"
+version = "5.8.0+1"
 
 [[deps.libpng_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Zlib_jll"]
@@ -1871,27 +1825,24 @@ version = "1.52.0+1"
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
-version = "17.4.0+0"
+version = "17.4.0+2"
 """
 
 # ╔═╡ Cell order:
 # ╟─b299ef3e-0d10-11ee-1c90-cdb43d1046f1
 # ╟─2557eed2-0af8-4a7c-a807-0753255fc19d
 # ╟─71e79010-a5a8-4b78-aefb-3e0c588497e2
-# ╟─5d9318b4-f139-4f0a-b995-146bdec93999
+# ╠═2489de3c-bc1a-4586-8b02-0e8d3770b768
 # ╟─f78dfd75-0bd3-4e9c-8604-443d0ec92588
-# ╟─e5249452-50df-4be0-af31-f74b0b129560
-# ╟─cc52eefd-c02c-4613-ae12-d3d187a4050e
+# ╟─80e2b82b-f123-4eaa-a0bd-55594abb2329
 # ╟─9823bc1c-b719-49c3-8f01-8acd219ca67c
-# ╟─7291d0b0-6b10-402f-8acd-bd28cf4eb15c
-# ╟─23ea68f0-eb34-4b5d-8976-5bd706b6777d
-# ╟─c58f02d7-2506-4cb8-b0a1-11bce7b586d2
+# ╟─1bf040f7-bedd-4425-bda8-373832552985
+# ╟─cc52eefd-c02c-4613-ae12-d3d187a4050e
+# ╟─2bac28ce-c8c8-49bc-87ae-d3b444a20b7e
+# ╟─7d5689b9-513b-4bbb-96b3-8c50773f465d
 # ╟─6405375f-061d-483f-bf3c-a4a2414c3625
 # ╟─63414fa1-5484-4361-9bbc-7c5221c86817
 # ╟─da178dfa-9e59-42ea-b873-4953518f48c2
-# ╟─28df2b78-497c-4ea9-8721-2629e8220674
-# ╟─0a4b67bd-7868-4cde-845d-2d85aa7d4171
-# ╟─1825599f-24dc-4c20-af62-9f5545f236bf
 # ╟─144e8fc5-f1c6-4bae-a146-19b437b7881d
 # ╟─fe286d8c-8f6b-4db6-b7bb-6281fb3500d8
 # ╟─2e98352c-79c5-414f-9e4e-1cd537db20db
@@ -1918,19 +1869,20 @@ version = "17.4.0+0"
 # ╟─5581b269-bea3-4620-9d90-5fe39ee25fef
 # ╟─46ff7581-2747-49e1-8ab0-9db322cf820f
 # ╟─2b77d1d2-32dc-4c62-8ce4-739dec0fec1b
-# ╟─1b8a2c60-8678-4517-9ed7-840ab689cf85
-# ╟─1d3b369e-5a0f-4392-a773-be5c75c52abd
+# ╠═a718788f-3ffa-4c84-a9fc-e11a549e852a
 # ╟─f7c3c9a3-e602-4877-94ec-5e6842348f2d
-# ╟─08cee0da-ecd8-4670-a1f1-df522a936f4f
+# ╠═a80ec01c-171a-40c6-ae8a-ef554a1c788c
+# ╠═08cee0da-ecd8-4670-a1f1-df522a936f4f
 # ╠═a4ec7226-02e2-4034-940c-e9f30b51817a
-# ╟─f5b03be0-35c6-437a-9348-f68fd356fa5b
+# ╠═ac74affd-a995-4351-9129-14be814aa3ca
+# ╠═f5b03be0-35c6-437a-9348-f68fd356fa5b
 # ╟─c7ca88b6-6bf8-45aa-b16d-30cbc99c759f
 # ╟─aed560de-ffe3-4b26-8b66-41e0cb54beea
-# ╟─c54dcf7d-e923-4dab-987b-227bb151ae32
+# ╟─bc9a1ba3-c9c0-48fd-bfb8-4f41da8f71b5
 # ╟─fd3dd69c-91b2-4261-a9d9-59dcea113ef8
 # ╟─92d8d256-1f21-4fa3-a424-9ce355f9331a
 # ╟─0c3228ec-3023-4fa6-b0d8-7e11fb077b8a
-# ╠═518caceb-d790-4d6b-9678-2197b0d4cbbd
+# ╟─518caceb-d790-4d6b-9678-2197b0d4cbbd
 # ╟─63e8c2f9-4ce7-493a-9506-bba563ee7c78
 # ╟─3120740a-d34c-487b-b4ff-f16db52d5594
 # ╟─fa23a2e4-91e3-4d77-8a7a-45e54a7dd720
@@ -1942,5 +1894,6 @@ version = "17.4.0+0"
 # ╟─4a8d9f9a-9e66-4fd4-8040-18320608ad3f
 # ╟─8738131f-7849-4d58-b1b6-a741ca1c5fef
 # ╟─53f26f18-0145-4d32-a21e-30cf6cc4dff9
+# ╟─e6e69c41-3f06-428e-81e5-0b0a36129aed
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

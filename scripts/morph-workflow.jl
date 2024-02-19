@@ -1,44 +1,45 @@
-using Plots
+
 using Kanones
-using CitableBase, CitableCorpus, CitableText
+#using CitableBase, CitableCorpus, CitableText
 using Orthography, PolytonicGreek
 using CitableParserBuilder
 
 
 # Build a parser with validated vocab from LSJ and hypothesized dataset
 # from an LSJMining dataset in adjacent directory.
-function alllitgreek(; atticonly = false)
+function alllitgreek(kroot = pwd(); atticonly = false)
     # 1. demo vocab:
-    lgr = joinpath(pwd(), "datasets", "literarygreek-rules")
-    ionic = joinpath(pwd(), "datasets", "ionic")
+    lgr = joinpath(kroot, "datasets", "literarygreek-rules")
+    ionic = joinpath(kroot, "datasets", "ionic")
     # 2. manually validated LSJ vocab:
-    lsj = joinpath(pwd(), "datasets", "lsj-vocab")
+    lsj = joinpath(kroot, "datasets", "lsj-vocab")
     # 3. manually validated NOT in LSJ:
-    extra = joinpath(pwd(), "datasets", "extra")
+    extra = joinpath(kroot, "datasets", "extra")
     # 4. hypothesized data from LSJMining
     lsjx = joinpath("..", "LSJMining.jl", "kanonesdata","lsjx")
     atticonly ?  dataset([lgr, lsj, extra, lsjx]) :  dataset([lgr, ionic, lsj, extra, lsjx]) 
 end
 
 # Build a parser with demo vocab and manually validated vocab from LSJ.
-function coredata(; atticonly = false)
+function coredata(kroot = pwd(); atticonly = false)
     # 1. rules with demo vocab:
-    lgr = joinpath(pwd(), "datasets", "literarygreek-rules")
+    lgr = joinpath(kroot, "datasets", "literarygreek-rules")
     ionic = joinpath(pwd(), "datasets", "ionic")
     # 2. manually validated LSJ vocab:
-    lsj = joinpath(pwd(), "datasets", "lsj-vocab")
+    lsj = joinpath(kroot, "datasets", "lsj-vocab")
     # 3. manually validated NOT in LSJ:
-    extra = joinpath(pwd(), "datasets", "extra")
+    extra = joinpath(kroot, "datasets", "extra")
     atticonly ? dataset([lgr, lsj, extra]) :  dataset([lgr, ionic, lsj, extra]) 
 end
 
-ds = coredata(atticonly = true)
+kroot = joinpath(pwd() |> dirname, "Kanones.jl")
+ds = coredata(kroot, atticonly = true)
 sp = stringParser(ds)
 
 eaglbase = joinpath(pwd() |> dirname, "eagl-texts")
-lysiasf = joinpath(eaglbase, "texts", "lysias1.cex") 
-isfile(lysiasf)
-corpus = fromcex(lysiasf, CitableTextCorpus, FileReader)
+f = joinpath(eaglbase, "texts", "lysias1-filtered.cex") 
+isfile(f)
+corpus = fromcex(f, CitableTextCorpus, FileReader)
 
 lg = literaryGreek()
 histo =  corpus_histo(corpus, lg, filterby = LexicalToken())
@@ -49,4 +50,10 @@ failed = filter(at -> isempty(at.analyses), analyzedlexical.analyses)
 failedstrs = map(psg -> psg.ctoken.passage.text, failed)
 failedfreqs = filter(pr -> pr[1] in failedstrs, collect(histo))
 
+failedvals = map(pr -> pr[1], failedfreqs)
+
+
+open("failed.txt", "w") do io
+    write(io, join(failedvals, "\n"))
+end
 
