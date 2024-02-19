@@ -17,10 +17,12 @@ end
 # ╔═╡ e2562890-53f7-48c4-bf6e-67cb40c3e8b8
 # ╠═╡ show_logs = false
 begin 
+	#=
 	using Pkg
 	Pkg.add("Downloads")
 	Pkg.add("PlutoUI")
 	Pkg.add(url = "https://github.com/neelsmith/Kanones.jl")
+	=#
 	using Downloads
 	using Kanones
 	using PlutoUI
@@ -47,17 +49,6 @@ md"""> **Download data and instantiate parser**"""
 # ╔═╡ 0eec4a38-9093-11ee-3acc-bd9760140462
 url = "http://shot.holycross.edu/morphology/comprehensive-current.csv"
 
-# ╔═╡ 868a2091-b650-4cbe-ad29-8fd270ae9bf4
-"""Download current version of comprehensive parser.
-"""
-function getparserdata(u)
-	f = Downloads.download(u)
-	data = readlines(f)
-	rm(f)
-	# omit header line:
-	data[2:end]
-end
-
 # ╔═╡ 9673d718-9469-400b-98b1-24cfa8fe078e
 parserdata = doit ? getparserdata(url) : []
 
@@ -73,6 +64,17 @@ else
 	parses = parsetoken(token, parser)
 	#map(p -> label(p), parses)
 		
+end
+
+# ╔═╡ 868a2091-b650-4cbe-ad29-8fd270ae9bf4
+"""Download current version of comprehensive parser.
+"""
+function getparserdata(u)
+	f = Downloads.download(u)
+	data = readlines(f)
+	rm(f)
+	# omit header line:
+	data[2:end]
 end
 
 # ╔═╡ bc4d1206-8b48-4d15-80f9-423d66071188

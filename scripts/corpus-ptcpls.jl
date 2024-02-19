@@ -22,6 +22,11 @@ ktokens = map(lex) do l
     parsepassage(l, parser)
 end
 
+fails = 	filter(tkn -> isempty(tkn.analyses), ktokens)
+failstext = map(f -> cex(f), fails)
+open("xenfails.cex", "w") do io
+	write(io, join(failstext, "\n"))
+end
 function ptcplsonly(analyzedtkns)
 	filter(analyzedtkns) do atkn
 		if isempty(atkn.analyses)

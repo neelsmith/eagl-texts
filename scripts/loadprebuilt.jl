@@ -3,6 +3,7 @@ using Orthography, PolytonicGreek
 using CitableBase, CitableCorpus
 using CitableParserBuilder
 using Kanones
+using StatsBase, OrderedCollections
 
 kroot = joinpath(dirname(pwd()), "Kanones.jl")
 parsersrc = joinpath(kroot, "parsers", "current-core-attic.csv")
@@ -66,8 +67,42 @@ end
 moodhisto = map(finites) do v
     v.analyses[1] |> greekForm |> gmpMood |> label
 end |> countmap
-#f1 = finites[1].analyses[1] |> greekForm
-#f1 |> gmpMood |> label
+
+tensemoodhisto = map(finites) do v
+    f1 = v.analyses[1] |> greekForm
+    join([label(gmpTense(f1)), label(gmpMood(f1))], " ")
+end |> countmap
+
+persnumhisto = map(finites) do v
+    f1 = v.analyses[1] |> greekForm
+    join([label(gmpPerson(f1)), label(gmpNumber(f1))], " ")
+end |> countmap
+
+#=
+  "future optative"      => 1
+  "aorist optative"      => 3
+  "future indicative"    => 6
+  "present subjunctive"  => 3
+  "present optative"     => 8
+  "aorist indicative"    => 27
+  "aorist imperative"    => 6
+  "perfect indicative"   => 6
+  "present indicative"   => 51
+  "present imperative"   => 3
+  "imperfect indicative" => 59
+  "aorist subjunctive"   => 9
+=#
+
+
+#=
+  "third plural"    => 16
+  "second singular" => 23
+  "first plural"    => 3
+  "third singular"  => 56
+  "first singular"  => 73
+  "second plural"   => 11
+=#
+
 
 
 #=
@@ -86,9 +121,55 @@ Non-finite forms:
 -  GMFParticiple => 70 + 74 = 144
 =#
 
+#=
 xs = ["indicative", "participle", "infinitive", "optative", "subjunctive", "imperative"]
 ys = [243, 144, 94, 18, 15, 11]
 
 using Plots
 
 Plots.bar(xs,ys, legend = false, title = "Verb forms in Lysias 1")
+=#
+
+failedstrs = map(failedfreqs) do pr
+    join(pr, " ")
+end
+
+outfile = "lysias-fails-freqs.txt"
+open(outfile, "w") do io
+    write(outfile, join(failedstrs, "\n"))
+end
+
+alphaout = "lysias-fails-alpha.txt"
+open(alphaout, "w") do io
+    write(alphaout, join(sort(failedstrs), "\n"))
+end
+
+
+
+totallextokens = length(analyzedlexical)
+successes = filter(analyzedlexical.analyses) do tkn
+	! isempty(tkn.analyses)
+end
+successcounts = map(tkn -> tkn.ctoken.passage.text, successes) |> countmap |> OrderedDict
+orderedcounts = sort(successcounts; byvalue = true, rev = true)
+orderedkeys = keys(orderedcounts) |> collect
+
+
+runningtally = []
+
+for (i,k) in enumerate(orderedkeys)
+    currval = orderedcounts[k]
+    if i == 1
+        push!(runningtally, currval) 
+    else
+        prevval = runningtally[end]
+        @info("Prevval is $(prevval), add $(currval) to it.")
+        push!(runningtally, (currval + prevval))
+    end
+end
+
+
+totallextokens = length(analyzedlexical)
+pcts = runningtally ./ totallextokens
+
+
