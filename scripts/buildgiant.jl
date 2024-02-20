@@ -6,13 +6,15 @@ using CitableParserBuilder
 using Dates
 startstamp = now()
 
+atticparser = false
+
 projdir = ENV["JULIA_PROJECT"]
 msg = """PROJECT IS $(ENV["JULIA_PROJECT"])"""
 @info(msg)
 
 # Build a parser with validated vocab from LSJ and hypothesized dataset
 # from an LSJMining dataset in adjacent directory.
-function alllitgreek(parentdir = pwd(); atticonly = false)
+function alllitgreek(parentdir = pwd(); atticonly = atticparser)
     kroot = joinpath(parentdir, "Kanones.jl")
 
 
@@ -38,7 +40,7 @@ bigds = alllitgreek(repoparent; atticonly = true)
 
 
 
-fname = "attic-" * Dates.format(startstamp, "yyyy-mm-dd-THHMM") * ".csv"
+fname =  atticparser ? "attic-" * Dates.format(startstamp, "yyyy-mm-dd-THHMM") * ".csv"  : "comprehensive-" * Dates.format(startstamp, "yyyy-mm-dd-THHMM") * ".csv"
 dboxroot = joinpath("/Users", "nsmith", "Dropbox", "_parsers")
 outfile = joinpath(dboxroot, fname)
 
